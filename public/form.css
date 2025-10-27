@@ -18,7 +18,7 @@ h2 {
 /* -- FORM STÍLUSOK -- */
 form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 50% 50%;
   gap: 1rem;
   max-width: 800px;
   margin: 0 auto 2rem auto;
@@ -37,6 +37,7 @@ form {
 
 /* -- INPUT MEZŐK -- */
 input, textarea {
+  max-width: calc(100% - 4rem);
   padding: .75rem;
   border: 1px solid #f1e9df;
   border-radius: .5rem;

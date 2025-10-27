@@ -1,4 +1,4 @@
-import { databases, storage } from "../lib/appwrite.js";
+import { databases, storage } from "./lib/appwrite.js";
 
 document.addEventListener('DOMContentLoaded', function() {
 
