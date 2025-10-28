@@ -1,11 +1,12 @@
 /* -- ALAP STÍLUSOK -- */
 body {
   font-family: "Poppins", "Segoe UI", sans-serif;
-  background: linear-gradient(180deg, #fff7f0, #fefcf8);
+  background: url('../public/hatter.png') repeat left top;
+  background-size: 850px auto;
   color: #3a2e2e;
   margin: 0;
   padding: 2rem;
-  min-height: 100vh;
+  min-height: 100%;
 }
 
 /* -- KERESŐ -- */
@@ -132,5 +133,5 @@ input[type="search"]:not(:focus):hover {
 }
 
 .card {
-  animation: fadeInUp 0.4s ease both;
+  animation: fadeInUp 0.2s ease both;
 }

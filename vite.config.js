@@ -58,7 +58,8 @@ export default defineConfig({
         const filesToCopy = [
           { from: 'src/lib/appwrite.js', to: 'dist/lib/appwrite.js' },
           { from: 'style/index.css', to: 'dist/style/index.css' },
-          { from: 'style/form.css', to: 'dist/style/form.css' }
+          { from: 'style/form.css', to: 'dist/style/form.css' },
+          { from: 'public/hatter.png', to: 'dist/hatter.png' } // Hozzáadva
         ];
 
         filesToCopy.forEach(file => {
@@ -82,6 +83,16 @@ export default defineConfig({
             console.log('✅ Images mappa másolva');
           } catch (error) {
             console.error('❌ Hiba images mappa másolásakor:', error);
+          }
+        }
+
+        // Public mappa tartalmának másolása (biztonsági másolat)
+        if (existsSync('public')) {
+          try {
+            copyDir('public', 'dist');
+            console.log('✅ Public mappa tartalma másolva');
+          } catch (error) {
+            console.error('❌ Hiba public mappa másolásakor:', error);
           }
         }
       }
