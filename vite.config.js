@@ -44,14 +44,8 @@ function copyDir(src, dest) {
 export default defineConfig({
   build: {
     outDir: 'dist',
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        login: resolve(__dirname, 'login.html'),
-        signup: resolve(__dirname, 'signup.html'),
-        profile: resolve(__dirname, 'profile.html')
-      }
-    }
+    // NE használj rollupOptions input-ot, mert az csak SPA-khoz jó
+    emptyOutDir: true
   },
   publicDir: 'public',
   server: {
@@ -59,23 +53,23 @@ export default defineConfig({
   },
   plugins: [
     {
-      name: 'copy-html-files',
+      name: 'copy-all-files',
       closeBundle() {
-        console.log('📄 HTML fájlok másolása...');
+        console.log('📄 Összes fájl másolása...');
         
-        // Másold az összes HTML fájlt
+        // HTML fájlok
         const htmlFiles = ['index.html', 'login.html', 'signup.html', 'profile.html'];
         htmlFiles.forEach(file => {
           copyFileIfExists(resolve(__dirname, file), resolve(__dirname, 'dist', file));
         });
 
-        // Másold a public mappát
+        // Public mappa
         if (existsSync('public')) {
           console.log('📁 Public mappa másolása...');
-          copyDir('public', 'dist/public');
+          copyDir('public', 'dist');
         }
 
-        console.log('✅ Minden fájl másolva!');
+        console.log('✅ Build kész!');
       }
     }
   ]
