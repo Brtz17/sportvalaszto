@@ -1,4 +1,4 @@
-import { databases } from "./lib/appwrite.js";
+import { databases } from "../lib/appwrite.js";
 
 const userCardTemplate = document.querySelector("[data-user-template]");
 const userCardContainer = document.querySelector("[data-user-cards-container]");
