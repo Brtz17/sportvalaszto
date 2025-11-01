@@ -1,4 +1,4 @@
-import { databases, account, Query, storage } from "../lib/appwrite.js";
+import { databases, account, Query, storage } from "./lib/appwrite.js";
 
 // Hamburger menü változók
 const hamburger = document.getElementById("hamburger");
