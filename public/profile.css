@@ -1,0 +1,600 @@
+* {
+  box-sizing: border-box;
+}
+
+/* -- ALAP STÍLUSOK -- */
+body {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  background: url('./hatter.png') repeat left top;
+  background-size: 850px auto;
+  color: #3a2e2e;
+  margin: 0;
+  padding: 0.5rem 2rem 2rem 2rem;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 3.5fr;
+  gap: 1rem;
+  height: 100vh;
+}
+
+h2 {
+  text-align: center;
+  color: #4a3227;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+/* Header konténer */
+.header1 {
+  color: #4a3227;
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f1e9df;
+  padding: 12px 24px;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  border-radius: 1rem;
+  margin: 1rem 0;
+  height: 68px;
+}
+
+/* Logo rész */
+.logo-container .site-name {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.menu-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Hamburger gomb - MINDIG LÁTHATÓ */
+#hamburger {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e5b899;
+  color: #4a3227;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  min-height: 40px;
+}
+
+#hamburger:hover {
+  background: #d4a788;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+#hamburger:active {
+  transform: translateY(0px);
+}
+
+/* SVG ikon */
+#hamburger-icon, #x-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Tartalom rész */
+.content {
+  color: #4a3227;
+  background: #f1e9df;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+}
+
+/* ===== DESKTOP STÍLUSOK (alapértelmezett) ===== */
+/* Desktopon alapértelmezetten bal oldal LÁTHATÓ */
+#bal-oldal {
+  display: grid;
+  background: #f1e9df;
+  padding: 20px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  grid-template-rows: 1fr auto;
+  height: 100%;
+  transition: none; /* Távolítsuk el az átmeneteket */
+}
+
+#bal-oldal div, #bal-oldal button{
+  width: 100%;
+}
+
+#bal-oldal div{
+  display: block;
+}
+
+#bal-oldal button{
+  text-align: left;
+  color: #4a3227;
+  background: #f1e9df;
+  border: none;
+  border-radius: .5rem;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+
+#bal-oldal button:hover{
+  background: rgb(218, 209, 198);
+}
+
+.team-btn{
+  font-size: 0.9rem;
+  text-align: left;
+}
+#new-team-btn{
+  font-size: 1rem;
+  text-align: left;
+}
+
+#site-btn-container{
+  display: block;
+}
+
+#profile-btn-container{
+  padding-top: 20px;
+  border-top: 1px solid #d4a788;
+}
+
+#profile-btn-container button{
+  font-size: 1rem;
+}
+
+#jobb-oldal {
+  background: #f1e9df;
+  padding: 20px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  grid-column: 2; /* Desktopon alapból a bal mellett */
+}
+
+/* Form stílusok */
+#csapat-logo-container{
+  min-height: 90px;
+  height: auto;
+  width: 280px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 10px;
+  margin: 1.5rem 0 2rem 0;
+}
+
+.csapat-logo{
+  height: auto;
+  width: 140px;
+  margin: 0;
+}
+
+#logo-edit-container{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#logo-edit-container button{
+  width: 100%;
+  height: 50%;
+  max-height: 40px;
+  display: block;
+  margin-bottom: 10px;
+  border-radius: .5rem;
+  cursor: pointer;
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4a3227;
+}
+
+.form-group div {
+    display: block;
+    margin-left: 4px;
+    font-weight: 500;
+    color: #4a3227;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    background-color: #fffdf9;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #e5b899;
+    box-shadow: 0 0 6px rgba(229, 184, 153, 0.4);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #7d6558;
+    font-size: 0.8rem;
+}
+
+.szerkeszto-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.szerkeszto-item input {
+    flex: 1;
+}
+
+.remove-szerkeszto-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.remove-szerkeszto-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.remove-szerkeszto-btn:hover:not(:disabled) {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.secondary-btn {
+  background: #e5b899;
+  color: #4a3227;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.secondary-btn:hover {
+  background: #d4a788;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+/* Gomb csoport */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    grid-column: 1 / -1;
+}
+
+.button-group button {
+  flex: 1;
+  padding: 1rem;
+  border-radius: .5rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.delete-btn {
+  border: none;
+  background: #dc3545 !important;
+  color: white !important;
+}
+
+.delete-btn:hover {
+  background: #c82333 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.delete-btn:focus {
+  transform: translateY(0px);
+}
+
+.save-btn{
+  background: #e5b899;
+  color: #4a3227;
+  border: none;
+}
+
+.save-btn:hover {
+  background: #d4a788;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.save-btn:focus{
+  transform: translateY(0px);
+}
+
+.profile-save-btn{
+  width: 100%;
+  padding: 1rem;
+  border-radius: .5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600; 
+  margin-top: 5px;
+  background: #e5b899;
+  color: #4a3227;
+  border: none;
+}
+
+.profile-save-btn:hover {
+  background: #d4a788;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.profile-save-btn:focus{
+  transform: translateY(0px);
+}
+
+/* Új csapat form stílusok */
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  width: 100%;
+}
+
+.form input {
+  padding: .75rem;
+  border: 1px solid #ddd;
+  border-radius: .5rem;
+  background-color: #fffdf9;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form input:focus {
+  outline: none;
+  border-color: #e5b899;
+  box-shadow: 0 0 6px rgba(229, 184, 153, 0.4);
+}
+
+.fullwidth {
+  grid-column: 1 / -1;
+}
+
+.fullwidth label{
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4a3227;
+}
+
+#submit-btn {
+  grid-column: 1 / -1;
+  padding: 1rem;
+  background: #e5b899;
+  color: #4a3227;
+  border: none;
+  border-radius: .5rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+#submit-btn:hover {
+  background: #d4a788;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+#submit-btn:focus{
+  transform: translateY(0px);
+}
+
+#submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+input[name="cimkek[]"]{
+  margin-bottom: 1rem;
+}
+
+/* Overlay stílusok */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 999;
+}
+
+.menu-overlay.lathato {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ===== MOBIL STÍLUSOK (max-width: 600px) ===== */
+@media (max-width: 600px) {
+  body {
+    padding: 0.5rem 1rem 1rem 1rem;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 0.5rem;
+  }
+
+  /* Header mobil optimalizálás */
+  .header1 {
+    padding: 10px 16px;
+    margin: 0.5rem 0;
+    border-radius: 0.5rem;
+  }
+
+  .logo-container .site-name {
+    font-size: 1.1rem;
+  }
+
+  #hamburger {
+    padding: 8px 14px;
+    font-size: 0.95rem;
+  }
+
+  #hamburger-icon, #x-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Bal oldali menü mobil mód - ALAPBÓL ELREJTETT */
+  #bal-oldal {
+    display: none; /* Alapból elrejtve mobilon */
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 85%;
+    max-width: 300px;
+    height: 100vh;
+    z-index: 1000;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    transition: left 0.3s ease-in-out;
+    overflow-y: auto;
+    margin: 0;
+    padding: 20px;
+    border-radius: 0 16px 16px 0;
+  }
+
+  /* Jobb oldali tartalom mobilra */
+  #jobb-oldal {
+    grid-column: 1 / -1;
+    padding: 15px;
+    margin-top: 0;
+    border-radius: 16px;
+  }
+
+  /* Content osztály mobilra */
+  .content {
+    padding: 15px;
+  }
+}
+
+/* ===== KIS MOBIL STÍLUSOK (max-width: 400px) ===== */
+@media (max-width: 400px) {
+  body {
+    padding: 0.25rem 0.5rem 0.5rem 0.5rem;
+  }
+
+  .header1 {
+    padding: 8px 12px;
+  }
+
+  .logo-container .site-name {
+    font-size: 1rem;
+  }
+
+  #hamburger {
+    font-size: .95rem;
+    padding: 8px 14px;
+    min-height: 40px;
+  }
+
+  #hamburger-icon, #x-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  #bal-oldal {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .content, #jobb-oldal {
+    padding: 12px;
+  }
+
+  .form{
+    gap: 6px;
+    grid-template-columns: 1fr;
+  }
+
+  input[name="cimkek[]"]{
+  margin-bottom: 6px;
+  }
+}
+
+/* ===== DESKTOP STÍLUSOK (min-width: 601px) ===== */
+/* ===== DESKTOP STÍLUSOK (min-width: 601px) ===== */
+@media (min-width: 601px) {
+  #bal-oldal {
+    /* NE használj !important itt, hagyd, hogy a JavaScript irányítsa */
+    position: static;
+    left: 0;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+  }
+  
+  .menu-overlay {
+    display: none;
+  }
+  
+  #jobb-oldal {
+    grid-column: 2;
+  }
+  
+  /* Desktopon a hamburger ikonok kezelése */
+  #hamburger-icon {
+    display: none;
+  }
+  
+  #x-icon {
+    display: block;
+  }
+}

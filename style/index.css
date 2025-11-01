@@ -5,25 +5,91 @@ body {
   background-size: 850px auto;
   color: #3a2e2e;
   margin: 0;
-  padding: 2rem;
+  padding: 0.5rem 2rem 2rem 2rem;
   min-height: 100%;
 }
 
+
+/* Header konténer */
+.header1 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f1e9df;
+  padding: 12px 24px;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  border-radius: 1rem;
+  margin: 1rem;
+  height: 68px;
+}
+
+.logo-container{
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Logo rész */
+.logo-container .site-name {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2a2a2a;
+}
+
+/* Login gomb */
+.login-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #e5b899;
+  color: #4a3227;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.login-btn:hover {
+  background: #d4a788;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.login-btn:active {
+  transform: translateY(0px);
+}
+
+/* SVG ikon */
+.login-icon {
+  width: 20px;
+  height: 20px;
+}
+
+
 /* -- KERESŐ -- */
 .search-wrapper {
+  flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: .5rem;
+  align-items: center;
   max-width: 400px;
-  margin: 0 auto 2rem auto;
+  margin: auto;
   background: #f1e9df;
   padding: 1rem;
   border-radius: 1rem;
-  box-shadow: 0 2px 14px rgba(0,0,0,0.4);
+  max-height: 50px;
+}
+
+#search-wrapper2{
+  display: none;
 }
 
 input[type="search"] {
+  flex: 1;
   font-size: 1rem;
   padding: .5rem .75rem;
   width: 100%;
@@ -66,6 +132,33 @@ input[type="search"]:focus::placeholder {
 input[type="search"]:not(:focus):hover {
   animation: SearchHover 0.75s ease-in-out 0s infinite;
 }
+
+
+/* Reszponzív */
+@media (max-width: 600px) {
+  .header1{
+    height: 124px;
+  }
+  .site-name {
+    font-size: 1.1rem;
+  }
+  .login-btn {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+  .login-icon {
+    width: 18px;
+    height: 18px;
+  }
+  #search-wrapper1{
+    display: none;
+  }
+  #search-wrapper2{
+    display: flex;
+    flex-basis: 100%;
+  }
+}
+
 
 
 /* -- KÁRTYÁK GRIDJE -- */

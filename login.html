@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bejelentkezés - SportVálasztó</title>
+  <link rel="stylesheet" href="/login.css">
+  <script type="module" src="/src/login.js"></script>
+</head>
+<body>
+  <div id="form-wrapper">
+    <h2>Bejelentkezés</h2>
+    <div id="message-container"></div>
+    
+    <form id="login-form">
+      <input type="email" name="email" placeholder="Email cím" required>
+      <input type="password" name="password" placeholder="Jelszó" required>
+      
+      <button type="submit">Bejelentkezés</button>
+    </form>
+
+    <button id="google">
+
+      Google-fiók használata
+    </button>
+    
+    <div class="auth-links">
+      <p>Még nincs fiókod? <a href="/signup.html">Regisztrálj</a></p>
+      <a href="/index.html">Vissza a főoldalra</a>
+    </div>
+  </div>
+</body>
+</html>

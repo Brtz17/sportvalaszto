@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regisztráció - SportVálasztó</title>
+  <link rel="stylesheet" href="/signup.css">
+  <script type="module" src="/src/signup.js"></script>
+</head>
+<body>
+  <div id="form-wrapper">
+    <h2>Regisztráció</h2>
+    <div id="message-container"></div>
+    
+    <form id="signup-form">
+      <input type="text" name="name" placeholder="Teljes név" required>
+      <input type="email" name="email" placeholder="Email cím" required>
+      <input type="password" name="password" placeholder="Jelszó" required minlength="8">
+      <input type="password" name="confirmPassword" placeholder="Jelszó megerősítése" required>
+      
+      <button type="submit" id="button">Regisztráció</button>
+    </form>
+    
+    <div class="auth-links">
+      <p>Már van fiókod? <a href="/login.html">Jelentkezz be</a></p>
+      <a href="/index.html">Vissza a főoldalra</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -65,8 +65,8 @@ async function loadUsers() {
         image.src = doc.kep;
         image.alt = `${doc.nev} logója`;
       } else {
-        image.src = "placeholder.jpg";
-        image.alt = "Alapértelmezett kép";
+        image.src = "#";
+        image.alt = "#";
       }
 
       // Kattintható kártya (opcionális)
