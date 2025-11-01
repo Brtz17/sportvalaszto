@@ -5,7 +5,7 @@
 /* -- ALAP STÍLUSOK -- */
 body {
   font-family: "Poppins", "Segoe UI", sans-serif;
-  background: url('./hatter.png') repeat left top;
+  background: url('../hatter.png') repeat left top;
   background-size: 850px auto;
   color: #3a2e2e;
   margin: 0;
