@@ -1,4 +1,4 @@
-import { account } from './lib/appwrite.js';
+import { account } from "./lib/appwrite.js";
 
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById('signup-form');
