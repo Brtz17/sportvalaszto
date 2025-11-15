@@ -244,6 +244,7 @@ function closeMenu() {
 }
 
 // PROFIL NÉZET megjelenítése
+// PROFIL NÉZET megjelenítése
 function showProfileView() {
     const jobbOldal = document.getElementById('jobb-oldal');
     
@@ -256,14 +257,273 @@ function showProfileView() {
             </div>
             <div class="form-group">
                 <label>Email:</label>
-                <div id="profile-email"">${currentUser.email}</div>
+                <div id="profile-email">${currentUser.email}</div>
             </div>
-            <button type="submit" class="profile-save-btn">Mentés</button>
+            <button type="submit" class="profile-save-btn">Profil mentése</button>
         </form>
+
+        <!-- JELSZÓ VÁLTOZTATÁS SZAKASZ -->
+        <div class="password-section">
+            <h3>Jelszó megváltoztatása</h3>
+            
+            <form id="password-form" class="password-form">
+                <div class="form-group">
+                    <label>Jelenlegi jelszó:</label>
+                    <div class="password-input-group">
+                        <input type="password" id="current-password" placeholder="Jelenlegi jelszó" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('current-password')">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Új jelszó:</label>
+                    <div class="password-input-group">
+                        <input type="password" id="new-password" placeholder="Új jelszó" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('new-password')">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Új jelszó megerősítése:</label>
+                    <div class="password-input-group">
+                        <input type="password" id="confirm-password" placeholder="Új jelszó megerősítése" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirm-password')">
+                            👁️
+                        </button>
+                    </div>
+                    <div id="password-match" style="font-size: 0.8rem; margin-top: 0.25rem;"></div>
+                </div>
+                
+                <button type="submit" id="password-submit-btn" class="profile-save-btn" disabled>
+                    Jelszó megváltoztatása
+                </button>
+                <div id="password-message-container" style="margin-top: 1rem;"></div>
+            </form>
+        </div>
     `;
     
-    // Profil form eseménykezelő
-    document.getElementById('profile-form').addEventListener('submit', saveProfile);
+    setupPasswordChangeHandlers();
+    disableEnterSubmission();
+}
+
+// Üzenet megjelenítése - mint a signup.js-ben
+function showPasswordMessage(text, type = 'success') {
+    const messageContainer = document.getElementById('password-message-container');
+    if (!messageContainer) return;
+    
+    // Előző üzenetek eltávolítása
+    const existingMessage = messageContainer.querySelector('.message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // Új üzenet hozzáadása
+    messageContainer.insertAdjacentHTML('beforeend', `<div class="message ${type}">${text}</div>`);
+    
+    // Automatikus eltávolítás 3 másodperc után
+    if (type === 'success') {
+        setTimeout(() => {
+            const message = messageContainer.querySelector('.message');
+            if (message) message.remove();
+        }, 3000);
+    }
+}
+
+// Jelszó változtatás eseménykezelők
+function setupPasswordChangeHandlers() {
+    const passwordForm = document.getElementById('password-form');
+    const newPasswordInput = document.getElementById('new-password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    
+    // Jelszó egyezés ellenőrzése
+    if (newPasswordInput && confirmPasswordInput) {
+        newPasswordInput.addEventListener('input', checkPasswordMatch);
+        confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+    }
+    
+    // Form elküldése
+    if (passwordForm) {
+        passwordForm.addEventListener('submit', changePassword);
+    }
+}
+
+// Jelszó láthatóság váltása
+function togglePasswordVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        const type = input.type === 'password' ? 'text' : 'password';
+        input.type = type;
+    }
+}
+
+// Jelszó egyezés ellenőrzése
+function checkPasswordMatch() {
+    const newPassword = document.getElementById('new-password')?.value || '';
+    const confirmPassword = document.getElementById('confirm-password')?.value || '';
+    const matchIndicator = document.getElementById('password-match');
+    
+    if (!matchIndicator) return;
+    
+    if (!newPassword || !confirmPassword) {
+        matchIndicator.textContent = '';
+        matchIndicator.style.color = '';
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        matchIndicator.textContent = '✗ A jelszavak nem egyeznek';
+        matchIndicator.style.color = '#e74c3c';
+    } else {
+        matchIndicator.textContent = '';
+        matchIndicator.style.color = '';
+    }
+    
+    updatePasswordSubmitButton();
+}
+
+// Submit gomb frissítése
+function updatePasswordSubmitButton() {
+    const submitBtn = document.getElementById('password-submit-btn');
+    const newPassword = document.getElementById('new-password')?.value || '';
+    const confirmPassword = document.getElementById('confirm-password')?.value || '';
+    
+    if (!submitBtn) return;
+    
+    const passwordsMatch = newPassword === confirmPassword && newPassword !== '';
+    
+    const isValid = passwordsMatch;
+    
+    submitBtn.disabled = !isValid;
+}
+
+// JELSZÓ MEGVÁLTOZTATÁSA - FORDÍTÁSSAL
+async function changePassword(e) {
+    e.preventDefault();
+    
+    const currentPassword = document.getElementById('current-password')?.value;
+    const newPassword = document.getElementById('new-password')?.value;
+    const submitBtn = document.getElementById('password-submit-btn');
+    
+    if (!currentPassword || !newPassword) {
+        showPasswordMessage('Kérjük, töltsd ki mindkét jelszó mezőt!', 'error');
+        return;
+    }
+    
+    if (!submitBtn) return;
+    
+    // Loading state
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Feldolgozás...';
+    submitBtn.disabled = true;
+    
+    try {
+        // Jelszó változtatás Appwrite-ban
+        await account.updatePassword(newPassword, currentPassword);
+        
+        // Sikeres változtatás
+        showPasswordMessage('✅ Jelszó sikeresen megváltoztatva!', 'success');
+        
+        // Form reset
+        const passwordForm = document.getElementById('password-form');
+        if (passwordForm) {
+            passwordForm.reset();
+        }
+        
+        // Match indicator reset
+        const matchIndicator = document.getElementById('password-match');
+        if (matchIndicator) {
+            matchIndicator.textContent = '';
+        }
+        
+    } catch (error) {
+        console.error('Jelszó változtatás hiba:', error);
+        
+        // Automatikus fordítás
+        const translatedMessage = await translateErrorMessage(error);
+        showPasswordMessage(`❌ ${translatedMessage}`, 'error');
+        
+    } finally {
+        // Visszaállítás
+        if (submitBtn) {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+}
+
+// VALÓS IDEJŰ FORDÍTÁS GOOGLE TRANSLATE API-VAL
+async function translateText(text, targetLang = 'hu') {
+    try {
+        // Ingyenes Google Translate API (nem igényel API kulcsot)
+        const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`);
+        
+        if (!response.ok) {
+            throw new Error('Fordítási hiba');
+        }
+        
+        const data = await response.json();
+        
+        // A válasz struktúrája: [[["fordított szöveg", "eredeti szöveg", null, null]], null, "auto"]
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
+            return data[0][0][0];
+        }
+        
+        return text; // Ha nem sikerül, visszaadjuk az eredetit
+        
+    } catch (error) {
+        console.error('Fordítási hiba:', error);
+        return text; // Ha nem sikerül, visszaadjuk az eredetit
+    }
+}
+
+// HIBÁK FORDÍTÁSA AUTOMATIKUSAN
+async function translateErrorMessage(error) {
+    const originalMessage = error.message || error.toString();
+    
+    // Először próbáljuk a beépített fordítást
+    const builtInTranslation = translateCommonErrors(originalMessage);
+    if (builtInTranslation !== originalMessage) {
+        return builtInTranslation;
+    }
+    
+    // Ha nincs beépített fordítás, használjuk a Google Translate API-t
+    try {
+        const translated = await translateText(originalMessage, 'hu');
+        return translated;
+    } catch {
+        return originalMessage; // Ha nem sikerül, az eredeti üzenet
+    }
+}
+
+// BEPÉTETT GYAKORI HIBÁK (biztonsági tartalék)
+function translateCommonErrors(message) {
+    const commonErrors = {
+        'Invalid credentials': 'Érvénytelen hitelesítési adatok',
+        'User not found': 'Felhasználó nem található',
+        'Email already exists': 'Ez az email cím már regisztrálva van',
+        'Password must be at least 8 characters': 'A jelszónak legalább 8 karakter hosszúnak kell lennie',
+        'Passwords do not match': 'A jelszavak nem egyeznek',
+        'Invalid email': 'Érvénytelen email cím',
+        'Access denied': 'Hozzáférés megtagadva',
+        'Session expired': 'A munkamenet lejárt',
+        'Network error': 'Hálózati hiba',
+        'Service unavailable': 'A szolgáltatás nem elérhető',
+        'Too many requests': 'Túl sok kérés',
+        'Internal server error': 'Belső szerverhiba'
+    };
+    
+    const lowerMessage = message.toLowerCase();
+    for (const [key, value] of Object.entries(commonErrors)) {
+        if (lowerMessage.includes(key.toLowerCase())) {
+            return value;
+        }
+    }
+    
+    return message; // Vissza az eredetit, ha nincs beépített fordítás
 }
 
 // CSAPAT SZERKESZTŐ NÉZET megjelenítése - JAVÍTOTT (dinamikus címkékkel)
@@ -280,7 +540,7 @@ async function showTeamEditView(teamId) {
         `).join('')
         : '<input type="text" name="cimkek[]" placeholder="Sport">';
     
-    // Szerkesztők HTML generálása - EZ HIÁNYZOTT
+    // Szerkesztők HTML generálása
     const szerkesztoHTML = team.szerkeszto && team.szerkeszto.length > 0 
         ? team.szerkeszto.map(email => `
             <div class="szerkeszto-item">
@@ -291,87 +551,122 @@ async function showTeamEditView(teamId) {
         : `<div class="szerkeszto-item">
             <input type="email" name="szerkeszto[]" value="${currentUser.email}" placeholder="Szerkesztő email" readonly>
         </div>`;
+
+    // Leírás HTML tartalom - üres esetén placeholder
+    let leirasHTML = team.leiras || '';
+    if (!leirasHTML.trim()) {
+        leirasHTML = '<br>'; // Üres div helyett br tag
+    }
   
     jobbOldal.innerHTML = `
-        <h2 style="margin-bottom: 1rem"><p style="font-size: 0.9rem">Csapat szerkesztése:</p> ${team.nev}</h2>
+    <h2 style="margin-bottom: 1rem"><p style="font-size: 0.9rem">Csapat szerkesztése:</p> ${team.nev}</h2>
+    
+    <!-- KÉP MEGJELENÍTÉS ÉS GOMBOK -->
+    <div id="csapat-logo-container">
+        <img class="csapat-logo" src="${team.kep}" alt="${team.nev} logója" 
+             onerror="this.style.display='none'" 
+             style="${team.kep ? '' : 'display: none'}">
+        ${!team.kep ? '<p class="no-image">Nincs feltöltött kép</p>' : ''}
+        <div id="logo-edit-container">
+            <button id="modify-image-btn" class="save-btn">Módosítás</button>
+            <button id="delete-image-btn" class="delete-btn" ${!team.kep ? 'disabled' : ''}>Törlés</button>
+        </div>
         
-        <!-- KÉP MEGJELENÍTÉS ÉS GOMBOK -->
-        <div id="csapat-logo-container">
-            <img class="csapat-logo" src="${team.kep}" alt="${team.nev} logója" 
-                 onerror="this.style.display='none'" 
-                 style="${team.kep ? '' : 'display: none'}">
-            ${!team.kep ? '<p class="no-image">Nincs feltöltött kép</p>' : ''}
-            <div id="logo-edit-container">
-                <button id="modify-image-btn" class="save-btn">Módosítás</button>
-                <button id="delete-image-btn" class="delete-btn" ${!team.kep ? 'disabled' : ''}>Törlés</button>
+        <!-- REJTETT FILE INPUT -->
+        <input type="file" id="hidden-file-input" accept="image/*" style="display: none;">
+    </div>
+
+    <form class="form">
+        <!-- ACCORDION KEZDETE -->
+        <div class="fullwidth" id="accordion">
+            <div id="accordion-item">
+                <button type="button" id="accordion-header">
+                    <span>Adatok</span>
+                    <svg id="accordion-icon" viewBox="0 0 100 86.6025" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="0,86.6025 50,0 100,86.6025" fill="#4a3227"/>
+                    </svg>
+
+                </button>
+                <div id="accordion-content">
+                    <div class="form" id="osszecsuko">
+                        <div class="form-group">
+                            <label>Csapat neve*</label>
+                            <input type="text" name="nev" value="${team.nev || ''}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Email*</label>
+                            <input type="email" name="email" value="${team.email || ''}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Telefon*</label>
+                            <input type="text" name="telefon" value="${team.telefon || ''}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Weboldal</label>
+                            <input type="text" name="weboldal" value="${team.weboldal || ''}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Irányítószám*</label>
+                            <input type="text" name="iranyitoszam" value="${team.iranyitoszam || ''}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Város*</label>
+                            <input type="text" name="varos" value="${team.varos || ''}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Utca*</label>
+                            <input type="text" name="utca" value="${team.utca || ''}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Házszám*</label>
+                            <input type="text" name="hazszam" value="${team.hazszam || ''}" required>
+                        </div>
+                        
+                        <div class="form-group" style="margin: 0;">
+                            <label>Tagdíj</label>
+                            <input type="text" name="tagdij" value="${team.tagdij || ''}">
+                            <span class="currency-text">Ft</span>
+                        </div>
+
+                        <small class="fullwidth" style="margin-bottom: 1rem">* A mező kitöltése kötelező</small>
+                        
+                        <div class="fullwidth">
+                            <label>Sportok:</label>
+                            <div class="fullwidth" id="cimkek-container-edit">
+                                ${cimkekHTML}
+                            </div>
+                        </div>
+                        
+                        <div class="fullwidth">
+                            <label>Leírás:</label>
+                            <div contenteditable="true" id="leiras" class="leiras-editor">${leirasHTML}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <!-- REJTETT FILE INPUT -->
-            <input type="file" id="hidden-file-input" accept="image/*" style="display: none;">
         </div>
 
-        <form class="form">
-            <div class="form-group">
-                <label>Csapat neve:</label>
-                <input type="text" name="nev" value="${team.nev || ''}" required>
+        <div class="fullwidth" id="szerkeszto-section">
+            <label>Szerkesztők:</label>
+            <div class="fullwidth" id="szerkeszto-container-edit">
+                ${szerkesztoHTML}
             </div>
-            
-            <div class="form-group">
-                <label>Email:</label>
-                <input type="email" name="email" value="${team.email || ''}" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Telefon:</label>
-                <input type="text" name="telefon" value="${team.telefon || ''}">
-            </div>
-            
-            <div class="form-group">
-                <label>Weboldal:</label>
-                <input type="text" name="weboldal" value="${team.weboldal || ''}">
-            </div>
-            
-            <div class="form-group">
-                <label>Irányítószám:</label>
-                <input type="text" name="iranyitoszam" value="${team.iranyitoszam || ''}">
-            </div>
-            
-            <div class="form-group">
-                <label>Város:</label>
-                <input type="text" name="varos" value="${team.varos || ''}">
-            </div>
-            
-            <div class="form-group">
-                <label>Utca:</label>
-                <input type="text" name="utca" value="${team.utca || ''}">
-            </div>
-            
-            <div class="form-group">
-                <label>Házszám:</label>
-                <input type="text" name="hazszam" value="${team.hazszam || ''}">
-            </div>
-            
-            <div class="fullwidth">
-                <label>Sportok:</label>
-                <div class="fullwidth" id="cimkek-container-edit">
-                    ${cimkekHTML}
-                </div>
-            </div>
-            
-            <div class="fullwidth" id="szerkeszto-section">
-                <label>Szerkesztők:</label>
-                <div class="fullwidth" id="szerkeszto-container-edit">
-                    ${szerkesztoHTML}
-                </div>
-                <button type="button" id="add-szerkeszto-btn" class="secondary-btn">+ Új szerkesztő hozzáadása</button>
-            </div>
+            <button type="button" id="add-szerkeszto-btn" class="secondary-btn">+ Új szerkesztő hozzáadása</button>
+        </div>
 
-            <div class="button-group">
-                <button type="submit" class="save-btn">Adatok mentése</button>
-                <button type="button" id="delete-team" class="delete-btn">Csapat törlése</button>
-            </div>
-        </form>
-    `;
+        <div class="button-group">
+            <button type="submit" class="save-btn">Adatok mentése</button>
+            <button type="button" id="delete-team" class="delete-btn">Csapat törlése</button>
+        </div>
+    </form>
+`;
     
     // Képkezelés inicializálása
     initializeImageHandlers(teamId);
@@ -382,6 +677,10 @@ async function showTeamEditView(teamId) {
     // Szerkesztők kezelésének inicializálása
     initializeSzerkesztoHandlers();
     
+    disableEnterSubmission();
+
+    initializeAccordions();
+
     // Form eseménykezelők
     document.querySelector('form').addEventListener('submit', (e) => saveTeam(e, teamId));
     document.getElementById('delete-team').addEventListener('click', () => deleteTeam(teamId));
@@ -423,7 +722,69 @@ function initializeSzerkesztoHandlers() {
     });
 }
 
-// MÓDOSÍTOTT CSAPAT MENTÉSE - most már a szerkesztőket is kezeli
+// Accordion kezelő függvény - ID ALAPÚ
+function initializeAccordions() {
+    const accordionItem = document.getElementById('accordion-item');
+    const accordionHeader = document.getElementById('accordion-header');
+    const accordionContent = document.getElementById('accordion-content');
+    const accordionIcon = document.getElementById('accordion-icon');
+    
+    // Ellenőrizzük, hogy minden elem létezik
+    if (!accordionItem || !accordionHeader || !accordionContent || !accordionIcon) {
+        console.log('Nem találhatók az accordion elemek');
+        return;
+    }
+    
+    accordionHeader.addEventListener('click', () => {
+        const isActive = accordionItem.classList.contains('active');
+        
+        if (isActive) {
+            // Bezárás
+            accordionItem.classList.remove('active');
+            accordionHeader.classList.remove('active');
+            accordionContent.style.maxHeight = '0';
+            accordionIcon.style.transform = 'rotate(60deg)';
+        } else {
+            // Megnyitás
+            accordionItem.classList.add('active');
+            accordionHeader.classList.add('active');
+            accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+            accordionIcon.style.transform = 'rotate(0deg)';
+        }
+    });
+    
+    // Automatikus magasság beállítás ablak átméretezéskor
+    window.addEventListener('resize', () => {
+        if (accordionItem.classList.contains('active')) {
+            accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+        }
+    });
+    
+    console.log('Accordion inicializálva ID alapú megoldással');
+}
+
+// CSAK FORM SUBMIT TILTÁS ENTERREL
+function disableEnterSubmission() {
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const activeElement = document.activeElement;
+            
+            // Csak input mezőkben és nem gomboknál
+            if (activeElement.tagName === 'INPUT' && 
+                activeElement.type !== 'submit' && 
+                activeElement.type !== 'button') {
+                
+                const form = activeElement.closest('form');
+                if (form) {
+                    e.preventDefault(); // Csak a form küldést akadályozza meg
+                    // Az ENTER továbbra is bekerülhet a mezőbe
+                }
+            }
+        }
+    });
+}
+
+// MÓDOSÍTOTT CSAPAT MENTÉSE - HTML tartalommal
 async function saveTeam(e, teamId) {
     e.preventDefault();
     
@@ -459,6 +820,10 @@ async function saveTeam(e, teamId) {
     }
     
     const formData = new FormData(form);
+    const leirasDiv = document.getElementById('leiras');
+    
+    // HTML tartalom mentése sortörésekkel együtt
+    const leirasHTML = leirasDiv.innerHTML;
     
     const updatedData = {
         nev: formData.get('nev'),
@@ -469,8 +834,10 @@ async function saveTeam(e, teamId) {
         varos: formData.get('varos'),
         utca: formData.get('utca'),
         hazszam: formData.get('hazszam'),
+        tagdij: formData.get('tagdij'),
         cimkek: cimkek,
-        szerkeszto: szerkesztok  // Szerkesztők hozzáadása
+        leiras: leirasHTML,  // HTML tartalom mentése
+        szerkeszto: szerkesztok
     };
     
     try {
@@ -709,14 +1076,14 @@ function showNewTeamView() {
             <h2>Új csapat hozzáadása</h2>
             <div id="message-container"></div>
             <form class="form" enctype="multipart/form-data">
-                <input type="text" name="nev" placeholder="Név" required>
-                <input type="email" name="email" placeholder="Email" required>
-                <input type="text" name="telefon" id="telefon" pattern="^\\S+$" placeholder="Telefon" maxlength="12" required>
+                <input type="text" name="nev" placeholder="Név*" required>
+                <input type="email" name="email" placeholder="Email*" required>
+                <input type="text" name="telefon" id="telefon" pattern="^\\S+$" placeholder="Telefon*" maxlength="12" required>
                 <input type="text" name="weboldal" placeholder="Weboldal">
-                <input type="text" name="iranyitoszam" placeholder="Irányítószám" minlength="4" maxlength="4" required>
-                <input type="text" name="varos" placeholder="Város" required>
-                <input type="text" name="utca" placeholder="Utca" required>
-                <input type="text" name="hazszam" placeholder="Házszám" required>
+                <input type="text" name="iranyitoszam" placeholder="Irányítószám*" minlength="4" maxlength="4" required>
+                <input type="text" name="varos" placeholder="Város*" required>
+                <input type="text" name="utca" placeholder="Utca*" required>
+                <input type="text" name="hazszam" placeholder="Házszám*" required>
 
                 <!-- Dinamikus címkék -->
                 <div class="fullwidth" id="cimkek-container">
@@ -731,7 +1098,7 @@ function showNewTeamView() {
                     <img id="kepPreview" src="" alt="" style="display:none;">
                 </div>
 
-
+                <small>* A mező kitöltése kötelező</small>
                 <button type="submit" id="submit-btn">Hozzáadás</button>
             </form>
         </div>

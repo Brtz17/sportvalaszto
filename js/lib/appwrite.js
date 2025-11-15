@@ -1,4 +1,4 @@
-import { Client, Account, Databases, Storage, Query } from "appwrite";
+import { Client, Account, Databases, Storage, Query, ID } from 'https://cdn.jsdelivr.net/npm/appwrite@latest/+esm';
 
 const client = new Client()
     .setEndpoint("https://cloud.appwrite.io/v1")
@@ -8,4 +8,5 @@ const account = new Account(client);
 const databases = new Databases(client);
 const storage = new Storage(client);
 
-export { client, account, databases, storage, Query };
+export { client, account, databases, storage, Query, ID };
+

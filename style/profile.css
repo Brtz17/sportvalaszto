@@ -14,7 +14,7 @@ body {
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr 3.5fr;
   gap: 1rem;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 h2 {
@@ -38,7 +38,11 @@ h2 {
   box-shadow: 0 6px 14px rgba(0,0,0,0.4);
   border-radius: 1rem;
   margin: 1rem 0;
-  height: 68px;
+}
+
+.logo-container{
+  text-decoration: none;
+  color: inherit;
 }
 
 /* Logo rész */
@@ -46,7 +50,7 @@ h2 {
   font-family: "Poppins", "Segoe UI", sans-serif;
   font-size: 1.4rem;
   font-weight: 600;
-  margin: 0;
+  color: #2a2a2a;
 }
 
 .menu-container {
@@ -207,6 +211,103 @@ h2 {
   font-weight: 600;
 }
 
+/* Accordion stílusok */
+#accordion {
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    background: #f1e9df;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.0);
+}
+
+#accordion-header {
+    width: 100%;
+    padding: 18px 24px;
+    background: #f1e9df;
+    border: none;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a3227;
+    transition: all 0.3s ease;
+}
+
+#accordion-header:hover {
+  background: #e5b899;
+}
+
+#accordion-header.active{
+  background: #e5b899;
+}
+
+#accordion-header:active {
+    transform: translateY(0px);
+}
+
+#accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+}
+
+#accordion-item.active #accordion-content {
+    max-height: 2000px;
+}
+
+#accordion-icon {
+  --size: 20px; /* ez lesz az oldalhossz */
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: calc(var(--size) / 2) solid transparent;
+  border-right: calc(var(--size) / 2) solid transparent;
+  border-bottom: calc(var(--size) * 0.866) solid #7d6558; /* √3/2 ≈ 0.866 */
+  transition: transform 0.4s ease;
+  font-size: 0.9rem;
+  color: #4a3227;
+  transform: rotate(60deg);
+  top: -50%;
+}
+
+#accordion-item.active #accordion-icon {
+    transform: rotate(0deg);
+    color: #4a3227;
+}
+
+/* Tartalom stílus az accordionon belül */
+#accordion-content #osszecsuko {
+    padding: 24px;
+    background: #fff7ee;
+}
+
+/* Form elemek az accordionon belül */
+#accordion-content .form-group input {
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+#accordion-content .form-group input:focus {
+    outline: none;
+    border-color: #e5b899;
+    box-shadow: 0 0 6px rgba(229, 184, 153, 0.4);
+}
+
+#accordion-content .leiras-editor {
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+#accordion-content .leiras-editor:focus {
+    outline: none;
+    border-color: #e5b899;
+    box-shadow: 0 0 6px rgba(229, 184, 153, 0.4);
+}
+
+
 .form-group {
   margin-bottom: 1rem;
 }
@@ -344,6 +445,217 @@ h2 {
   transform: translateY(0px);
 }
 
+/* JELSZÓ VÁLTOZTATÁS STÍLUSOK */
+.password-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #d4a788;
+    grid-column: 1 / -1;
+}
+
+.password-toggle-btn {
+    background: #e5b899;
+    color: #4a3227;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.password-toggle-btn:hover {
+    background: #d4a788;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.password-form {
+    margin-top: 1rem;
+}
+
+.password-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.password-input-group input {
+    flex: 1;
+    padding: 0.75rem;
+    padding-right: 2.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    background-color: #fffdf9;
+    font-family: inherit;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.password-input-group input:focus {
+    outline: none;
+    border-color: #e5b899;
+    box-shadow: 0 0 6px rgba(229, 184, 153, 0.4);
+}
+
+.password-visibility-toggle {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #7d6558;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-visibility-toggle:hover {
+    color: #4a3227;
+}
+
+.password-strength {
+    height: 6px;
+    border-radius: 3px;
+    margin: 0.5rem 0;
+    transition: all 0.3s ease;
+    background: #ddd;
+}
+
+.password-strength.weak {
+    background: #e74c3c;
+    width: 33%;
+}
+
+.password-strength.medium {
+    background: #f39c12;
+    width: 66%;
+}
+
+.password-strength.strong {
+    background: #27ae60;
+    width: 100%;
+}
+
+.password-requirements {
+    font-size: 0.85rem;
+    color: #7d6558;
+    margin: 0.5rem 0 1rem 0;
+}
+
+.password-requirements ul {
+    margin: 0.5rem 0;
+    padding-left: 1.2rem;
+}
+
+.password-requirements li {
+    margin-bottom: 0.25rem;
+    transition: color 0.3s ease;
+}
+
+.password-requirements li.valid {
+    color: #27ae60;
+    list-style-type: '✓ ';
+}
+
+.password-requirements li.invalid {
+    color: #e74c3c;
+    list-style-type: '✗ ';
+}
+
+.password-match-message {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    min-height: 1.2rem;
+}
+
+.password-match-message.valid {
+    color: #27ae60;
+}
+
+.password-match-message.invalid {
+    color: #e74c3c;
+}
+
+.password-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.password-submit-btn {
+    padding: 1rem;
+    background: #e5b899;
+    color: #4a3227;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.password-submit-btn:hover:not(:disabled) {
+    background: #d4a788;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.password-submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.password-cancel-btn {
+    padding: 1rem;
+    background: #f1e9df;
+    color: #7d6558;
+    border: 1px solid #d4a788;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.password-cancel-btn:hover {
+    background: #e5b899;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.message {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 1rem 0;
+    font-weight: 500;
+    text-align: center;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+
 .profile-save-btn{
   width: 100%;
   padding: 1rem;
@@ -439,6 +751,38 @@ input[name="cimkek[]"]{
   margin-bottom: 1rem;
 }
 
+
+input[name="tagdij"]{
+  padding-right: 40px;
+}
+
+#leiras{
+  min-height: 6rem;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  background-color: #fffdf9;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #000000;
+}
+
+#leiras:focus {
+  outline: none;
+  border-color: #e5b899;
+  box-shadow: 0 0 6px rgba(229, 184, 153, 0.4);
+}
+
+.currency-text{
+  line-height: 20px;
+  position: relative;
+  left: calc(100% - 30px);
+  top: -31px;
+  color: #000000;
+  pointer-events: none;
+}
+
 /* Overlay stílusok */
 .menu-overlay {
   position: fixed;
@@ -523,6 +867,35 @@ input[name="cimkek[]"]{
   .content {
     padding: 15px;
   }
+
+  .password-form {
+      padding: 1rem;
+      margin: 0.5rem 0;
+  }
+  
+  .password-buttons {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+  }
+  
+  .password-toggle-btn {
+      padding: 10px 16px;
+      font-size: 0.95rem;
+  }
+
+    #accordion {
+      border-radius: 12px;
+      margin-bottom: 1rem;
+  }
+  
+  #accordion-header {
+      padding: 16px 20px;
+      font-size: 1rem;
+  }
+  
+  #accordion-content #osszecsuko {
+      padding: 20px;
+  }
 }
 
 /* ===== KIS MOBIL STÍLUSOK (max-width: 400px) ===== */
@@ -567,9 +940,32 @@ input[name="cimkek[]"]{
   input[name="cimkek[]"]{
   margin-bottom: 6px;
   }
+
+  .password-form {
+      padding: 0.75rem;
+  }
+  
+  .password-input-group input {
+      padding: 0.6rem;
+      padding-right: 2.2rem;
+  }
+  
+  .password-toggle-btn {
+      padding: 8px 12px;
+      font-size: 0.9rem;
+  }
+
+  #accordion-header {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+  }
+  
+  #accordion-content #osszecsuko {
+      padding: 16px;
+  }
 }
 
-/* ===== DESKTOP STÍLUSOK (min-width: 601px) ===== */
+
 /* ===== DESKTOP STÍLUSOK (min-width: 601px) ===== */
 @media (min-width: 601px) {
   #bal-oldal {

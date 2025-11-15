@@ -2,12 +2,38 @@ import { databases } from './lib/appwrite.js';
 
 const userCardTemplate = document.querySelector("[data-user-template]");
 const userCardContainer = document.querySelector("[data-user-cards-container]");
-const searchInput = document.querySelector("[data-search]");
-
 let users = [];
 
-// 🔍 Keresés funkció optimalizálva
-searchInput.addEventListener("input", e => {
+function handleLayout() {
+  const searchWrapper1 = document.getElementById('search-wrapper1');
+  const searchWrapper2 = document.getElementById('search-wrapper2');
+  let searchInput;
+  
+  if (searchWrapper1 && searchWrapper2) {
+    const style1 = window.getComputedStyle(searchWrapper1);
+    const style2 = window.getComputedStyle(searchWrapper2);
+    
+    console.log('Display values:', style1.display, style2.display);
+    
+    if (style1.display !== 'none') {
+      searchInput = searchWrapper1.querySelector('input[type="search"]');
+      console.log('Using wrapper1');
+    } else if (style2.display !== 'none') {
+      searchInput = searchWrapper2.querySelector('input[type="search"]');
+      console.log('Using wrapper2');
+    }
+  }
+  
+  if (searchInput) {
+    console.log('Search input found:', searchInput);
+    searchInput.removeEventListener("input", handleSearch);
+    searchInput.addEventListener("input", handleSearch);
+  } else {
+    console.log('No search input found!');
+  }
+}
+
+function handleSearch(e) {
   const value = e.target.value.toLowerCase().trim();
   
   users.forEach(user => {
@@ -22,9 +48,24 @@ searchInput.addEventListener("input", e => {
     const isVisible = matchesNameOrEmail || matchesTags;
     user.element.classList.toggle("hide", !isVisible);
   });
-});
+}
 
-// 🔽 Appwrite adatbázisból betöltés
+// Debounce function
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+const debouncedHandleLayout = debounce(handleLayout, 100);
+
+// Appwrite adatbetöltés (a te kódod marad)
 async function loadUsers() {
   try {
     console.log("⏳ Adatok betöltése...");
@@ -102,5 +143,9 @@ async function loadUsers() {
 }
 }
 
-// Betöltés indítása
-loadUsers();
+// Inicializálás
+document.addEventListener('DOMContentLoaded', function() {
+  handleLayout();
+  loadUsers();
+});
+window.addEventListener('resize', debouncedHandleLayout);
