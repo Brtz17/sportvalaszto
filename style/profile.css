@@ -162,6 +162,10 @@ h2 {
   font-size: 1rem;
 }
 
+#profile-form{
+  margin-bottom: 2rem;
+}
+
 #jobb-oldal {
   background: #f1e9df;
   padding: 20px;
@@ -216,14 +220,14 @@ h2 {
     border-radius: 16px;
     margin-bottom: 1.5rem;
     overflow: hidden;
-    background: #f1e9df;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.0);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    background: none;
 }
 
 #accordion-header {
     width: 100%;
     padding: 18px 24px;
-    background: #f1e9df;
+    background: #e5b899;
     border: none;
     text-align: left;
     display: flex;
@@ -237,7 +241,7 @@ h2 {
 }
 
 #accordion-header:hover {
-  background: #e5b899;
+  background: #d4a788;
 }
 
 #accordion-header.active{
@@ -249,6 +253,7 @@ h2 {
 }
 
 #accordion-content {
+  background: none;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s ease-out;
@@ -269,25 +274,21 @@ h2 {
   transition: transform 0.4s ease;
   font-size: 0.9rem;
   color: #4a3227;
-  transform: rotate(60deg);
-  top: -50%;
-}
-
-#accordion-item.active #accordion-icon {
-    transform: rotate(0deg);
-    color: #4a3227;
+  transform: translateY(calc((20px/6)*1.7320508076 / -2)) rotate(60deg);
 }
 
 /* Tartalom stílus az accordionon belül */
-#accordion-content #osszecsuko {
-    padding: 24px;
-    background: #fff7ee;
+#accordion-content #osszecsuko, #password-form {
+  padding: 24px;
+  gap: 0;
+  background: #f1e9df;
 }
 
 /* Form elemek az accordionon belül */
 #accordion-content .form-group input {
     border: 1px solid #ddd;
     background-color: #fff;
+    margin-left: 4px;
 }
 
 #accordion-content .form-group input:focus {
@@ -321,7 +322,6 @@ h2 {
 
 .form-group div {
     display: block;
-    margin-left: 4px;
     font-weight: 500;
     color: #4a3227;
 }
@@ -447,60 +447,13 @@ h2 {
 
 /* JELSZÓ VÁLTOZTATÁS STÍLUSOK */
 .password-section {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 2px solid #d4a788;
     grid-column: 1 / -1;
 }
 
-.password-toggle-btn {
-    background: #e5b899;
-    color: #4a3227;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    width: 100%;
-    margin-bottom: 1rem;
+#password-form {
+    grid-column: 1 / -1;
 }
 
-.password-toggle-btn:hover {
-    background: #d4a788;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
-}
-
-.password-form {
-    margin-top: 1rem;
-}
-
-.password-input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.password-input-group input {
-    flex: 1;
-    padding: 0.75rem;
-    padding-right: 2.5rem;
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
-    background-color: #fffdf9;
-    font-family: inherit;
-    font-size: 1rem;
-    width: 100%;
-}
-
-.password-input-group input:focus {
-    outline: none;
-    border-color: #e5b899;
-    box-shadow: 0 0 6px rgba(229, 184, 153, 0.4);
-}
 
 .password-visibility-toggle {
     position: absolute;
@@ -655,6 +608,79 @@ h2 {
     border: 1px solid #f5c6cb;
 }
 
+/* Jelszó toggle gomb - konzisztens minden böngészőben */
+.password-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-group input {
+    flex: 1;
+    padding: .75rem 3rem .75rem .75rem;
+    padding-right: 3rem; /* Hely a gombnak */
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    background-color: #fffdf9;
+    font-family: inherit;
+    font-size: 1rem;
+    width: 100%;
+    
+    /* IDE KELL AZ -webkit-appearance! */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.password-input-group input:focus {
+    outline: none;
+    border-color: #e5b899;
+    box-shadow: 0 0 6px rgba(229, 184, 153, 0.4);
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #7d6558;
+    cursor: pointer;
+    font-size: calc(1rem + 2*.75rem - 8px + 2px);
+    padding: 4px;
+    border-radius: 4px;
+    width: 40px;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    transform: translateY(-100%);
+}
+
+
+/* Böngésző-specifikus ikonok letiltása */
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+input[type="password"]::-webkit-caps-lock-indicator {
+    display: none !important;
+}
+
+/* Firefox */
+input[type="password"]::-moz-focus-inner {
+    border: 0;
+}
+
+/* Edge */
+input[type="password"]::-ms-reveal {
+    display: none;
+}
+
+input[type="password"]::-ms-clear {
+    display: none;
+}
 
 .profile-save-btn{
   width: 100%;
@@ -682,13 +708,15 @@ h2 {
 /* Új csapat form stílusok */
 .form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 1rem;
   width: 100%;
 }
 
+#form{
+  grid-template-columns: 1fr 1fr;
+}
+
 .form input {
-  padding: .75rem;
   border: 1px solid #ddd;
   border-radius: .5rem;
   background-color: #fffdf9;
@@ -697,6 +725,10 @@ h2 {
   transition: border-color 0.2s, box-shadow 0.2s;
   width: 100%;
   box-sizing: border-box;
+}
+
+#form input{
+  padding: .75rem;
 }
 
 .form input:focus {
@@ -868,7 +900,7 @@ input[name="tagdij"]{
     padding: 15px;
   }
 
-  .password-form {
+  #password-form {
       padding: 1rem;
       margin: 0.5rem 0;
   }
@@ -879,8 +911,7 @@ input[name="tagdij"]{
   }
   
   .password-toggle-btn {
-      padding: 10px 16px;
-      font-size: 0.95rem;
+    font-size: calc(1rem + 2*.75rem - 8px + 2px);
   }
 
     #accordion {
@@ -941,18 +972,8 @@ input[name="tagdij"]{
   margin-bottom: 6px;
   }
 
-  .password-form {
+  #password-form {
       padding: 0.75rem;
-  }
-  
-  .password-input-group input {
-      padding: 0.6rem;
-      padding-right: 2.2rem;
-  }
-  
-  .password-toggle-btn {
-      padding: 8px 12px;
-      font-size: 0.9rem;
   }
 
   #accordion-header {

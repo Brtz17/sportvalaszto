@@ -244,7 +244,7 @@ function closeMenu() {
 }
 
 // PROFIL NÉZET megjelenítése
-// PROFIL NÉZET megjelenítése
+// PROFIL NÉZET - JAVÍTOTT JELSZÓ RÉSZ
 function showProfileView() {
     const jobbOldal = document.getElementById('jobb-oldal');
     
@@ -262,52 +262,78 @@ function showProfileView() {
             <button type="submit" class="profile-save-btn">Profil mentése</button>
         </form>
 
-        <!-- JELSZÓ VÁLTOZTATÁS SZAKASZ -->
-        <div class="password-section">
-            <h3>Jelszó megváltoztatása</h3>
-            
-            <form id="password-form" class="password-form">
-                <div class="form-group">
-                    <label>Jelenlegi jelszó:</label>
-                    <div class="password-input-group">
-                        <input type="password" id="current-password" placeholder="Jelenlegi jelszó" required>
-                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('current-password')">
-                            👁️
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Új jelszó:</label>
-                    <div class="password-input-group">
-                        <input type="password" id="new-password" placeholder="Új jelszó" required>
-                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('new-password')">
-                            👁️
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Új jelszó megerősítése:</label>
-                    <div class="password-input-group">
-                        <input type="password" id="confirm-password" placeholder="Új jelszó megerősítése" required>
-                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirm-password')">
-                            👁️
-                        </button>
-                    </div>
-                    <div id="password-match" style="font-size: 0.8rem; margin-top: 0.25rem;"></div>
-                </div>
-                
-                <button type="submit" id="password-submit-btn" class="profile-save-btn" disabled>
-                    Jelszó megváltoztatása
+        <!-- JELSZÓ VÁLTOZTATÁS SZAKASZ - JAVÍTOTT -->
+        <div class="fullwidth" id="accordion">
+            <div id="accordion-item">
+                <button type="button" id="accordion-header">
+                    <span>Jelszó megváltoztatása</span>
+                    <svg id="accordion-icon" viewBox="0 0 100 86.6025" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="0,86.6025 50,0 100,86.6025" fill="#4a3227"/>
+                    </svg>
                 </button>
-                <div id="password-message-container" style="margin-top: 1rem;"></div>
-            </form>
+
+                <div id="accordion-content">
+
+                        <form id="password-form" class="form">
+                            <div class="form-group">
+                                <label>Jelenlegi jelszó*</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="current-password" placeholder="Jelenlegi jelszó" required>
+                                    <button type="button" class="password-toggle-btn" data-target="current-password">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Mutasd a jelszót">
+                                            <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+                                                d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+                                            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Új jelszó*</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="new-password" placeholder="Új jelszó" required>
+                                    <button type="button" class="password-toggle-btn" data-target="new-password">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Mutasd a jelszót">
+                                            <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+                                                d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+                                            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Új jelszó megerősítése*</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="confirm-password" placeholder="Új jelszó megerősítése" required>
+                                    <button type="button" class="password-toggle-btn" data-target="confirm-password">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Mutasd a jelszót">
+                                            <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+                                                d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+                                            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div id="password-match" style="font-size: 0.8rem; margin-top: 0.25rem;"></div>
+                            </div>
+
+                            <small class="fullwidth" style="margin-bottom: 1rem">* A mező kitöltése kötelező</small>
+                            
+                            <button type="submit" id="password-submit-btn" class="profile-save-btn" disabled>
+                                Jelszó megváltoztatása
+                            </button>
+                            <div id="password-message-container" style="margin-top: 1rem;"></div>
+                        </form>
+
+                </div>
+            </div>
         </div>
     `;
     
     setupPasswordChangeHandlers();
     disableEnterSubmission();
+    initializeAccordions();
 }
 
 // Üzenet megjelenítése - mint a signup.js-ben
@@ -339,6 +365,37 @@ function setupPasswordChangeHandlers() {
     const newPasswordInput = document.getElementById('new-password');
     const confirmPasswordInput = document.getElementById('confirm-password');
     
+    // SAJÁT TOGGLE GOMBOK KEZELÉSE
+        document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (input) {
+                    const type = input.type === 'password' ? 'text' : 'password';
+                    input.type = type;
+                    
+                    // SVG ikonok innerHTML-lel
+                    if (type === 'password') {
+                        this.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Mutasd a jelszót">
+                                <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+                                    d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+                                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                            </svg>
+                            `;
+                    } else {
+                        this.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Rejtsd a jelszót">
+                                <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+                                    d="M1.5 12s4.5-7.5 10.5-7.5 10.5 7.5 10.5 7.5-1.8 3-5.7 4.8M3 3l18 18"/>
+                                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                            </svg>                        
+                        `;
+                    }
+                }
+            });
+        });
+    
     // Jelszó egyezés ellenőrzése
     if (newPasswordInput && confirmPasswordInput) {
         newPasswordInput.addEventListener('input', checkPasswordMatch);
@@ -348,15 +405,6 @@ function setupPasswordChangeHandlers() {
     // Form elküldése
     if (passwordForm) {
         passwordForm.addEventListener('submit', changePassword);
-    }
-}
-
-// Jelszó láthatóság váltása
-function togglePasswordVisibility(inputId) {
-    const input = document.getElementById(inputId);
-    if (input) {
-        const type = input.type === 'password' ? 'text' : 'password';
-        input.type = type;
     }
 }
 
@@ -576,7 +624,7 @@ async function showTeamEditView(teamId) {
         <input type="file" id="hidden-file-input" accept="image/*" style="display: none;">
     </div>
 
-    <form class="form">
+    <form class="form" id="form">
         <!-- ACCORDION KEZDETE -->
         <div class="fullwidth" id="accordion">
             <div id="accordion-item">
@@ -634,8 +682,6 @@ async function showTeamEditView(teamId) {
                             <input type="text" name="tagdij" value="${team.tagdij || ''}">
                             <span class="currency-text">Ft</span>
                         </div>
-
-                        <small class="fullwidth" style="margin-bottom: 1rem">* A mező kitöltése kötelező</small>
                         
                         <div class="fullwidth">
                             <label>Sportok:</label>
@@ -648,6 +694,8 @@ async function showTeamEditView(teamId) {
                             <label>Leírás:</label>
                             <div contenteditable="true" id="leiras" class="leiras-editor">${leirasHTML}</div>
                         </div>
+
+                        <small class="fullwidth" style="margin-top: 1rem">* A mező kitöltése kötelező</small>
                     </div>
                 </div>
             </div>
@@ -743,7 +791,7 @@ function initializeAccordions() {
             accordionItem.classList.remove('active');
             accordionHeader.classList.remove('active');
             accordionContent.style.maxHeight = '0';
-            accordionIcon.style.transform = 'rotate(60deg)';
+            accordionIcon.style.transform = 'translateY(calc((20px/6)*1.7320508076 / -2)) rotate(60deg)';
         } else {
             // Megnyitás
             accordionItem.classList.add('active');
@@ -1075,7 +1123,7 @@ function showNewTeamView() {
         <div id="form-wrapper">
             <h2>Új csapat hozzáadása</h2>
             <div id="message-container"></div>
-            <form class="form" enctype="multipart/form-data">
+            <form class="form" id="form" enctype="multipart/form-data">
                 <input type="text" name="nev" placeholder="Név*" required>
                 <input type="email" name="email" placeholder="Email*" required>
                 <input type="text" name="telefon" id="telefon" pattern="^\\S+$" placeholder="Telefon*" maxlength="12" required>
