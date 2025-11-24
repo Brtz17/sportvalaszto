@@ -1,0 +1,222 @@
+/* -- ALAP STÍLUSOK -- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;       /* fontos, hogy a body 100%-os legyen */
+  margin: 0;
+}
+
+body {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  background: url('../hatter.png') repeat left top;
+  background-size: 850px auto;
+  color: #3a2e2e;
+  margin: 0;
+  min-height: 100%;
+  padding: .5rem 2rem .5rem 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Header konténer */
+.header1 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f1e9df;
+  padding: 12px 24px;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  border-radius: 1rem;
+  margin: 1rem;
+}
+
+.logo-container{
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Logo rész */
+.logo-container .site-name {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2a2a2a;
+}
+
+/* Login gomb */
+.login-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #e5b899;
+  color: #4a3227;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.login-btn:hover {
+  background: #d4a788;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.login-btn:active {
+  transform: translateY(0px);
+}
+
+/* SVG ikon */
+.login-icon {
+  width: 20px;
+  height: 20px;
+}
+
+#content{
+    flex: 1;
+    color: #4a3227;
+    background: #f1e9df;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    margin: 1rem;
+}
+
+#fejlec{
+    margin: 0 0 2rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.csapat-logo{
+  height: auto;
+  width: 140px;
+  margin: 0 auto;
+}
+
+.info-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 1rem;
+  padding: 24px;
+  background: #f1e9df;
+}
+
+.info-section {
+    background: #f8f4f0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e5b899;
+}
+
+.info-section h3 {
+    margin: 0 0 1rem 0;
+    color: #4a3227;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #e5b899;
+    padding-bottom: 0.5rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+label {
+    font-weight: 600;
+    color: #7d6558;
+    font-size: 0.9rem;
+}
+
+.info-item span {
+    color: #4a3227;
+    font-size: 1rem;
+    margin-left: 4px;
+}
+
+.info-item a{
+    color: #2e1d16;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 1rem;
+}
+
+.cimkek-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    grid-column: -1 / 1;
+}
+
+.cimkek-container label{
+    flex-basis: 100%;
+}
+
+.cimke-display{
+    background: #e5b899;
+    color: #4a3227;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.leiras-content {
+    display: flex;
+    flex-wrap: wrap;
+    line-height: 1.6;
+    color: #4a3227;
+    grid-column: -1 / 1;
+}
+
+.leiras-content label{
+    flex-basis: 100%;
+}
+
+.no-data {
+    color: #7d6558;
+    font-style: italic;
+}
+
+.error {
+    color: #dc3545;
+    text-align: center;
+    padding: 2rem;
+}
+
+.button-group {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+#leiras{
+    line-height: 1.6;
+    color: #4a3227;
+    font-size: 1rem;
+    min-height: 60px;
+    padding: .5rem 1rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    width: 100%;
+}

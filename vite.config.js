@@ -10,7 +10,8 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         login: resolve(__dirname, 'login.html'),
         profile: resolve(__dirname, 'profile.html'),
-        signup: resolve(__dirname, 'signup.html')
+        signup: resolve(__dirname, 'signup.html'),
+        csapat: resolve(__dirname, 'csapat.html')
       },
       external: ['appwrite'] // Ez megakadályozza, hogy bundle-olja
     }

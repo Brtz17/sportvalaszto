@@ -115,6 +115,7 @@ async function loadUsers() {
       card.addEventListener("click", () => {
         console.log("Kiválasztva:", doc.nev);
         // Ide jöhet részletes nézet vagy más művelet
+        window.location = `/csapat?${doc.$id}`;
       });
 
       userCardContainer.append(card);

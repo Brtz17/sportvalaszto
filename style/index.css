@@ -1,11 +1,20 @@
 /* -- ALAP STÍLUSOK -- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;       /* fontos, hogy a body 100%-os legyen */
+  margin: 0;
+}
+
 body {
   font-family: "Poppins", "Segoe UI", sans-serif;
   background: url('../hatter.png') repeat left top;
   background-size: 850px auto;
   color: #3a2e2e;
   margin: 0;
-  padding: 0.5rem 2rem 2rem 2rem;
+  padding: 0.5rem 2rem .5rem 2rem;
   min-height: 100%;
 }
 
@@ -174,7 +183,7 @@ input[type="search"]:not(:focus):hover {
   background-color: #f1e9df;
   border-radius: 1rem;
   padding: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
