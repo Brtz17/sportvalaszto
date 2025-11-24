@@ -267,9 +267,11 @@ function showProfileView() {
             <div id="accordion-item">
                 <button type="button" id="accordion-header">
                     <span>Jelszó megváltoztatása</span>
-                    <svg id="accordion-icon" viewBox="0 0 100 86.6025" xmlns="http://www.w3.org/2000/svg">
-                        <polygon points="0,86.6025 50,0 100,86.6025" fill="#4a3227"/>
+                    <svg id="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <polyline points="5 12 12 19 19 12" />
                     </svg>
+
                 </button>
 
                 <div id="accordion-content">
@@ -630,8 +632,9 @@ async function showTeamEditView(teamId) {
             <div id="accordion-item">
                 <button type="button" id="accordion-header">
                     <span>Adatok</span>
-                    <svg id="accordion-icon" viewBox="0 0 100 86.6025" xmlns="http://www.w3.org/2000/svg">
-                        <polygon points="0,86.6025 50,0 100,86.6025" fill="#4a3227"/>
+                    <svg id="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <polyline points="5 12 12 19 19 12" />
                     </svg>
 
                 </button>
@@ -776,6 +779,7 @@ function initializeAccordions() {
     const accordionHeader = document.getElementById('accordion-header');
     const accordionContent = document.getElementById('accordion-content');
     const accordionIcon = document.getElementById('accordion-icon');
+    let rotation = 0;
     
     // Ellenőrizzük, hogy minden elem létezik
     if (!accordionItem || !accordionHeader || !accordionContent || !accordionIcon) {
@@ -791,13 +795,15 @@ function initializeAccordions() {
             accordionItem.classList.remove('active');
             accordionHeader.classList.remove('active');
             accordionContent.style.maxHeight = '0';
-            accordionIcon.style.transform = 'translateY(calc((20px/6)*1.7320508076 / -2)) rotate(60deg)';
+            rotation += 180;
+            accordionIcon.style.transform = `rotate(${rotation}deg)`;
         } else {
             // Megnyitás
             accordionItem.classList.add('active');
             accordionHeader.classList.add('active');
             accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
-            accordionIcon.style.transform = 'rotate(0deg)';
+            rotation += 180;
+            accordionIcon.style.transform = `rotate(${rotation}deg)`;
         }
     });
     
