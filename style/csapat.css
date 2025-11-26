@@ -32,7 +32,7 @@ body {
   border-bottom: 1px solid #ddd;
   box-shadow: 0 6px 14px rgba(0,0,0,0.4);
   border-radius: 1rem;
-  margin: 1rem;
+  margin: 1rem 0;
 }
 
 .logo-container{
@@ -87,7 +87,7 @@ body {
     padding: 20px;
     border-radius: 16px;
     box-shadow: 0 6px 14px rgba(0,0,0,0.4);
-    margin: 1rem;
+
 }
 
 #fejlec{
@@ -108,7 +108,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   row-gap: 1rem;
-  padding: 24px;
+  padding: 1.5rem;
   background: #f1e9df;
 }
 
@@ -156,6 +156,10 @@ label {
     font-weight: 600;
     font-style: italic;
     font-size: 1rem;
+}
+
+.info-item label, .info-item span{
+  text-align: center;
 }
 
 .cimkek-container{
@@ -219,4 +223,95 @@ label {
     white-space: pre-wrap;
     word-wrap: break-word;
     width: 100%;
+}
+
+@media (max-width: 600px) {
+  body{
+    padding: 0.5rem 1rem 1rem 1rem;
+  }
+
+  .header1 {
+    padding: 8px 12px;
+    margin: 0.5rem 0;
+    border-radius: 0.5rem;
+  }
+  .logo-container .site-name {
+    font-size: 1rem;
+  }
+  #loginButton {
+    padding: 8px 14px;
+    font-size: 0.95rem;
+  }
+  #login-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  #content {
+    padding: 15px;
+  }
+  #fejlec{
+    margin: 0 0 1rem 0;
+  }
+  h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+  .csapat-logo{
+    width: 120px;
+  }
+  .info-container{
+    padding: 1rem;
+  }
+  .info-item label, .cimke-display{
+  font-size: .8rem;
+  }
+  .info-item span, .info-container a{
+    font-size: .9rem;
+  }
+}
+
+@media (max-width: 400px) {
+  body{
+    padding: 0.25rem 0.5rem 0.5rem 0.5rem;
+  }
+
+  .header1 {
+    padding: 8px 12px;
+  }
+  .logo-container .site-name {
+    font-size: 1rem;
+  }
+  #loginButton {
+    font-size: .95rem;
+    padding: 8px 14px;
+    min-height: 40px;
+  }
+  #login-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  #content {
+    padding: 10px;
+  }
+  #fejlec{
+    margin: 0 0 1rem 0;
+  }
+  h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+  .csapat-logo{
+    width: 120px;
+  }
+  .info-container{
+    padding: 1rem;
+  }
+  .info-item{
+    grid-column: -1 / 1;
+  }
+  .info-item label, .info-item span, .info-container a{
+    text-align: left;
+  }
 }
