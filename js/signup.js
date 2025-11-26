@@ -117,8 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const formData = new FormData(form);
     const name = formData.get('name');
     const email = formData.get('email');
-    const password = formData.get('password');
-    const confirmPassword = formData.get('confirmPassword');
+    const password = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('new-password-again').value;
 
     // Loading state
     const submitBtn = form.querySelector('button[type="submit"]');
