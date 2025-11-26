@@ -190,4 +190,48 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   });
+  setupPasswordChangeHandlers();
 });
+
+
+function setupPasswordChangeHandlers() {
+  const passwordInput = document.getElementById('new-password');
+  const passwordInputAgain = document.getElementById('new-password-again')
+  
+  // Ellenőrizzük, hogy az elemek léteznek-e (csak a profile.html-en)
+  if (!passwordInput || !passwordInputAgain) {
+      console.log('Jelszó mezők nem találhatóak');
+      return;
+  }
+  
+  // SAJÁT TOGGLE GOMBOK KEZELÉSE
+  document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+          const targetId = this.getAttribute('data-target');
+          const input = document.getElementById(targetId);
+          if (input) {
+              const type = input.type === 'password' ? 'text' : 'password';
+              input.type = type;
+              
+              // SVG ikonok innerHTML-lel
+              if (type === 'password') {
+                  this.innerHTML = `
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Mutasd a jelszót">
+                          <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+                              d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+                          <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                      </svg>
+                      `;
+              } else {
+                  this.innerHTML = `
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Rejtsd a jelszót">
+                          <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+                              d="M1.5 12s4.5-7.5 10.5-7.5 10.5 7.5 10.5 7.5-1.8 3-5.7 4.8M3 3l18 18"/>
+                          <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                      </svg>                        
+                  `;
+              }
+          }
+      });
+  });
+}

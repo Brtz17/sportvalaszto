@@ -9,7 +9,7 @@ body {
   color: #3a2e2e;
   margin: 0;
   padding: 2rem;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,6 +39,7 @@ form {
 }
 
 input {
+  width: 100%;
   padding: .75rem;
   border: 1px solid #f1e9df;
   border-radius: .5rem;
@@ -71,6 +72,42 @@ button:hover {
   background: #d4a788;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.password-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-group input:focus {
+    outline: none;
+    border-color: #e5b899;
+    box-shadow: 0 0 6px rgba(229, 184, 153, 0.4);
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #7d6558;
+    cursor: pointer;
+    height: 44px;
+    padding: 4px;
+    border-radius: 4px;
+    width: 40px;
+    margin: 0;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.password-toggle-btn:hover{
+  background: none;
+  transform: none;
+  box-shadow: none;
 }
 
 #google {

@@ -1,4 +1,4 @@
-import { databases} from "./lib/appwrite.js";
+import { databases } from "./lib/appwrite.js";
 
 async function getIdFromUrl() {
     try {
@@ -31,6 +31,8 @@ async function showTeamView(teamId) {
             return;
         }
         
+        document.title = `${team.nev} - SportVálasztó`;
+
         const content = document.getElementById('content');
         
         const cimkekHTML = team.cimkek && team.cimkek.length > 0 
@@ -39,17 +41,8 @@ async function showTeamView(teamId) {
             `).join('')
             : '<div class="no-data">Nincsenek sportok megadva</div>';
         
-        const szerkesztoHTML = team.szerkeszto && team.szerkeszto.length > 0 
-            ? team.szerkeszto.map(email => `
-                <div class="szerkeszto-display">${email}</div>
-            `).join('')
-            : '<div class="no-data">Nincsenek szerkesztők</div>';
-
         // Leírás HTML tartalom - üres esetén placeholder
         let leirasHTML = team.leiras || '';
-        if (!leirasHTML.trim()) {
-            leirasHTML = '<br>'; // Üres div helyett br tag
-        }
   
         content.innerHTML = `
     <div id="fejlec">
@@ -64,25 +57,25 @@ async function showTeamView(teamId) {
     </div>
 
     <div class="info-container">
-            <div class="info-item">
+            <div class="info-item" id="info-email">
                 <label>Email</label>
                 <span>${team.email || '-'}</span>
             </div>
-            <div class="info-item">
+            <div class="info-item" id="info-telefon">
                 <label>Telefon</label>
                 <span>${team.telefon || '-'}</span>
             </div>
-            <div class="info-item">
+            <div class="info-item" id="info-web">
                 <label>Weboldal</label>
                 <span>${team.weboldal ? `<a href="${team.weboldal}" target="_blank">${team.weboldal}</a>` : '-'}</span>
             </div>
 
-            <div class="info-item">
+            <div class="info-item" id="info-cim">
                 <label>Cím</label>
-                <span>${team.iranyitoszam} ${team.varos} ${team.utca} ${team.hazszam}</span>
+                <span>${team.iranyitoszam} ${team.varos}, ${team.utca} ${team.hazszam}</span>
             </div>
 
-            <div class="info-item">
+            <div class="info-item" id="info-tagdij">
                 <label>Tagdíj</label>
                 <span class="tagdij">${team.tagdij ? team.tagdij + ' Ft' : '-'}</span>
             </div>
@@ -92,17 +85,52 @@ async function showTeamView(teamId) {
                 ${cimkekHTML}
             </div>
 
-            <div class="leiras-content">
+            <div class="leiras-content" id="info-leiras">
                 <label>Leírás</label>
                 <div id="leiras">${leirasHTML}</div>
             </div>
     </div>
 `;
+    
+    // VÁRJUNK EGY KICSIT, HOGY A HTML BETELEPÜLJÖN
+    setTimeout(() => {
+        hideEmptyFields(team);
+    }, 10);
 
     } catch (error) {
         console.error('Hiba a csapat betöltésekor:', error);
         content.innerHTML = '<p class="error">Hiba történt a csapat betöltésekor</p>';
     }
+}
+
+function hideEmptyFields(team) {
+    const fields = [
+        { key: 'weboldal', id: 'info-web' },
+        { key: 'telefon', id: 'info-telefon' },
+        { key: 'tagdij', id: 'info-tagdij' },
+        { key: 'leiras', id: 'info-leiras' }
+    ];
+    
+    console.log('Team data for hiding:', team); // DEBUG
+    
+    fields.forEach(field => {
+        const value = team[field.key];
+        const isEmpty = !value || 
+                       (typeof value === 'string' && value.trim() === "") || 
+                       value === "0" || 
+                       value === 0 ;
+        
+        console.log(`Field: ${field.key}, Value: "${value}", isEmpty: ${isEmpty}`); // DEBUG
+        
+        if (isEmpty) {
+            const element = document.getElementById(field.id);
+            console.log(`Element found for ${field.id}:`, element); // DEBUG
+            if (element) {
+                element.style.display = 'none';
+                console.log(`Hiding element: ${field.id}`); // DEBUG
+            }
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', getIdFromUrl);
