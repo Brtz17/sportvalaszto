@@ -1,5 +1,122 @@
 import { databases, account, Query, storage } from "./lib/appwrite.js";
 
+// TÖLTŐANIMÁCIÓ
+const GROUND_Y = 75;
+const INITIAL_Y = 25;
+const GRAVITY = .5;
+const FALL_DISTANCE = GROUND_Y - INITIAL_Y;
+const MAX_VELOCITY = Math.sqrt(2 * GRAVITY * FALL_DISTANCE);
+const ELASTICITY = 0.7;
+
+// Deformációs paraméterek
+const MAX_SQUASH = 0.6; // Maximális összenyomódás (60% magasság)
+const SQUASH_DURATION = 0.05; // Másodperc
+
+const ball = document.getElementById('labda');
+const football = document.getElementById('Football');
+const baseball = document.getElementById('Baseball');
+const volleyball = document.getElementById('Volleyball');
+const basketball = document.getElementById('Basketball');
+
+baseball.style.display = 'none';
+volleyball.style.display = 'none';
+basketball.style.display = 'none';
+football.style.display = 'block';
+
+let position = INITIAL_Y;
+let velocity = 0;
+let isAnimating = false;
+let animationId;
+let isSquashing = false;
+let squashStartTime = 0;
+let ballChanged = false;
+
+
+function startAnimation() {
+    if (isAnimating) return;
+    
+    isAnimating = true;
+    position = INITIAL_Y;
+    velocity = 0;
+    
+    function animate(timestamp) {
+        // Gravitáció
+        velocity += GRAVITY;
+        position += velocity;
+        
+        // Ütközés detektálása
+        if (position >= GROUND_Y) {
+            position = GROUND_Y;
+            
+            // Ütközéskor indítsd az összenyomódást
+            if (!isSquashing) {
+                isSquashing = true;
+                squashStartTime = timestamp;
+            }
+            
+            velocity = -velocity;
+            position += velocity;
+        }
+        
+        // Labda pozíció
+        ball.style.transform = `translateY(${position - 100}%)`;
+
+        // Deformáció kezelése
+        if (isSquashing) {
+            const elapsed = (timestamp - squashStartTime) / 1000; // másodpercben
+            
+            if (elapsed < SQUASH_DURATION) {
+                // Összenyomódás fázis
+                const progress = elapsed / SQUASH_DURATION;
+                const squash = 1 - (progress * (1 - MAX_SQUASH));
+                ball.style.transform = `translateY(${position - 100}%) scaleY(${squash})`;
+            } else if (elapsed >= SQUASH_DURATION && elapsed < SQUASH_DURATION * 2 && ballChanged == false) {
+                if (football.style.display == 'block' && ballChanged == false) {
+                    football.style.display = 'none';
+                    volleyball.style.display = 'block';
+                    ballChanged = true;
+                } else if (volleyball.style.display == 'block' && ballChanged == false) {
+                    volleyball.style.display = 'none';
+                    baseball.style.display = 'block';
+                    ballChanged = true;
+                } else if (baseball.style.display == 'block' && ballChanged == false) {
+                    baseball.style.display = 'none';
+                    basketball.style.display = 'block';
+                    ballChanged = true;
+                } else if (basketball.style.display == 'block' && ballChanged == false) {
+                    basketball.style.display = 'none';
+                    football.style.display = 'block';
+                    ballChanged = true;
+                }
+            } else if (elapsed < SQUASH_DURATION * 2) {
+                // Visszatérés fázis
+                const progress = (elapsed - SQUASH_DURATION) / SQUASH_DURATION;
+                const squash = MAX_SQUASH + (progress * (1 - MAX_SQUASH));
+                ball.style.transform = `translateY(${position - 100}%) scaleY(${squash})`;
+            } else {
+                // Vissza normál állapotba
+                isSquashing = false;
+                ballChanged = false;
+                ball.style.transform = `translateY(${position - 100}%) scaleY(1)`;
+            }
+        }
+        
+        // Animáció folytatása
+        if (isAnimating && (Math.abs(velocity) > 0.5 || position < GROUND_Y)) {
+            animationId = requestAnimationFrame(animate);
+        } else {
+            isAnimating = false;
+        }
+    }
+    
+    animationId = requestAnimationFrame(animate);
+}
+
+document.addEventListener('click', startAnimation);
+window.addEventListener('load', () => {
+    setTimeout(startAnimation, 0);
+});
+
 // Hamburger menü változók
 const hamburger = document.getElementById("hamburger");
 const bal = document.getElementById("bal-oldal");
@@ -119,9 +236,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentUser = await account.get();
         alapAllapotBeallitasa(); // Hamburger menü inicializálása
         await initializeProfile();
+        document.getElementById('loadingOverlay').style.display = 'none';
     } catch (error) {
+        setTimeout( function () {
         console.error('Nincs bejelentkezve:', error);
-        window.location.href = '/login.html';
+        window.location.href = '/login.html';}, 500);
     }
 });
 
@@ -616,7 +735,7 @@ async function showTeamEditView(teamId) {
         <img class="csapat-logo" src="${team.kep}" alt="${team.nev} logója" 
              onerror="this.style.display='none'" 
              style="${team.kep ? '' : 'display: none'}">
-        ${!team.kep ? '<p class="no-image">Nincs feltöltött kép</p>' : ''}
+        ${!team.kep ? '<p class="no-image">Nincs feltöltött logó</p>' : ''}
         <div id="logo-edit-container">
             <button id="modify-image-btn" class="save-btn">Módosítás</button>
             <button id="delete-image-btn" class="delete-btn" ${!team.kep ? 'disabled' : ''}>Törlés</button>
@@ -726,7 +845,7 @@ async function showTeamEditView(teamId) {
     initializeDynamicTagsForEdit();
     
     // Szerkesztők kezelésének inicializálása
-    initializeSzerkesztoHandlers();
+    initializeSzerkesztoHandlers(team);
     
     disableEnterSubmission();
 
@@ -738,7 +857,7 @@ async function showTeamEditView(teamId) {
 }
 
 // ÚJ FUNKCIÓ: Szerkesztők kezelése
-function initializeSzerkesztoHandlers() {
+function initializeSzerkesztoHandlers(team) {
     const szerkesztoContainer = document.getElementById('szerkeszto-container-edit');
     const addSzerkesztoBtn = document.getElementById('add-szerkeszto-btn');
     
@@ -763,15 +882,25 @@ function initializeSzerkesztoHandlers() {
     
     // Meglévő törlés gombok eseményfigyelői
     const removeButtons = szerkesztoContainer.querySelectorAll('.remove-szerkeszto-btn');
-    removeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            if (szerkesztoContainer.children.length > 1) {
-                const item = this.closest('.szerkeszto-item');
+        removeButtons.forEach(button => {
+            const item = button.closest('.szerkeszto-item');
+            const input = item.querySelector('input');
+            if (input.value !== team.userEmail) {
+                button.disabled = false;
+                button.addEventListener('click', function() {
+                if (szerkesztoContainer.children.length > 1) {
                 szerkesztoContainer.removeChild(item);
+                }    
+            }
+            );
+            } else {
+                console.log('Megtaláltam a létrehozót');
+                button.disabled = true;
+                button.title = "A létrehozót nem lehet eltávolítani";
             }
         });
-    });
-}
+    };
+
 
 // Accordion kezelő függvény - ID ALAPÚ
 function initializeAccordions() {
@@ -1144,9 +1273,9 @@ function showNewTeamView() {
                     <input type="text" name="cimkek[]" placeholder="Sport">
                 </div>
 
-                <div class="text">Kép feltöltése:</div>
+                <div class="text">Logó feltöltése:</div>
 
-                <!-- Kép feltöltés -->
+                <!-- Logo feltöltés -->
                 <div class="fullwidth" id="kep-feltoltes">
                     <input type="file" name="kep" accept="image/*" id="kepInput">
                     <img id="kepPreview" src="" alt="" style="display:none;">
@@ -1497,3 +1626,4 @@ async function logout() {
         console.error('Hiba a kijelentkezéskor:', error);
     }
 }
+

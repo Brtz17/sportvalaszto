@@ -52,7 +52,6 @@ async function showTeamView(teamId) {
             <img class="csapat-logo" src="${team.kep}" alt="${team.nev} logója" 
                 onerror="this.style.display='none'" 
                 style="${team.kep ? '' : 'display: none'}">
-            ${!team.kep ? '<p class="no-image">Nincs feltöltött kép</p>' : ''}
         </div>
     </div>
 
