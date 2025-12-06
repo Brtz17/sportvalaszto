@@ -203,6 +203,15 @@ h2 {
 
 #profile-btn-container button{
   font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .35rem;
+}
+
+#profile-btn-container button svg{
+  height: 2rem;
+  width: 2rem;
 }
 
 #profile-form{
@@ -231,10 +240,30 @@ h2 {
   margin: 1.5rem 0 2rem 0;
 }
 
-.csapat-logo{
+.csapat-logo, #kepPreview{
   height: auto;
   width: 140px;
   margin: 0;
+}
+
+#kep-feltoltes{
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    background-color: #fffdf9;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+#kep-feltoltes > :last-child{
+  margin-top: .75rem;
+}
+
+#kepInput{
+  border: none;
+  padding: 0 !important;
+  border-radius: 0 !important;
 }
 
 #logo-edit-container{
@@ -805,6 +834,12 @@ input[type="password"]::-ms-clear {
   box-shadow: none;
 }
 
+#cimkek-container{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
 input[name="cimkek[]"]{
   margin-bottom: 1rem;
 }
@@ -858,6 +893,164 @@ input[name="tagdij"]{
 .menu-overlay.lathato {
   opacity: 1;
   visibility: visible;
+}
+
+.search-dropdown {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.search-dropdown-btn {
+    background: white;
+    color: #333;
+    padding: 14px 20px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.search-dropdown-btn.has-selection {
+    background-color: #fff7f0;
+    border-color: #e5b899;
+}
+
+.search-dropdown.active .search-dropdown-btn:after {
+    transform: rotate(180deg);
+}
+
+.search-dropdown-content {
+    width: 100%;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    overflow: visible;
+
+}
+
+.search-dropdown.active .search-dropdown-content {
+    display: block;
+}
+
+.search-container {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    background: #f8f9fa;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.search-input:focus {
+    border-color: #e5b899;
+}
+
+.dropdown-list {
+    overflow-y: auto;
+}
+
+.dropdown-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background 0.2s;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background: #fff7f0;
+}
+
+.category-header {
+    padding: 10px 15px;
+    background: #fff8f1;
+    font-weight: 600;
+    color: #3a2e2e;
+    border-bottom: 1px solid #fff1e1;
+}
+
+.no-results {
+    padding: 20px;
+    text-align: center;
+    color: #8d877f;
+    font-style: italic;
+}
+
+.clear-selection-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.clear-selection-btn:hover {
+    color: #ff4444;
+}
+
+.search-dropdown-btn.has-selection .clear-selection-btn {
+    display: flex; /* Csak kiválasztás után látható */
+}
+
+.dropdown-arrow {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #333;
+    transition: transform 0.3s;
+    pointer-events: none;
+    display: block;
+}
+
+.search-dropdown-btn.has-selection .dropdown-arrow {
+    display: none; /* Kiválasztás után rejtve */
+}
+
+.search-dropdown.active .dropdown-arrow {
+    transform: translateY(-50%) rotate(180deg);
 }
 
 /* ===== MOBIL STÍLUSOK (max-width: 600px) ===== */
@@ -957,6 +1150,10 @@ input[name="tagdij"]{
   #accordion-content #osszecsuko {
       padding: 20px;
   }
+
+  .form-group{
+    margin-bottom: .75rem;
+  }
 }
 
 /* ===== KIS MOBIL STÍLUSOK (max-width: 400px) ===== */
@@ -998,8 +1195,17 @@ input[name="tagdij"]{
     grid-template-columns: 1fr;
   }
 
+  .form-group{
+    margin-bottom: .5rem;
+  }
+  #cimkek-container{
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
   input[name="cimkek[]"]{
-  margin-bottom: 6px;
+  margin-bottom: .5rem;
+  grid-column: 1 / -1;
   }
 
   #password-form {
@@ -1045,4 +1251,41 @@ input[name="tagdij"]{
   #x-icon {
     display: block;
   }
+}
+
+/* DESIGN-OS SCROLLBAR */
+.search-dropdown-content {
+    overflow-y: auto;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #72675f #f0f0f0; /* Firefox */
+    
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: linear-gradient(to bottom, 
+            #f8f9fa 0%, 
+            #e9ecef 50%, 
+            #f8f9fa 100%);
+        border-radius: 10px;
+        border-left: 1px solid #dee2e6;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, 
+            #6c757d 0%, 
+            #495057 50%, 
+            #6c757d 100%);
+        border-radius: 10px;
+        border: 2px solid #f8f9fa;
+        box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(to bottom, 
+            #495057 0%, 
+            #343a40 50%, 
+            #495057 100%);
+    }
 }

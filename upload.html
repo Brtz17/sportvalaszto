@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sport Adatok Feltöltése - Appwrite</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .description {
+            margin-bottom: 30px;
+            color: #555;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #f02e65;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #d8275a;
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #f02e65;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .preview {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .preview h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .preview-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .preview-item:last-child {
+            border-bottom: none;
+        }
+        
+        .instructions {
+            background-color: #e8f4fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #1565c0;
+        }
+        
+        .config-section {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .config-section h3 {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .button-group button {
+            flex: 1;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .auto-config {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 0 5px 5px 0;
+            font-size: 14px;
+        }
+        
+        .config-info {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .config-info h4 {
+            margin: 0 0 8px 0;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sport Adatok Feltöltése</h1>
+        
+        <p class="description">
+            Ezen az oldalon feltöltheted a sportágakat és kategóriákat tartalmazó JSON fájlt az Appwrite adatbázisodba.
+        </p>
+        
+        <div class="instructions">
+            <h3>Használati útmutató</h3>
+            <ol>
+                <li>Az Appwrite konfiguráció automatikusan betöltődik az appwrite.js fájlból</li>
+                <li>Add meg a Database ID és Collection ID értékeket</li>
+                <li>Válaszd ki a JSON fájlt vagy használd a mintaadatokat</li>
+                <li>Kattints a "Feltöltés" gombra</li>
+            </ol>
+        </div>
+        
+        <div class="config-section">
+            <h3>Appwrite Konfiguráció</h3>
+            
+            <div class="auto-config" id="autoConfigInfo">
+                Appwrite konfiguráció betöltése...
+            </div>
+            
+            <div class="config-info">
+                <h4>Betöltött konfiguráció:</h4>
+                <div><strong>Endpoint:</strong> <span id="endpointDisplay">-</span></div>
+                <div><strong>Project ID:</strong> <span id="projectIdDisplay">-</span></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="databaseId">Database ID</label>
+                <input type="text" id="databaseId" placeholder="Az adatbázis azonosítója">
+            </div>
+            
+            <div class="form-group">
+                <label for="collectionId">Collection ID</label>
+                <input type="text" id="collectionId" placeholder="A kollekció azonosítója">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="jsonFile">JSON fájl kiválasztása</label>
+            <input type="file" id="jsonFile" accept=".json">
+        </div>
+        
+        <div class="button-group">
+            <button type="button" id="useSample">Mintaadatok betöltése</button>
+            <button type="button" id="useFullSample">Teljes minta betöltése</button>
+        </div>
+        
+        <button id="uploadBtn" disabled>Adatok feltöltése</button>
+        
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0%</div>
+        </div>
+        
+        <div class="status" id="statusMessage"></div>
+        
+        <div class="preview" id="preview">
+            <h3>Előnézet (első 5 elem)</h3>
+            <div id="previewContent"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { databases, ID } from './js/lib/appwrite.js';
+
+        // DOM elemek
+        const jsonFileInput = document.getElementById('jsonFile');
+        const useSampleBtn = document.getElementById('useSample');
+        const useFullSampleBtn = document.getElementById('useFullSample');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const statusMessage = document.getElementById('statusMessage');
+        const preview = document.getElementById('preview');
+        const previewContent = document.getElementById('previewContent');
+        const autoConfigInfo = document.getElementById('autoConfigInfo');
+        const endpointDisplay = document.getElementById('endpointDisplay');
+        const projectIdDisplay = document.getElementById('projectIdDisplay');
+
+        let sportsData = [];
+
+        // Konfiguráció betöltése és ellenőrzése
+        async function initializeAppwrite() {
+            try {
+                autoConfigInfo.textContent = 'Appwrite konfiguráció ellenőrzése...';
+                
+                // Ellenőrizzük, hogy a databases objektum elérhető-e
+                if (databases && typeof databases.createDocument === 'function') {
+                    autoConfigInfo.innerHTML = '✅ Appwrite konfiguráció sikeresen betöltve';
+                    endpointDisplay.textContent = 'https://cloud.appwrite.io/v1';
+                    projectIdDisplay.textContent = '68fe2fae00030619f0a5';
+                    return true;
+                } else {
+                    throw new Error('Databases objektum nem inicializált');
+                }
+            } catch (error) {
+                console.error('Hiba az Appwrite inicializálásakor:', error);
+                autoConfigInfo.innerHTML = '❌ Hiba az Appwrite konfiguráció betöltésekor';
+                return false;
+            }
+        }
+
+        // Inicializálás az oldal betöltésekor
+        initializeAppwrite();
+
+        // Rövid mintaadatok betöltése
+        useSampleBtn.addEventListener('click', function() {
+            sportsData = [
+                { "sport": "Atlétika (futószámok)", "kategoria": "Futó- és gyaloglósportok" },
+                { "sport": "Maraton", "kategoria": "Futó- és gyaloglósportok" },
+                { "sport": "Félmaraton", "kategoria": "Futó- és gyaloglósportok" },
+                { "sport": "Terepfutás", "kategoria": "Futó- és gyaloglósportok" },
+                { "sport": "Gyaloglás", "kategoria": "Futó- és gyaloglósportok" }
+            ];
+            
+            showPreview();
+            uploadBtn.disabled = false;
+            statusMessage.className = 'status success';
+            statusMessage.textContent = '5 mintaadat betöltve.';
+        });
+        
+        // Teljes mintaadatok betöltése
+        useFullSampleBtn.addEventListener('click', function() {
+            sportsData = [
+                { "sport": "Atlétika (futószámok)", "kategoria": "Futó- és gyaloglósportok" },
+                { "sport": "Maraton", "kategoria": "Futó- és gyaloglósportok" },
+                { "sport": "Félmaraton", "kategoria": "Futó- és gyaloglósportok" },
+                { "sport": "Terepfutás", "kategoria": "Futó- és gyaloglósportok" },
+                { "sport": "Gyaloglás", "kategoria": "Futó- és gyaloglósportok" },
+
+                { "sport": "Labdarúgás", "kategoria": "Labdajátékok" },
+                { "sport": "Kézilabda", "kategoria": "Labdajátékok" },
+                { "sport": "Kosárlabda", "kategoria": "Labdajátékok" },
+                { "sport": "Röplabda", "kategoria": "Labdajátékok" },
+                { "sport": "Vízilabda", "kategoria": "Labdajátékok" },
+
+                { "sport": "Tenisz", "kategoria": "Ütős sportok" },
+                { "sport": "Asztalitenisz", "kategoria": "Ütős sportok" },
+                { "sport": "Tollaslabda", "kategoria": "Ütős sportok" }
+            ];
+            
+            showPreview();
+            uploadBtn.disabled = false;
+            statusMessage.className = 'status success';
+            statusMessage.textContent = '13 mintaadat betöltve.';
+        });
+        
+        // JSON fájl beolvasása
+        jsonFileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    sportsData = JSON.parse(e.target.result);
+                    showPreview();
+                    uploadBtn.disabled = false;
+                    statusMessage.className = 'status success';
+                    statusMessage.textContent = `JSON fájl sikeresen betöltve! ${sportsData.length} elem.`;
+                } catch (error) {
+                    statusMessage.className = 'status error';
+                    statusMessage.textContent = 'Hibás JSON formátum: ' + error.message;
+                    uploadBtn.disabled = true;
+                }
+            };
+            reader.readAsText(file);
+        });
+        
+        // Előnézet megjelenítése
+        function showPreview() {
+            preview.style.display = 'block';
+            previewContent.innerHTML = '';
+            
+            const itemsToShow = sportsData.slice(0, 5);
+            itemsToShow.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                div.innerHTML = `<strong>${item.sport}</strong> - ${item.kategoria}`;
+                previewContent.appendChild(div);
+            });
+            
+            if (sportsData.length > 5) {
+                const more = document.createElement('div');
+                more.className = 'preview-item';
+                more.innerHTML = `... és még ${sportsData.length - 5} elem`;
+                previewContent.appendChild(more);
+            }
+        }
+        
+        // Adatok feltöltése - UGYANAZ, MINT A CSAPAT LÉTREHOZÁS
+        uploadBtn.addEventListener('click', async function() {
+            const databaseId = document.getElementById('databaseId').value;
+            const collectionId = document.getElementById('collectionId').value;
+            
+            // Validáció
+            if (!databaseId || !collectionId) {
+                statusMessage.className = 'status error';
+                statusMessage.textContent = 'Kérlek töltsd ki a Database ID és Collection ID mezőket!';
+                return;
+            }
+            
+            if (sportsData.length === 0) {
+                statusMessage.className = 'status error';
+                statusMessage.textContent = 'Nincsenek betöltött adatok a feltöltéshez!';
+                return;
+            }
+            
+            uploadBtn.disabled = true;
+            progressContainer.style.display = 'block';
+            statusMessage.className = 'status';
+            statusMessage.textContent = 'Adatok feltöltése...';
+            
+            try {
+                let successCount = 0;
+                let errorCount = 0;
+                
+                // Dokumentumok feltöltése - PONTOSAN UGYANÚGY, MINT A CSAPAT LÉTREHOZÁS
+                for (let i = 0; i < sportsData.length; i++) {
+                    const item = sportsData[i];
+                    
+                    try {
+                        // UGYANAZ A createDocument HÍVÁS
+                        await databases.createDocument(
+                            databaseId,
+                            collectionId,
+                            ID.unique(),  // VAGY 'unique()' - attól függően, hogy mit használsz
+                            item
+                        );
+                        successCount++;
+                    } catch (error) {
+                        console.error('Hiba a dokumentum feltöltésekor:', error);
+                        errorCount++;
+                    }
+                    
+                    // Progress frissítése
+                    const progress = Math.round(((i + 1) / sportsData.length) * 100);
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `${progress}% (${i + 1}/${sportsData.length})`;
+                    statusMessage.textContent = `Feltöltés folyamatban... ${successCount} sikeres, ${errorCount} hiba`;
+                }
+                
+                // Eredmény megjelenítése
+                if (errorCount === 0) {
+                    statusMessage.className = 'status success';
+                    statusMessage.textContent = `Sikeres feltöltés! ${successCount} dokumentum került hozzáadásra az adatbázishoz.`;
+                } else {
+                    statusMessage.className = 'status error';
+                    statusMessage.textContent = `A feltöltés befejeződött, de ${errorCount} hiba történt. ${successCount} dokumentum sikeresen hozzáadva.`;
+                }
+                
+            } catch (error) {
+                statusMessage.className = 'status error';
+                statusMessage.textContent = `Hiba: ${error.message}`;
+                console.error('Appwrite hiba:', error);
+            }
+            
+            uploadBtn.disabled = false;
+        });
+    </script>
+</body>
+</html>

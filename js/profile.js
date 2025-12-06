@@ -31,7 +31,6 @@ let isSquashing = false;
 let squashStartTime = 0;
 let ballChanged = false;
 
-
 function startAnimation() {
     if (isAnimating) return;
     
@@ -285,16 +284,15 @@ function renderTeamButtons() {
     siteBtnContainer.innerHTML = teamButtons;
 }
 
-// Eseményfigyelők beállítása - TELJESEN JAVÍTOTT
+// Eseményfigyelők beállítása
 function setupEventListeners() {
     // Profil gomb
     const profilGomb = document.getElementById('profile-btn');
     if (profilGomb) {
         profilGomb.addEventListener('click', (e) => {
             showProfileView();
-            // Mobil esetén automatikusan bezárjuk a menüt
             if (window.innerWidth <= 600) {
-                closeMenu(); // Új függvény a menü bezárására
+                closeMenu();
             }
         });
     }
@@ -304,7 +302,6 @@ function setupEventListeners() {
     if (ujCsapatGomb) {
         ujCsapatGomb.addEventListener('click', (e) => {
             showNewTeamView();
-            // Mobil esetén automatikusan bezárjuk a menüt
             if (window.innerWidth <= 600) {
                 closeMenu();
             }
@@ -315,11 +312,9 @@ function setupEventListeners() {
     const kijelentkezesGomb = document.getElementById('logout-btn');
     if (kijelentkezesGomb) {
         kijelentkezesGomb.addEventListener('click', (e) => {
-            // Mobil esetén először bezárjuk a menüt
             if (window.innerWidth <= 600) {
                 closeMenu();
             }
-            // Utána indítjuk a kijelentkezést
             setTimeout(() => logout(), 300);
         });
     }
@@ -330,7 +325,6 @@ function setupEventListeners() {
             const teamId = e.target.dataset.teamId;
             showTeamEditView(teamId);
             
-            // Mobil esetén automatikusan bezárjuk a menüt
             if (window.innerWidth <= 600) {
                 closeMenu();
             }
@@ -338,8 +332,7 @@ function setupEventListeners() {
     });
 }
 
-// ÚJ FÜGGVÉNY: Menü bezárása
-// MENÜ BEZÁRÁSA - JAVÍTOTT
+// Menü bezárása
 function closeMenu() {
     const isMobile = window.innerWidth <= 600;
     
@@ -363,7 +356,6 @@ function closeMenu() {
 }
 
 // PROFIL NÉZET megjelenítése
-// PROFIL NÉZET - JAVÍTOTT JELSZÓ RÉSZ
 function showProfileView() {
     const jobbOldal = document.getElementById('jobb-oldal');
     
@@ -381,7 +373,7 @@ function showProfileView() {
             <button type="submit" class="profile-save-btn">Profil mentése</button>
         </form>
 
-        <!-- JELSZÓ VÁLTOZTATÁS SZAKASZ - JAVÍTOTT -->
+        <!-- JELSZÓ VÁLTOZTATÁS SZAKASZ -->
         <div class="fullwidth" id="accordion">
             <div id="accordion-item">
                 <button type="button" id="accordion-header">
@@ -390,11 +382,9 @@ function showProfileView() {
                         <line x1="12" y1="5" x2="12" y2="19" />
                         <polyline points="5 12 12 19 19 12" />
                     </svg>
-
                 </button>
 
                 <div id="accordion-content">
-
                         <form id="password-form" class="form">
                             <div class="form-group">
                                 <label>Jelenlegi jelszó*</label>
@@ -446,32 +436,29 @@ function showProfileView() {
                             </button>
                             <div id="password-message-container" style="margin-top: 1rem;"></div>
                         </form>
-
                 </div>
             </div>
         </div>
     `;
-    
+    const profileForm = document.getElementById('profile-form');
+    profileForm.addEventListener('submit', saveProfile);
     setupPasswordChangeHandlers();
     disableEnterSubmission();
     initializeAccordions();
 }
 
-// Üzenet megjelenítése - mint a signup.js-ben
+// Üzenet megjelenítése
 function showPasswordMessage(text, type = 'success') {
     const messageContainer = document.getElementById('password-message-container');
     if (!messageContainer) return;
     
-    // Előző üzenetek eltávolítása
     const existingMessage = messageContainer.querySelector('.message');
     if (existingMessage) {
         existingMessage.remove();
     }
     
-    // Új üzenet hozzáadása
     messageContainer.insertAdjacentHTML('beforeend', `<div class="message ${type}">${text}</div>`);
     
-    // Automatikus eltávolítás 3 másodperc után
     if (type === 'success') {
         setTimeout(() => {
             const message = messageContainer.querySelector('.message');
@@ -486,36 +473,35 @@ function setupPasswordChangeHandlers() {
     const newPasswordInput = document.getElementById('new-password');
     const confirmPasswordInput = document.getElementById('confirm-password');
     
-    // SAJÁT TOGGLE GOMBOK KEZELÉSE
-        document.querySelectorAll('.password-toggle-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                if (input) {
-                    const type = input.type === 'password' ? 'text' : 'password';
-                    input.type = type;
-                    
-                    // SVG ikonok innerHTML-lel
-                    if (type === 'password') {
-                        this.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Mutasd a jelszót">
-                                <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
-                                    d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
-                                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                            </svg>
-                            `;
-                    } else {
-                        this.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Rejtsd a jelszót">
-                                <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
-                                    d="M1.5 12s4.5-7.5 10.5-7.5 10.5 7.5 10.5 7.5-1.8 3-5.7 4.8M3 3l18 18"/>
-                                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                            </svg>                        
+    // TOGGLE GOMBOK KEZELÉSE
+    document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (input) {
+                const type = input.type === 'password' ? 'text' : 'password';
+                input.type = type;
+                
+                if (type === 'password') {
+                    this.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Mutasd a jelszót">
+                            <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+                                d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+                            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        </svg>
                         `;
-                    }
+                } else {
+                    this.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Rejtsd a jelszót">
+                            <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+                                d="M1.5 12s4.5-7.5 10.5-7.5 10.5 7.5 10.5 7.5-1.8 3-5.7 4.8M3 3l18 18"/>
+                            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        </svg>                        
+                    `;
                 }
-            });
+            }
         });
+    });
     
     // Jelszó egyezés ellenőrzése
     if (newPasswordInput && confirmPasswordInput) {
@@ -563,13 +549,10 @@ function updatePasswordSubmitButton() {
     if (!submitBtn) return;
     
     const passwordsMatch = newPassword === confirmPassword && newPassword !== '';
-    
-    const isValid = passwordsMatch;
-    
-    submitBtn.disabled = !isValid;
+    submitBtn.disabled = !passwordsMatch;
 }
 
-// JELSZÓ MEGVÁLTOZTATÁSA - FORDÍTÁSSAL
+// JELSZÓ MEGVÁLTOZTATÁSA
 async function changePassword(e) {
     e.preventDefault();
     
@@ -584,25 +567,19 @@ async function changePassword(e) {
     
     if (!submitBtn) return;
     
-    // Loading state
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Feldolgozás...';
     submitBtn.disabled = true;
     
     try {
-        // Jelszó változtatás Appwrite-ban
         await account.updatePassword(newPassword, currentPassword);
-        
-        // Sikeres változtatás
         showPasswordMessage('✅ Jelszó sikeresen megváltoztatva!', 'success');
         
-        // Form reset
         const passwordForm = document.getElementById('password-form');
         if (passwordForm) {
             passwordForm.reset();
         }
         
-        // Match indicator reset
         const matchIndicator = document.getElementById('password-match');
         if (matchIndicator) {
             matchIndicator.textContent = '';
@@ -610,13 +587,10 @@ async function changePassword(e) {
         
     } catch (error) {
         console.error('Jelszó változtatás hiba:', error);
-        
-        // Automatikus fordítás
         const translatedMessage = await translateErrorMessage(error);
         showPasswordMessage(`❌ ${translatedMessage}`, 'error');
         
     } finally {
-        // Visszaállítás
         if (submitBtn) {
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
@@ -624,10 +598,9 @@ async function changePassword(e) {
     }
 }
 
-// VALÓS IDEJŰ FORDÍTÁS GOOGLE TRANSLATE API-VAL
+// FORDÍTÁS
 async function translateText(text, targetLang = 'hu') {
     try {
-        // Ingyenes Google Translate API (nem igényel API kulcsot)
         const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`);
         
         if (!response.ok) {
@@ -635,40 +608,34 @@ async function translateText(text, targetLang = 'hu') {
         }
         
         const data = await response.json();
-        
-        // A válasz struktúrája: [[["fordított szöveg", "eredeti szöveg", null, null]], null, "auto"]
         if (data && data[0] && data[0][0] && data[0][0][0]) {
             return data[0][0][0];
         }
         
-        return text; // Ha nem sikerül, visszaadjuk az eredetit
-        
+        return text;
     } catch (error) {
         console.error('Fordítási hiba:', error);
-        return text; // Ha nem sikerül, visszaadjuk az eredetit
+        return text;
     }
 }
 
-// HIBÁK FORDÍTÁSA AUTOMATIKUSAN
+// HIBÁK FORDÍTÁSA
 async function translateErrorMessage(error) {
     const originalMessage = error.message || error.toString();
-    
-    // Először próbáljuk a beépített fordítást
     const builtInTranslation = translateCommonErrors(originalMessage);
     if (builtInTranslation !== originalMessage) {
         return builtInTranslation;
     }
     
-    // Ha nincs beépített fordítás, használjuk a Google Translate API-t
     try {
         const translated = await translateText(originalMessage, 'hu');
         return translated;
     } catch {
-        return originalMessage; // Ha nem sikerül, az eredeti üzenet
+        return originalMessage;
     }
 }
 
-// BEPÉTETT GYAKORI HIBÁK (biztonsági tartalék)
+// BEPÉTETT GYAKORI HIBÁK
 function translateCommonErrors(message) {
     const commonErrors = {
         'Invalid credentials': 'Érvénytelen hitelesítési adatok',
@@ -692,22 +659,37 @@ function translateCommonErrors(message) {
         }
     }
     
-    return message; // Vissza az eredetit, ha nincs beépített fordítás
+    return message;
 }
 
-// CSAPAT SZERKESZTŐ NÉZET megjelenítése - JAVÍTOTT (dinamikus címkékkel)
+// CSAPAT SZERKESZTŐ NÉZET megjelenítése
 async function showTeamEditView(teamId) {
     const team = userTeams.find(t => t.$id === teamId);
     if (!team) return;
     
+    // Sportok betöltése a sportok adatbázisból
+    let allSports = [];
+    try {
+        const sportokResponse = await databases.listDocuments(
+            '68fe32ea0008ab84b709',
+            'sportok',
+            [Query.limit(100)]
+        );
+        allSports = sportokResponse.documents.map(sport => sport.sport);
+    } catch (error) {
+        console.error('Hiba a sportok betöltésekor:', error);
+        allSports = team.cimkek || [];
+    }
+    
+    // Sportok HTML generálása dropdown-hoz
+    const sportokHTML = allSports.map(sport => `
+        <div class='dropdown-item'>${sport}</div>
+    `).join('');
+    
     const jobbOldal = document.getElementById('jobb-oldal');
     
-    // Dinamikus címkék HTML generálása
-    const cimkekHTML = team.cimkek && team.cimkek.length > 0 
-        ? team.cimkek.map(cimke => `
-            <input type="text" name="cimkek[]" value="${cimke}" placeholder="Sport">
-        `).join('')
-        : '<input type="text" name="cimkek[]" placeholder="Sport">';
+    // Sport dropdown-ok generálása a már kiválasztott sportokkal
+    const sportDropdownsHTML = generateSportDropdowns(team.cimkek || [], sportokHTML);
     
     // Szerkesztők HTML generálása
     const szerkesztoHTML = team.szerkeszto && team.szerkeszto.length > 0 
@@ -721,10 +703,10 @@ async function showTeamEditView(teamId) {
             <input type="email" name="szerkeszto[]" value="${currentUser.email}" placeholder="Szerkesztő email" readonly>
         </div>`;
 
-    // Leírás HTML tartalom - üres esetén placeholder
+    // Leírás HTML tartalom
     let leirasHTML = team.leiras || '';
     if (!leirasHTML.trim()) {
-        leirasHTML = '<br>'; // Üres div helyett br tag
+        leirasHTML = '<br>';
     }
   
     jobbOldal.innerHTML = `
@@ -755,7 +737,6 @@ async function showTeamEditView(teamId) {
                         <line x1="12" y1="5" x2="12" y2="19" />
                         <polyline points="5 12 12 19 19 12" />
                     </svg>
-
                 </button>
                 <div id="accordion-content">
                     <div class="form" id="osszecsuko">
@@ -806,14 +787,14 @@ async function showTeamEditView(teamId) {
                         </div>
                         
                         <div class="fullwidth">
-                            <label>Sportok:</label>
-                            <div class="fullwidth" id="cimkek-container-edit">
-                                ${cimkekHTML}
+                            <label>Sportok</label>
+                            <div class="fullwidth" id="cimkek-container">
+                                ${sportDropdownsHTML}
                             </div>
                         </div>
                         
                         <div class="fullwidth">
-                            <label>Leírás:</label>
+                            <label>Leírás</label>
                             <div contenteditable="true" id="leiras" class="leiras-editor">${leirasHTML}</div>
                         </div>
 
@@ -838,263 +819,416 @@ async function showTeamEditView(teamId) {
     </form>
 `;
     
+    // Sport dropdown-ok inicializálása
+    initializeAllDropdowns(sportokHTML, team.cimkek || []);
+    
     // Képkezelés inicializálása
     initializeImageHandlers(teamId);
-    
-    // Dinamikus címkék inicializálása
-    initializeDynamicTagsForEdit();
     
     // Szerkesztők kezelésének inicializálása
     initializeSzerkesztoHandlers(team);
     
     disableEnterSubmission();
-
     initializeAccordions();
+    initializeTeamForm();
 
     // Form eseménykezelők
-    document.querySelector('form').addEventListener('submit', (e) => saveTeam(e, teamId));
+    document.querySelector('form').addEventListener('submit', (e) => saveTeam(e, teamId, sportokHTML));
     document.getElementById('delete-team').addEventListener('click', () => deleteTeam(teamId));
 }
 
-// ÚJ FUNKCIÓ: Szerkesztők kezelése
+// Sport dropdown-ok generálása
+function generateSportDropdowns(selectedSports, sportokHTML) {
+    if (!selectedSports || selectedSports.length === 0) {
+        return `
+            <div class="search-dropdown" id="dropdown3">
+                <button class="search-dropdown-btn" type="button">Válassz sportot</button>
+                <div class="search-dropdown-content">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Keresés...">
+                    </div>
+                    <div class="dropdown-list">
+                        ${sportokHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    let dropdownsHTML = '';
+    
+    selectedSports.forEach((sport, index) => {
+        const dropdownId = index === 0 ? 'dropdown3' : `dropdown-${Date.now()}-${index}`;
+        dropdownsHTML += `
+            <div class="search-dropdown" id="${dropdownId}">
+                <button class="search-dropdown-btn" type="button">${sport}</button>
+                <div class="search-dropdown-content">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Keresés...">
+                    </div>
+                    <div class="dropdown-list">
+                        ${sportokHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    const emptyDropdownId = `dropdown-${Date.now()}-empty`;
+    dropdownsHTML += `
+        <div class="search-dropdown" id="${emptyDropdownId}">
+            <button class="search-dropdown-btn" type="button">Válassz sportot</button>
+            <div class="search-dropdown-content">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Keresés...">
+                </div>
+                <div class="dropdown-list">
+                    ${sportokHTML}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    return dropdownsHTML;
+}
+
+// ÖSSZES dropdown inicializálása már kiválasztott sportokkal
+function initializeAllDropdowns(sportokHTML, preSelectedSports = []) {
+    console.log("✅ initializeAllDropdowns függvény elindult");
+    
+    const dropdowns = document.querySelectorAll('.search-dropdown');
+    console.log(`Talált dropdown-ok: ${dropdowns.length}`);
+    
+    dropdowns.forEach((dropdown, index) => {
+        const preSelectedSport = preSelectedSports[index] || null;
+        initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport);
+    });
+}
+
+// EGY dropdown inicializálása már kiválasztott sporttal - JAVÍTOTT
+function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null) {
+    console.log(`✅ Dropdown inicializálása: ${dropdown.id}, preSelected: ${preSelectedSport}`);
+    
+    const dropdownBtn = dropdown.querySelector('.search-dropdown-btn');
+    const dropdownContent = dropdown.querySelector('.search-dropdown-content');
+    
+    if (!dropdownBtn || !dropdownContent) {
+        console.error('Dropdown alElemek nem találhatók');
+        return;
+    }
+    
+    const searchInput = dropdownContent.querySelector('.search-input');
+    const items = dropdownContent.querySelectorAll('.dropdown-item');
+    const categories = dropdownContent.querySelectorAll('.category-header');
+
+    if (!searchInput) {
+        console.error('Search input nem található');
+        return;
+    }
+
+    // TÖRLÉS GOMB LÉTREHOZÁSA
+    let clearBtn = dropdownBtn.querySelector('.clear-selection-btn');
+    if (!clearBtn) {
+        clearBtn = document.createElement('button');
+        clearBtn.className = 'clear-selection-btn';
+        clearBtn.type = 'button';
+        clearBtn.innerHTML = '✕';
+        clearBtn.title = 'Kiválasztás törlése';
+        dropdownBtn.appendChild(clearBtn);
+    }
+
+    // NYÍL IKON
+    let arrowIcon = dropdownBtn.querySelector('.dropdown-arrow');
+    if (!arrowIcon) {
+        arrowIcon = document.createElement('div');
+        arrowIcon.className = 'dropdown-arrow';
+        dropdownBtn.appendChild(arrowIcon);
+    }
+
+    // Szöveg inicializálása (X-et eltávolítjuk ha van)
+    const currentBtnText = dropdownBtn.childNodes[0]?.nodeType === 3 ? dropdownBtn.childNodes[0].nodeValue : dropdownBtn.textContent;
+    const cleanText = currentBtnText ? currentBtnText.trim() : 'Válassz sportot';
+    
+    console.log(`Dropdown szöveg: "${cleanText}"`);
+
+    // Ha van előre kiválasztott sport, beállítjuk
+    if (preSelectedSport && (cleanText === 'Válassz sportot' || cleanText === '')) {
+        console.log(`Előre kiválasztott sport beállítva: ${preSelectedSport}`);
+        
+        // Text node frissítése
+        if (dropdownBtn.childNodes[0]?.nodeType === 3) {
+            dropdownBtn.childNodes[0].nodeValue = preSelectedSport;
+        } else {
+            // Ha nincs text node, létrehozunk
+            const textNode = document.createTextNode(preSelectedSport);
+            dropdownBtn.insertBefore(textNode, clearBtn);
+        }
+        
+        dropdownBtn.classList.add('has-selection');
+        
+    } else {
+        // Ellenőrizzük a jelenlegi állapotot
+        if (cleanText !== 'Válassz sportot' && cleanText !== '') {
+            dropdownBtn.classList.add('has-selection');
+            console.log(`Dropdown már van kiválasztva: "${cleanText}"`);
+        } else {
+            dropdownBtn.classList.remove('has-selection');
+            console.log(`Dropdown üres: "${cleanText}"`);
+        }
+    }
+
+    // DEBUG: Ellenőrizzük az elemeket
+    console.log('ClearBtn állapota:', {
+        exists: !!clearBtn,
+        parent: clearBtn.parentElement === dropdownBtn,
+        style: clearBtn.style.cssText,
+        computedStyle: window.getComputedStyle(clearBtn).display
+    });
+
+    // TÖRLÉS GOMB ESEMÉNYE - ÚJ MÓDSZER
+    clearBtn.onclick = function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        console.log('Törlés gomb megnyomva');
+        
+        // Text node frissítése
+        if (dropdownBtn.childNodes[0]?.nodeType === 3) {
+            dropdownBtn.childNodes[0].nodeValue = 'Válassz sportot';
+        } else {
+            // Ha nincs text node, létrehozunk
+            const textNode = document.createTextNode('Válassz sportot');
+            dropdownBtn.insertBefore(textNode, clearBtn);
+        }
+        
+        dropdownBtn.classList.remove('has-selection');
+        dropdown.classList.remove('active');
+        
+        // Frissítjük a dropdown-okat
+        setTimeout(() => {
+            handleDynamicTags(sportokHTML);
+        }, 50);
+        
+        return false;
+    };
+
+    // DROPDOWN GOMB - Megnyitás/zárás
+    dropdownBtn.addEventListener('click', function(e) {
+        // Ha a törlés gombra kattintunk, ne nyíljon ki a dropdown
+        if (e.target === clearBtn || clearBtn.contains(e.target)) {
+            return;
+        }
+        
+        console.log(`Dropdown button klikkelve: ${dropdown.id}`);
+        dropdown.classList.toggle('active');
+        if (dropdown.classList.contains('active')) {
+            setTimeout(() => {
+                adjustDropdownToForm(dropdown);
+                searchInput.focus();
+            }, 10);
+        }
+    });
+
+    // KERESÉS FUNKCIÓ
+    searchInput.addEventListener('input', () => {
+        const filter = searchInput.value.toLowerCase();
+        let visibleCategories = 0;
+
+        categories.forEach(header => {
+            let categoryVisible = false;
+            let nextElement = header.nextElementSibling;
+
+            while (nextElement && !nextElement.classList.contains('category-header')) {
+                if (nextElement.classList.contains('dropdown-item')) {
+                    const text = nextElement.textContent.toLowerCase();
+                    const isVisible = text.includes(filter);
+                    nextElement.style.display = isVisible ? 'flex' : 'none';
+                    if (isVisible) categoryVisible = true;
+                }
+                nextElement = nextElement.nextElementSibling;
+            }
+
+            header.style.display = categoryVisible ? 'block' : 'none';
+            if (categoryVisible) visibleCategories++;
+        });
+
+        const noResults = dropdownContent.querySelector('.no-results');
+        if (visibleCategories === 0 && filter !== '') {
+            if (!noResults) {
+                const msg = document.createElement('div');
+                msg.className = 'no-results';
+                msg.textContent = 'Nincs találat';
+                dropdownContent.querySelector('.dropdown-list').appendChild(msg);
+            }
+        } else if (noResults) {
+            noResults.remove();
+        }
+    });
+
+    // SPORTOK KLIKKELÉSE
+    items.forEach(item => {
+        item.addEventListener('click', () => {
+            const selectedText = item.textContent;
+            
+            // Csak akkor válasszunk, ha még nincs kiválasztva
+            const currentText = dropdownBtn.childNodes[0]?.nodeType === 3 ? 
+                dropdownBtn.childNodes[0].nodeValue.trim() : 
+                dropdownBtn.textContent.trim();
+            
+            if (currentText !== selectedText) {
+                // Text node frissítése
+                if (dropdownBtn.childNodes[0]?.nodeType === 3) {
+                    dropdownBtn.childNodes[0].nodeValue = selectedText;
+                } else {
+                    // Ha nincs text node, létrehozunk
+                    const textNode = document.createTextNode(selectedText);
+                    dropdownBtn.insertBefore(textNode, clearBtn);
+                }
+                
+                dropdownBtn.classList.add('has-selection');
+                dropdown.classList.remove('active');
+                
+                console.log(`Sport kiválasztva: ${selectedText} (${dropdown.id})`);
+                
+                // Új dropdown hozzáadása kiválasztás után
+                setTimeout(() => {
+                    handleDynamicTags(sportokHTML);
+                }, 0);
+            }
+        });
+    });
+
+    // KÜLSŐ KLIKK - Dropdown bezárása
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.search-dropdown')) {
+            dropdown.classList.remove('active');
+        }
+    });
+
+    console.log(`✅ ${dropdown.id} dropdown sikeresen inicializálva`);
+}
+
+function adjustDropdownToForm(dropdown) {
+    const content = dropdown.querySelector('.search-dropdown-content');
+    const searchContainer = dropdown.querySelector('.search-container')
+    const dropdownList = dropdown.querySelector('.dropdown-list')
+    const form = dropdown.closest('.form, #form, form');
+    
+    if (!content || !form) return;
+    
+    // 1. Számold ki a maximális elérhető magasságot
+    const dropdownRect = dropdown.getBoundingClientRect();
+    const formRect = form.getBoundingClientRect();
+    
+    // 2. Mennyi hely van alul?
+    const spaceBelow = formRect.bottom - dropdownRect.bottom;
+    
+    // 3. Mennyi hely van felül? (ha nem fér el alul)
+    const spaceAbove = dropdownRect.top - formRect.top;
+    
+    // 4. Válaszd ki a nagyobbat, de ne lépd túl a form határait
+    let maxHeight;
+    if (spaceBelow > 100) { // Minimum 100px alul
+        maxHeight = Math.min(spaceBelow - 10, 400); // 10px margó, max 400px
+        content.style.top = '100%';
+        content.style.bottom = 'auto';
+    } else {
+        maxHeight = Math.min(spaceAbove - 10, 400);
+        content.style.top = 'auto';
+        content.style.bottom = '100%';
+    }
+    
+    // 5. Alkalmazd a számolt magasságot
+    content.style.maxHeight = maxHeight + 'px';
+    dropdownList.style.maxHeight = maxHeight - searchContainer.offsetHeight + 'px';
+    
+    // 6. Korlátozd a szélességet is
+    content.style.maxWidth = (formRect.width - dropdownRect.left + formRect.left) + 'px';
+    content.style.left = '0';
+    content.style.right = 'auto';
+}
+
+// Szerkesztők kezelése
 function initializeSzerkesztoHandlers(team) {
     const szerkesztoContainer = document.getElementById('szerkeszto-container-edit');
     const addSzerkesztoBtn = document.getElementById('add-szerkeszto-btn');
     
-    if (addSzerkesztoBtn) {
-        addSzerkesztoBtn.addEventListener('click', () => {
-            const newSzerkesztoInput = document.createElement('div');
-            newSzerkesztoInput.className = 'szerkeszto-item';
-            newSzerkesztoInput.innerHTML = `
-                <input type="email" name="szerkeszto[]" placeholder="Új szerkesztő email" required>
-                <button type="button" class="remove-szerkeszto-btn">✕</button>
-            `;
-            szerkesztoContainer.appendChild(newSzerkesztoInput);
-            
-            // Új törlés gomb eseményfigyelője
-            newSzerkesztoInput.querySelector('.remove-szerkeszto-btn').addEventListener('click', function() {
+    if (!szerkesztoContainer || !addSzerkesztoBtn) return;
+    
+    addSzerkesztoBtn.addEventListener('click', () => {
+        const newSzerkesztoInput = document.createElement('div');
+        newSzerkesztoInput.className = 'szerkeszto-item';
+        newSzerkesztoInput.innerHTML = `
+            <input type="email" name="szerkeszto[]" placeholder="Új szerkesztő email" required>
+            <button type="button" class="remove-szerkeszto-btn">✕</button>
+        `;
+        szerkesztoContainer.appendChild(newSzerkesztoInput);
+        
+        newSzerkesztoInput.querySelector('.remove-szerkeszto-btn').addEventListener('click', function() {
+            if (szerkesztoContainer.children.length > 1) {
+                szerkesztoContainer.removeChild(newSzerkesztoInput);
+            }
+        });
+    });
+    
+    const removeButtons = szerkesztoContainer.querySelectorAll('.remove-szerkeszto-btn');
+    removeButtons.forEach(button => {
+        const item = button.closest('.szerkeszto-item');
+        const input = item.querySelector('input');
+        if (input.value !== currentUser.email) {
+            button.disabled = false;
+            button.addEventListener('click', function() {
                 if (szerkesztoContainer.children.length > 1) {
-                    szerkesztoContainer.removeChild(newSzerkesztoInput);
+                    szerkesztoContainer.removeChild(item);
                 }
             });
-        });
-    }
-    
-    // Meglévő törlés gombok eseményfigyelői
-    const removeButtons = szerkesztoContainer.querySelectorAll('.remove-szerkeszto-btn');
-        removeButtons.forEach(button => {
-            const item = button.closest('.szerkeszto-item');
-            const input = item.querySelector('input');
-            if (input.value !== team.userEmail) {
-                button.disabled = false;
-                button.addEventListener('click', function() {
-                if (szerkesztoContainer.children.length > 1) {
-                szerkesztoContainer.removeChild(item);
-                }    
-            }
-            );
-            } else {
-                console.log('Megtaláltam a létrehozót');
-                button.disabled = true;
-                button.title = "A létrehozót nem lehet eltávolítani";
-            }
-        });
-    };
-
-
-// Accordion kezelő függvény - ID ALAPÚ
-function initializeAccordions() {
-    const accordionItem = document.getElementById('accordion-item');
-    const accordionHeader = document.getElementById('accordion-header');
-    const accordionContent = document.getElementById('accordion-content');
-    const accordionIcon = document.getElementById('accordion-icon');
-    let rotation = 0;
-    
-    // Ellenőrizzük, hogy minden elem létezik
-    if (!accordionItem || !accordionHeader || !accordionContent || !accordionIcon) {
-        console.log('Nem találhatók az accordion elemek');
-        return;
-    }
-    
-    accordionHeader.addEventListener('click', () => {
-        const isActive = accordionItem.classList.contains('active');
-        
-        if (isActive) {
-            // Bezárás
-            accordionItem.classList.remove('active');
-            accordionHeader.classList.remove('active');
-            accordionContent.style.maxHeight = '0';
-            rotation += 180;
-            accordionIcon.style.transform = `rotate(${rotation}deg)`;
         } else {
-            // Megnyitás
-            accordionItem.classList.add('active');
-            accordionHeader.classList.add('active');
-            accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
-            rotation += 180;
-            accordionIcon.style.transform = `rotate(${rotation}deg)`;
-        }
-    });
-    
-    // Automatikus magasság beállítás ablak átméretezéskor
-    window.addEventListener('resize', () => {
-        if (accordionItem.classList.contains('active')) {
-            accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
-        }
-    });
-    
-    console.log('Accordion inicializálva ID alapú megoldással');
-}
-
-// CSAK FORM SUBMIT TILTÁS ENTERREL
-function disableEnterSubmission() {
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            const activeElement = document.activeElement;
-            
-            // Csak input mezőkben és nem gomboknál
-            if (activeElement.tagName === 'INPUT' && 
-                activeElement.type !== 'submit' && 
-                activeElement.type !== 'button') {
-                
-                const form = activeElement.closest('form');
-                if (form) {
-                    e.preventDefault(); // Csak a form küldést akadályozza meg
-                    // Az ENTER továbbra is bekerülhet a mezőbe
-                }
-            }
+            button.disabled = true;
+            button.title = "A létrehozót nem lehet eltávolítani";
         }
     });
 }
 
-// MÓDOSÍTOTT CSAPAT MENTÉSE - HTML tartalommal
-async function saveTeam(e, teamId) {
-    e.preventDefault();
-    
-    const form = e.target;
-    const cimkekContainer = document.getElementById("cimkek-container-edit");
-    const szerkesztoContainer = document.getElementById("szerkeszto-container-edit");
-    
-    // Címkék összegyűjtése
-    const cimkek = [];
-    if (cimkekContainer) {
-        const cimkeInputs = cimkekContainer.querySelectorAll('input[name="cimkek[]"]');
-        cimkeInputs.forEach(input => {
-            if (input.value.trim() !== "") {
-                cimkek.push(input.value.trim());
-            }
-        });
-    }
-    
-    // Szerkesztők összegyűjtése
-    const szerkesztok = [];
-    if (szerkesztoContainer) {
-        const szerkesztoInputs = szerkesztoContainer.querySelectorAll('input[name="szerkeszto[]"]');
-        szerkesztoInputs.forEach(input => {
-            if (input.value.trim() !== "") {
-                szerkesztok.push(input.value.trim());
-            }
-        });
-    }
-    
-    // Ellenőrizzük, hogy a jelenlegi user benne van-e a szerkesztők között
-    if (!szerkesztok.includes(currentUser.email)) {
-        szerkesztok.push(currentUser.email);
-    }
-    
-    const formData = new FormData(form);
-    const leirasDiv = document.getElementById('leiras');
-    
-    // HTML tartalom mentése sortörésekkel együtt
-    const leirasHTML = leirasDiv.innerHTML;
-    
-    const updatedData = {
-        nev: formData.get('nev'),
-        email: formData.get('email'),
-        telefon: formData.get('telefon'),
-        weboldal: formData.get('weboldal'),
-        iranyitoszam: formData.get('iranyitoszam'),
-        varos: formData.get('varos'),
-        utca: formData.get('utca'),
-        hazszam: formData.get('hazszam'),
-        tagdij: formData.get('tagdij'),
-        cimkek: cimkek,
-        leiras: leirasHTML,  // HTML tartalom mentése
-        szerkeszto: szerkesztok
-    };
-    
-    try {
-        await databases.updateDocument(
-            '68fe32ea0008ab84b709',
-            'csapatok',
-            teamId,
-            updatedData
-        );
-        
-        // Lokális adatok frissítése
-        const teamIndex = userTeams.findIndex(t => t.$id === teamId);
-        if (teamIndex !== -1) {
-            userTeams[teamIndex] = { ...userTeams[teamIndex], ...updatedData };
-        }
-        
-        alert('Csapat adatai sikeresen frissítve!');
-        
-    } catch (error) {
-        console.error('Hiba a csapat mentésekor:', error);
-        alert('Hiba történt a csapat mentésekor');
-    }
-}
-
-// KÉPKEZELŐ ESEMÉNYFIGYELŐK
+// Képkezelő eseményfigyelők
 function initializeImageHandlers(teamId) {
     const modifyBtn = document.getElementById('modify-image-btn');
     const deleteBtn = document.getElementById('delete-image-btn');
     const fileInput = document.getElementById('hidden-file-input');
-    const logoContainer = document.getElementById('csapat-logo-container');
     
-    // MÓDOSÍTÁS gomb - file input megnyitása
-    if (modifyBtn) {
-        modifyBtn.addEventListener('click', () => {
-            fileInput.click();
-        });
-    }
+    if (!modifyBtn || !deleteBtn || !fileInput) return;
     
-    // FILE INPUT változás - új kép feltöltése
-    if (fileInput) {
-        fileInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                try {
-                    validateImage(file);
-                    await uploadNewTeamImage(file, teamId);
-                } catch (error) {
-                    alert(`Hiba: ${error.message}`);
-                }
+    modifyBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
+    
+    fileInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            try {
+                validateImage(file);
+                await uploadNewTeamImage(file, teamId);
+            } catch (error) {
+                alert(`Hiba: ${error.message}`);
             }
-        });
-    }
+        }
+    });
     
-    // TÖRLÉS gomb - kép eltávolítása
-    if (deleteBtn) {
-        deleteBtn.addEventListener('click', async () => {
-            if (confirm('Biztosan törölni szeretnéd a képet?')) {
-                await deleteTeamImage(teamId);
-            }
-        });
-    }
+    deleteBtn.addEventListener('click', async () => {
+        if (confirm('Biztosan törölni szeretnéd a képet?')) {
+            await deleteTeamImage(teamId);
+        }
+    });
 }
 
-// ÚJ KÉP FELTÖLTÉSE
+// Új kép feltöltése
 async function uploadNewTeamImage(file, teamId) {
     try {
         const team = userTeams.find(t => t.$id === teamId);
         
-        // Régi kép törlése (ha volt)
         if (team.kep) {
             await deleteOldImageFromStorage(team.kep);
         }
         
-        // Új kép feltöltése
         const fileResponse = await storage.createFile(
             '68fe4c27001b6bb17091',
             'unique()',
@@ -1103,7 +1237,6 @@ async function uploadNewTeamImage(file, teamId) {
         
         const kepUrl = `https://cloud.appwrite.io/v1/storage/buckets/68fe4c27001b6bb17091/files/${fileResponse.$id}/view?project=68fe2fae00030619f0a5`;
         
-        // Csapat frissítése új képpel
         await databases.updateDocument(
             '68fe32ea0008ab84b709',
             'csapatok',
@@ -1111,15 +1244,12 @@ async function uploadNewTeamImage(file, teamId) {
             { kep: kepUrl }
         );
         
-        // Lokális adatok frissítése
         const teamIndex = userTeams.findIndex(t => t.$id === teamId);
         if (teamIndex !== -1) {
             userTeams[teamIndex].kep = kepUrl;
         }
         
-        // UI frissítése
         updateTeamImageUI(kepUrl);
-        
         alert('Kép sikeresen frissítve!');
         
     } catch (error) {
@@ -1128,17 +1258,15 @@ async function uploadNewTeamImage(file, teamId) {
     }
 }
 
-// KÉP TÖRLÉSE
+// Kép törlése
 async function deleteTeamImage(teamId) {
     try {
         const team = userTeams.find(t => t.$id === teamId);
         
-        // Kép törlése Appwrite storage-ból
         if (team.kep) {
             await deleteOldImageFromStorage(team.kep);
         }
         
-        // Csapat frissítése (kép mező ürítése)
         await databases.updateDocument(
             '68fe32ea0008ab84b709',
             'csapatok',
@@ -1146,15 +1274,12 @@ async function deleteTeamImage(teamId) {
             { kep: "" }
         );
         
-        // Lokális adatok frissítése
         const teamIndex = userTeams.findIndex(t => t.$id === teamId);
         if (teamIndex !== -1) {
             userTeams[teamIndex].kep = "";
         }
         
-        // UI frissítése
         updateTeamImageUI("");
-        
         alert('Kép sikeresen törölve!');
         
     } catch (error) {
@@ -1163,7 +1288,7 @@ async function deleteTeamImage(teamId) {
     }
 }
 
-// RÉGI KÉP TÖRLÉSE APPWRITE-BÓL
+// Régi kép törlése Appwrite-ból
 async function deleteOldImageFromStorage(oldImageUrl) {
     if (!oldImageUrl) return;
     
@@ -1171,21 +1296,19 @@ async function deleteOldImageFromStorage(oldImageUrl) {
         const fileId = oldImageUrl.split('/files/')[1]?.split('/view')[0];
         if (fileId) {
             await storage.deleteFile('68fe4c27001b6bb17091', fileId);
-            console.log('Régi kép törölve:', fileId);
         }
     } catch (error) {
         console.error('Hiba a régi kép törlésekor:', error);
     }
 }
 
-// UI FRISSÍTÉSE KÉP CSERE/TÖRLÉS UTÁN
+// UI frissítése kép csere/törlés után
 function updateTeamImageUI(imageUrl) {
     const logoImg = document.querySelector('.csapat-logo');
     const noImageText = document.querySelector('.no-image');
     const deleteBtn = document.getElementById('delete-image-btn');
     
     if (imageUrl) {
-        // Új kép megjelenítése
         if (logoImg) {
             logoImg.src = imageUrl;
             logoImg.style.display = 'block';
@@ -1193,12 +1316,10 @@ function updateTeamImageUI(imageUrl) {
         if (noImageText) noImageText.style.display = 'none';
         if (deleteBtn) deleteBtn.disabled = false;
     } else {
-        // Kép eltávolítása
         if (logoImg) logoImg.style.display = 'none';
         if (noImageText) {
             noImageText.style.display = 'block';
         } else {
-            // Ha nincs "nincs kép" szöveg, létrehozzuk
             const logoContainer = document.getElementById('csapat-logo-container');
             if (logoContainer && !logoContainer.querySelector('.no-image')) {
                 const noImageP = document.createElement('p');
@@ -1210,135 +1331,442 @@ function updateTeamImageUI(imageUrl) {
         if (deleteBtn) deleteBtn.disabled = true;
     }
     
-    // File input reset
     const fileInput = document.getElementById('hidden-file-input');
     if (fileInput) fileInput.value = '';
 }
 
-
-
-// DINAMIKUS CÍMKÉK INICIALIZÁLÁSA SZERKESZTÉSHEZ
-function initializeDynamicTagsForEdit() {
-    const cimkekContainer = document.getElementById("cimkek-container-edit");
+// Csapat mentése
+async function saveTeam(e, teamId, sportokHTML) {
+    e.preventDefault();
     
-    if (cimkekContainer) {
-        cimkekContainer.addEventListener("input", handleDynamicTagsEdit);
+    const form = e.target;
+    
+    const selectedSports = Array.from(document.querySelectorAll('.search-dropdown-btn'))
+        .map(btn => btn.textContent)
+        .filter(text => text !== 'Válassz sportot' && text.trim() !== '');
+    
+    const uniqueSports = [...new Set(selectedSports)];
+    
+    const szerkesztok = [];
+    const szerkesztoInputs = document.querySelectorAll('input[name="szerkeszto[]"]');
+    szerkesztoInputs.forEach(input => {
+        if (input.value.trim() !== "") {
+            szerkesztok.push(input.value.trim());
+        }
+    });
+    
+    if (!szerkesztok.includes(currentUser.email)) {
+        szerkesztok.push(currentUser.email);
+    }
+    
+    const leirasDiv = document.getElementById('leiras');
+    const leirasHTML = leirasDiv.innerHTML;
+    
+    const updatedData = {
+        nev: form.querySelector('input[name="nev"]').value,
+        email: form.querySelector('input[name="email"]').value,
+        telefon: form.querySelector('input[name="telefon"]').value,
+        weboldal: form.querySelector('input[name="weboldal"]').value,
+        iranyitoszam: form.querySelector('input[name="iranyitoszam"]').value,
+        varos: form.querySelector('input[name="varos"]').value,
+        utca: form.querySelector('input[name="utca"]').value,
+        hazszam: form.querySelector('input[name="hazszam"]').value,
+        tagdij: form.querySelector('input[name="tagdij"]').value,
+        cimkek: uniqueSports,
+        leiras: leirasHTML,
+        szerkeszto: szerkesztok
+    };
+    
+    try {
+        await databases.updateDocument(
+            '68fe32ea0008ab84b709',
+            'csapatok',
+            teamId,
+            updatedData
+        );
+        
+        const teamIndex = userTeams.findIndex(t => t.$id === teamId);
+        if (teamIndex !== -1) {
+            userTeams[teamIndex] = { ...userTeams[teamIndex], ...updatedData };
+        }
+        
+        alert('Csapat adatai sikeresen frissítve!');
+        showTeamEditView(teamId);
+        
+    } catch (error) {
+        console.error('Hiba a csapat mentésekor:', error);
+        alert('Hiba történt a csapat mentésekor');
     }
 }
 
-// DINAMIKUS CÍMKÉK KEZELÉSE SZERKESZTÉSHEZ
-function handleDynamicTagsEdit() {
-    const cimkekContainer = document.getElementById("cimkek-container-edit");
-    const inputs = cimkekContainer.querySelectorAll('input[name="cimkek[]"]');
-    const last = inputs[inputs.length - 1];
-    const secondLast = inputs[inputs.length - 2];
+// Handle dynamic tags
+function handleDynamicTags(sportokHTML) {
+    const cimkekContainer = document.getElementById("cimkek-container");
+    if (!cimkekContainer) return;
     
-    // Új mező hozzáadása, ha az utolsó mező nem üres
-    if (last.value.trim() !== "") {
-        const newInput = document.createElement("input");
-        newInput.type = "text";
-        newInput.name = "cimkek[]";
-        newInput.placeholder = "Sport";
-        cimkekContainer.appendChild(newInput);
-    }
+    const dropdowns = cimkekContainer.querySelectorAll('.search-dropdown');
 
-    // Üres mezők eltávolítása (de legalább 1 maradjon)
-    if (inputs.length > 1 && last.value.trim() === "" && secondLast?.value.trim() === "") {
-        cimkekContainer.removeChild(last);
+    if (dropdowns.length >= 2) {
+        for (let i = dropdowns.length - 1; i >= 1; i--) {
+            const current = dropdowns[i];
+            const previous = dropdowns[i - 1];
+            
+            const currentBtn = current.querySelector('.search-dropdown-btn');
+            const previousBtn = previous.querySelector('.search-dropdown-btn');
+            
+            if (currentBtn && previousBtn) {
+                const currentText = currentBtn.textContent;
+                const previousText = previousBtn.textContent;
+                
+                const currentIsEmpty = currentText.includes("Válassz sportot") || currentText.trim() === "";
+                const previousIsEmpty = previousText.includes("Válassz sportot") || previousText.trim() === "";
+                
+                if (currentIsEmpty && previousIsEmpty && current.id !== 'dropdown3') {
+                    current.remove();
+                    console.log(`Dropdown törölve (${current.id}) - két üres egymás után`);
+                    break;
+                }
+            }
+        }
+    }
+    
+    const updatedDropdowns = cimkekContainer.querySelectorAll('.search-dropdown');
+    
+    if (updatedDropdowns.length > 0) {
+        const lastDropdown = updatedDropdowns[updatedDropdowns.length - 1];
+        const lastButton = lastDropdown.querySelector('.search-dropdown-btn');
+        
+        if (lastButton) {
+            const lastText = lastButton.textContent;
+            const lastIsEmpty = lastText.includes("Válassz sportot") || lastText.trim() === "";
+            
+            if (!lastIsEmpty) {
+                addNewDropdown(sportokHTML);
+                console.log("új dropdown hozzáadva");
+            }
+        }
     }
 }
 
-
-
-// ÚJ CSAPAT NÉZET megjelenítése
-function showNewTeamView() {
-    const jobbOldal = document.getElementById('jobb-oldal');
+// Add new dropdown
+function addNewDropdown(sportokHTML) {
+    const cimkekContainer = document.getElementById("cimkek-container");
+    const newDropdownId = `dropdown-${Date.now()}`;
     
-    jobbOldal.innerHTML = `
-        <div id="form-wrapper">
-            <h2>Új csapat hozzáadása</h2>
-            <div id="message-container"></div>
-            <form class="form" id="form" enctype="multipart/form-data">
-                <input type="text" name="nev" placeholder="Név*" required>
-                <input type="email" name="email" placeholder="Email*" required>
-                <input type="text" name="telefon" id="telefon" pattern="^\\S+$" placeholder="Telefon*" maxlength="12" required>
-                <input type="text" name="weboldal" placeholder="Weboldal">
-                <input type="text" name="iranyitoszam" placeholder="Irányítószám*" minlength="4" maxlength="4" required>
-                <input type="text" name="varos" placeholder="Város*" required>
-                <input type="text" name="utca" placeholder="Utca*" required>
-                <input type="text" name="hazszam" placeholder="Házszám*" required>
-
-                <!-- Dinamikus címkék -->
-                <div class="fullwidth" id="cimkek-container">
-                    <input type="text" name="cimkek[]" placeholder="Sport">
+    const newDropdownHTML = `
+        <div class="search-dropdown" id="${newDropdownId}">
+            <button class="search-dropdown-btn" type="button">Válassz sportot</button>
+            <div class="search-dropdown-content">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Keresés...">
                 </div>
-
-                <div class="text">Logó feltöltése:</div>
-
-                <!-- Logo feltöltés -->
-                <div class="fullwidth" id="kep-feltoltes">
-                    <input type="file" name="kep" accept="image/*" id="kepInput">
-                    <img id="kepPreview" src="" alt="" style="display:none;">
+                <div class="dropdown-list">
+                    <div class="category-header">Sportok</div>
+                    ${sportokHTML}
                 </div>
-
-                <small>* A mező kitöltése kötelező</small>
-                <button type="submit" id="submit-btn">Hozzáadás</button>
-            </form>
+            </div>
         </div>
     `;
     
-    // Inicializáljuk a form funkcionalitást
-    initializeTeamForm();
+    cimkekContainer.insertAdjacentHTML('beforeend', newDropdownHTML);
+    
+    const newDropdown = document.getElementById(newDropdownId);
+    if (newDropdown) {
+        initializeSingleDropdown(newDropdown, sportokHTML);
+    }
+}
+
+function showNewTeamView() {
+    const jobbOldal = document.getElementById('jobb-oldal');
+    
+    const exportAllDocuments = async () => {
+        let allDocuments = [];
+        let offset = 0;
+        const limit = 100;
+        
+        try {
+            console.log('Összes dokumentum betöltése...');
+            
+            while (true) {
+                const response = await databases.listDocuments(
+                    '68fe32ea0008ab84b709',
+                    'sportok',
+                    [
+                        Query.limit(limit),
+                        Query.offset(offset)
+                    ]
+                );
+                
+                allDocuments = [...allDocuments, ...response.documents];
+                console.log(`Eddig betöltve: ${allDocuments.length} dokumentum`);
+                
+                if (response.documents.length < limit) {
+                    break;
+                }
+                
+                offset += limit;
+            }
+            
+            console.log(`✅ Összesen ${allDocuments.length} dokumentum betöltve!`);
+            
+            const sportokHTML = allDocuments.map(sport => `
+                <div class='dropdown-item'>${sport.sport}</div>
+            `).join('');
+            
+            return { allDocuments, sportokHTML };
+            
+        } catch (error) {
+            console.error('Hiba:', error);
+            throw error;
+        }
+    };
+
+    exportAllDocuments().then(({ allDocuments, sportokHTML }) => {
+        
+        jobbOldal.innerHTML = `
+            <div id="form-wrapper">
+                <h2>Új csapat hozzáadása</h2>
+                <div id="message-container"></div>
+                <form class="form" id="form" enctype="multipart/form-data">
+                    <input type="text" name="nev" placeholder="Név*" required>
+                    <input type="email" name="email" placeholder="Email*" required>
+                    <input type="text" name="telefon" id="telefon" pattern="^\\S+$" placeholder="Telefon*" maxlength="12" required>
+                    <input type="text" name="weboldal" placeholder="Weboldal">
+                    <input type="text" name="iranyitoszam" placeholder="Irányítószám*" minlength="4" maxlength="4" required>
+                    <input type="text" name="varos" placeholder="Város*" required>
+                    <input type="text" name="utca" placeholder="Utca*" required>
+                    <input type="text" name="hazszam" placeholder="Házszam*" required>
+
+                    <div class="fullwidth" id="cimkek-container">
+                        <div class="search-dropdown" id="dropdown3">
+                            <button class="search-dropdown-btn" type="button">Válassz sportot</button>
+                            <div class="search-dropdown-content">
+                                <div class="search-container">
+                                    <input type="text" class="search-input" placeholder="Keresés...">
+                                </div>
+                                <div class="dropdown-list">
+                                    <div class="category-header">Sportok</div>
+                                    ${sportokHTML}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text">Logó feltöltése:</div>
+
+                    <div class="fullwidth" id="kep-feltoltes">
+                        <input type="file" name="kep" accept="image/*" id="kepInput">
+                        <img id="kepPreview" src="" alt="" style="display:none;">
+                    </div>
+
+                    <small>* A mező kitöltése kötelező</small>
+                    <button type="submit" id="submit-btn">Hozzáadás</button>
+                </form>
+            </div>
+        `;
+
+        initializeAllDropdowns(sportokHTML);
+        initializeTeamForm();
+
+    }).catch(error => {
+        console.error('Hiba a sportok betöltésekor:', error);
+        jobbOldal.innerHTML = `<div class="error">Hiba történt az adatok betöltése során: ${error.message}</div>`;
+    });
 }
 
 // FORM INICIALIZÁLÁS
 async function initializeTeamForm() {
-    setTimeout(async () => {
-        const form = document.querySelector("form");
-        const kepInput = document.getElementById("kepInput");
-        const kepPreview = document.getElementById("kepPreview");
-        const cimkekContainer = document.getElementById("cimkek-container");
-        const submitBtn = document.getElementById("submit-btn");
-        const messageContainer = document.getElementById("message-container");
+    const form = document.querySelector("form");
+    const kepInput = document.getElementById("kepInput");
+    const kepPreview = document.getElementById("kepPreview");
+    const messageContainer = document.getElementById("message-container");
 
-        if (!form) return;
+    if (!form) {
+        console.log("Form nem található, várok...");
+        setTimeout(initializeTeamForm, 100);
+        return;
+    }
 
-        // Tiltás ellenőrzése
-        const hasPermission = await checkUserPermission();
-        if (!hasPermission) return;
+    console.log("✅ Team form inicializálása...");
 
-        // Telefon szóköz letiltása
-        const telefonInput = document.getElementById("telefon");
-        if (telefonInput) {
-            telefonInput.addEventListener("keydown", e => {
-                if (e.key === " ") e.preventDefault();
-            });
-        }
+    const hasPermission = await checkUserPermission();
+    if (!hasPermission) {
+        console.log("Nincs jogosultság");
+        return;
+    }
 
-        // Irányítószám csak szám
-        const iranyitoszamInput = document.querySelector('input[name="iranyitoszam"]');
-        if (iranyitoszamInput) {
-            iranyitoszamInput.addEventListener("input", function(e) {
-                e.target.value = e.target.value.replace(/\D/g, '');
-            });
-        }
+    const telefonInput = document.getElementById("telefon");
+    if (telefonInput) {
+        telefonInput.addEventListener("keydown", e => {
+            if (e.key === " ") e.preventDefault();
+        });
+        
+        telefonInput.addEventListener("input", function(e) {
+            e.target.value = e.target.value.replace(/\s/g, '');
+        });
+    }
 
-        // Kép előnézet
-        if (kepInput && kepPreview) {
-            kepInput.addEventListener("change", handleImagePreview);
-        }
+    const iranyitoszamInput = document.querySelector('input[name="iranyitoszam"]');
+    if (iranyitoszamInput) {
+        iranyitoszamInput.addEventListener("input", function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+    }
 
-        // Dinamikus címkék
-        if (cimkekContainer) {
-            cimkekContainer.addEventListener("input", handleDynamicTags);
-        }
+    if (kepInput && kepPreview) {
+        kepInput.addEventListener("change", function(e) {
+            handleImagePreview(e, kepPreview);
+        });
+    }
 
-        // Form elküldése
-        form.addEventListener("submit", handleFormSubmit);
-    }, 100);
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        handleFormSubmit(e, form, messageContainer);
+    });
+
+    console.log("✅ Team form inicializálva");
 }
 
-// FORM HELPER FUNKCIÓK
+// Kép előnézet funkció
+function handleImagePreview(event, kepPreview) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            kepPreview.src = e.target.result;
+            kepPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Form elküldése
+async function handleFormSubmit(event, form, messageContainer) {
+    event.preventDefault();
+    
+    const submitBtn = form.querySelector('#submit-btn');
+    const originalText = submitBtn.textContent;
+    
+    try {
+        submitBtn.textContent = 'Feldolgozás...';
+        submitBtn.disabled = true;
+
+        const selectedSports = Array.from(document.querySelectorAll('.search-dropdown-btn'))
+            .map(btn => btn.textContent)
+            .filter(text => text !== 'Válassz sportot' && text.trim() !== '');
+        
+        const uniqueSports = [...new Set(selectedSports)];
+        
+        console.log('Összes sport:', selectedSports);
+        console.log('Egyedi sportok:', uniqueSports);
+        
+        if (uniqueSports.length === 0) {
+            showMessage(messageContainer, 'Legalább egy sportot válassz ki!', 'error');
+            return;
+        }
+        
+        if (selectedSports.length !== uniqueSports.length) {
+            const removedDuplicates = selectedSports.length - uniqueSports.length;
+            showMessage(messageContainer, `Figyelem: ${removedDuplicates} ismétlődő sport eltávolítva`, 'warning');
+        }
+
+        let kepFileId = null;
+        const kepInput = document.getElementById('kepInput');
+        if (kepInput && kepInput.files[0]) {
+            try {
+                const file = kepInput.files[0];
+                const response = await storage.createFile(
+                    '68fe4c27001b6bb17091',
+                    'unique()',
+                    file
+                );
+                kepFileId = response.$id;
+                console.log('Kép feltöltve, file ID:', kepFileId);
+            } catch (fileError) {
+                console.error('Hiba a kép feltöltésekor:', fileError);
+                showMessage(messageContainer, 'Hiba a kép feltöltése során', 'error');
+                return;
+            }
+        }
+
+        const formData = {
+            nev: form.querySelector('input[name="nev"]').value,
+            email: form.querySelector('input[name="email"]').value,
+            telefon: form.querySelector('input[name="telefon"]').value,
+            weboldal: form.querySelector('input[name="weboldal"]').value || '',
+            iranyitoszam: form.querySelector('input[name="iranyitoszam"]').value,
+            varos: form.querySelector('input[name="varos"]').value,
+            utca: form.querySelector('input[name="utca"]').value,
+            hazszam: form.querySelector('input[name="hazszam"]').value,
+            cimkek: uniqueSports,
+            userEmail: currentUser.email,
+            szerkeszto: [currentUser.email]
+        };
+
+        if (kepFileId) {
+            formData.kep = `https://cloud.appwrite.io/v1/storage/buckets/68fe4c27001b6bb17091/files/${kepFileId}/view?project=68fe2fae00030619f0a5`;
+        }
+
+        console.log('Küldött adatok:', formData);
+
+        const response = await databases.createDocument(
+            '68fe32ea0008ab84b709',
+            'csapatok', 
+            'unique()',
+            formData
+        );
+
+        showMessage(messageContainer, 'Sikeresen létrehozva!', 'success');
+        form.reset();
+        
+        const kepPreview = document.getElementById('kepPreview');
+        if (kepPreview) {
+            kepPreview.style.display = 'none';
+            kepPreview.src = '';
+        }
+        
+        const cimkekContainer = document.getElementById('cimkek-container');
+        if (cimkekContainer) {
+            cimkekContainer.innerHTML = `
+                <div class="search-dropdown" id="dropdown3">
+                    <button class="search-dropdown-btn" type="button">Válassz sportot</button>
+                    <div class="search-dropdown-content">
+                        <div class="search-container">
+                            <input type="text" class="search-input" placeholder="Keresés...">
+                        </div>
+                        <div class="dropdown-list">
+                            <div class="category-header">Sportok</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            initializeAllDropdowns('');
+        }
+
+    } catch (error) {
+        console.error('Hiba:', error);
+        showMessage(messageContainer, `Hiba: ${error.message}`, 'error');
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+}
+
+// Üzenet megjelenítése
+function showMessage(container, message, type) {
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div class="message ${type}">
+            ${message}
+        </div>
+    `;
+    
+    setTimeout(() => {
+        container.innerHTML = '';
+    }, 5000);
+}
+
 async function checkUserPermission() {
     const DATABASE_ID = "68fe32ea0008ab84b709";
     const TILTOTT_FELHASZNALOK_ID = "tiltott_felhasznalok";
@@ -1369,7 +1797,7 @@ async function checkUserPermission() {
 }
 
 function validateImage(file) {
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     
     if (!allowedTypes.includes(file.type)) {
@@ -1383,187 +1811,64 @@ function validateImage(file) {
     return true;
 }
 
-function handleImagePreview(e) {
-    const file = e.target.files[0];
-    const kepPreview = document.getElementById("kepPreview");
+// Accordion kezelő függvény
+function initializeAccordions() {
+    const accordionItem = document.getElementById('accordion-item');
+    const accordionHeader = document.getElementById('accordion-header');
+    const accordionContent = document.getElementById('accordion-content');
+    const accordionIcon = document.getElementById('accordion-icon');
+    let rotation = 0;
     
-    if (file) {
-        try {
-            validateImage(file);
-            const reader = new FileReader();
-            reader.onload = () => {
-                kepPreview.src = reader.result;
-                kepPreview.style.display = "block";
-            };
-            reader.readAsDataURL(file);
-        } catch (error) {
-            uzenetMegjelenitese(`❌ ${error.message}`, 'error');
-            e.target.value = '';
-            kepPreview.style.display = 'none';
-        }
-    }
-}
-
-function handleDynamicTags() {
-    const cimkekContainer = document.getElementById("cimkek-container");
-    const inputs = cimkekContainer.querySelectorAll('input[name="cimkek[]"]');
-    const last = inputs[inputs.length - 1];
-    const secondLast = inputs[inputs.length - 2];
-    
-    if (last.value.trim() !== "") {
-        const newInput = document.createElement("input");
-        newInput.type = "text";
-        newInput.name = "cimkek[]";
-        newInput.placeholder = "Sport";
-        cimkekContainer.appendChild(newInput);
-    }
-
-    if (inputs.length > 1 && last.value.trim() === "" && secondLast?.value.trim() === "") {
-        cimkekContainer.removeChild(last);
-    }
-}
-
-function validateFormData(formData) {
-    const errors = [];
-    
-    // Név validáció
-    const nev = formData.get("nev").trim();
-    if (nev.length < 2) {
-        errors.push("A név legalább 2 karakter hosszú kell legyen");
+    if (!accordionItem || !accordionHeader || !accordionContent || !accordionIcon) {
+        console.log('Nem találhatók az accordion elemek');
+        return;
     }
     
-    // Email validáció
-    const email = formData.get("email");
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        errors.push("Érvényes email címet adjon meg");
-    }
-    
-    // Irányítószám validáció
-    const iranyitoszam = formData.get("iranyitoszam");
-    if (!/^\d{4}$/.test(iranyitoszam)) {
-        errors.push("Az irányítószám 4 számjegyű kell legyen");
-    }
-    
-    // Címkék validáció
-    const cimkek = formData.getAll("cimkek[]").map(v => v.trim()).filter(v => v);
-    if (cimkek.length === 0) {
-        errors.push("Legalább egy sport címke megadása kötelező");
-    }
-    
-    return errors;
-}
-
-async function handleFormSubmit(e) {
-    e.preventDefault();
-    
-    const submitBtn = document.getElementById("submit-btn");
-    const form = e.target;
-    const messageContainer = document.getElementById("message-container");
-    
-    if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Küldés...";
-    }
-
-    try {
-        const formData = new FormData(form);
+    accordionHeader.addEventListener('click', () => {
+        const isActive = accordionItem.classList.contains('active');
         
-        // Form validáció
-        const validationErrors = validateFormData(formData);
-        if (validationErrors.length > 0) {
-            validationErrors.forEach(error => uzenetMegjelenitese(`❌ ${error}`, 'error'));
-            return;
+        if (isActive) {
+            accordionItem.classList.remove('active');
+            accordionHeader.classList.remove('active');
+            accordionContent.style.maxHeight = '0';
+            rotation += 180;
+            accordionIcon.style.transform = `rotate(${rotation}deg)`;
+        } else {
+            accordionItem.classList.add('active');
+            accordionHeader.classList.add('active');
+            accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+            rotation += 180;
+            accordionIcon.style.transform = `rotate(${rotation}deg)`;
         }
-
-        const csapatNeve = formData.get("nev");
-        const csapatEmail = formData.get("email");
-        
-        // Duplikáció ellenőrzés
-        const [letezoCsapatok, letezoEmail] = await Promise.all([
-            databases.listDocuments('68fe32ea0008ab84b709', 'csapatok', [Query.equal("nev", csapatNeve)]),
-            databases.listDocuments('68fe32ea0008ab84b709', 'csapatok', [Query.equal("email", csapatEmail)])
-        ]);
-
-        if (letezoCsapatok.documents.length > 0) {
-            uzenetMegjelenitese(`❌ Már létezik "${csapatNeve}" nevű csapat!`, 'error');
-            return;
+    });
+    
+    window.addEventListener('resize', () => {
+        if (accordionItem.classList.contains('active')) {
+            accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+        };
+        if (dropdown.classList.contains('active')) {
+            adjustDropdownToForm(dropdown);
         }
+    });
+}
 
-        if (letezoEmail.documents.length > 0) {
-            uzenetMegjelenitese(`❌ Már létezik ${csapatEmail} emaillel csapat!`, 'error');
-            return;
-        }
-
-        const kepFile = formData.get("kep");
-        let kepUrl = "";
-
-        // Kép feltöltés
-        if (kepFile && kepFile.size > 0) {
-            try {
-                validateImage(kepFile);
-                const fileResponse = await storage.createFile(
-                    '68fe4c27001b6bb17091',
-                    'unique()',
-                    kepFile
-                );
+// CSAK FORM SUBMIT TILTÁS ENTERREL
+function disableEnterSubmission() {
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const activeElement = document.activeElement;
+            
+            if (activeElement.tagName === 'INPUT' && 
+                activeElement.type !== 'submit' && 
+                activeElement.type !== 'button') {
                 
-                kepUrl = `https://cloud.appwrite.io/v1/storage/buckets/68fe4c27001b6bb17091/files/${fileResponse.$id}/view?project=68fe2fae00030619f0a5`;
-            } catch (fileError) {
-                uzenetMegjelenitese(`❌ ${fileError.message}`, 'error');
-                return;
+                const form = activeElement.closest('form');
+                if (form) {
+                    e.preventDefault();
+                }
             }
         }
-
-        // Csapat létrehozása
-        const dokumentumAdatok = {
-            userEmail: currentUser.email,
-            nev: formData.get("nev"),
-            email: formData.get("email"),
-            telefon: formData.get("telefon") || "",
-            weboldal: formData.get("weboldal") || "",
-            iranyitoszam: formData.get("iranyitoszam") || "",        
-            varos: formData.get("varos") || "",
-            utca: formData.get("utca") || "",
-            hazszam: formData.get("hazszam") || "",
-            cimkek: formData.getAll("cimkek[]").map(v => v.trim()).filter(v => v),
-            kep: kepUrl,
-            szerkeszto: [currentUser.email],
-        };
-
-        await databases.createDocument('68fe32ea0008ab84b709', 'csapatok', 'unique()', dokumentumAdatok);
-        
-        uzenetMegjelenitese(`✅ Sikeresen hozzáadva: ${dokumentumAdatok.nev}`, 'success');
-        
-        // Frissítjük a csapat listát
-        await loadUserTeams();
-        
-        // Form reset
-        form.reset();
-        const kepPreview = document.getElementById("kepPreview");
-        if (kepPreview) kepPreview.style.display = "none";
-        const cimkekContainer = document.getElementById("cimkek-container");
-        if (cimkekContainer) cimkekContainer.innerHTML = `<input type="text" name="cimkek[]" placeholder="Sport">`;
-        
-    } catch (error) {
-        console.error("❌ Hiba:", error);
-        uzenetMegjelenitese(`❌ Hiba: ${error.message}`, 'error');
-    } finally {
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = "Hozzáadás";
-        }
-    }
-}
-
-function uzenetMegjelenitese(szoveg, tipus = 'success') {
-    const messageContainer = document.getElementById("message-container");
-    if (messageContainer) {
-        messageContainer.innerHTML = `<div class="message ${tipus}">${szoveg}</div>`;
-        setTimeout(() => {
-            messageContainer.innerHTML = '';
-        }, 2000);
-    }
+    });
 }
 
 // PROFIL MENTÉSE
@@ -1589,26 +1894,20 @@ async function deleteTeam(teamId) {
     }
     
     try {
-        // 1. ELŐSZÖR: Kép törlése (ha van)
         const team = userTeams.find(t => t.$id === teamId);
         if (team && team.kep) {
             await deleteOldImageFromStorage(team.kep);
         }
         
-        // 2. UTÁNA: Csapat törlése az adatbázisból
         await databases.deleteDocument(
             '68fe32ea0008ab84b709',
             'csapatok',
             teamId
         );
         
-        // 3. Lokális adatok frissítése
         userTeams = userTeams.filter(t => t.$id !== teamId);
         renderTeamButtons();
-        
-        // 4. Vissza a profil nézetre
         showProfileView();
-        
         alert('Csapat sikeresen törölve!');
         
     } catch (error) {
@@ -1626,4 +1925,3 @@ async function logout() {
         console.error('Hiba a kijelentkezéskor:', error);
     }
 }
-
