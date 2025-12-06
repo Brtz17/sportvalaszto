@@ -1031,37 +1031,40 @@ function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null
 
     // KERESÉS FUNKCIÓ
     searchInput.addEventListener('input', () => {
-        const filter = searchInput.value.toLowerCase();
-        let visibleCategories = 0;
+        const filter = searchInput.value.toLowerCase().trim();
+        const items = dropdownContent.querySelectorAll('.dropdown-item');
+        let visibleItems = 0;
 
-        categories.forEach(header => {
-            let categoryVisible = false;
-            let nextElement = header.nextElementSibling;
-
-            while (nextElement && !nextElement.classList.contains('category-header')) {
-                if (nextElement.classList.contains('dropdown-item')) {
-                    const text = nextElement.textContent.toLowerCase();
-                    const isVisible = text.includes(filter);
-                    nextElement.style.display = isVisible ? 'flex' : 'none';
-                    if (isVisible) categoryVisible = true;
-                }
-                nextElement = nextElement.nextElementSibling;
-            }
-
-            header.style.display = categoryVisible ? 'block' : 'none';
-            if (categoryVisible) visibleCategories++;
+        // Összes item szűrése
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            const isVisible = filter === '' || text.includes(filter);
+            
+            item.style.display = isVisible ? 'flex' : 'none';
+            if (isVisible) visibleItems++;
         });
 
+        // "Nincs találat" üzenet kezelése
         const noResults = dropdownContent.querySelector('.no-results');
-        if (visibleCategories === 0 && filter !== '') {
+        
+        if (filter !== '' && visibleItems === 0) {
             if (!noResults) {
                 const msg = document.createElement('div');
                 msg.className = 'no-results';
                 msg.textContent = 'Nincs találat';
                 dropdownContent.querySelector('.dropdown-list').appendChild(msg);
             }
-        } else if (noResults) {
-            noResults.remove();
+        } else {
+            if (noResults) {
+                noResults.remove();
+            }
+        }
+        
+        // Opcionális: ha nincs szűrés, visszaállítjuk az összes elemet
+        if (filter === '') {
+            items.forEach(item => {
+                item.style.display = 'flex';
+            });
         }
     });
 
@@ -1545,7 +1548,6 @@ function showNewTeamView() {
                                     <input type="text" class="search-input" placeholder="Keresés...">
                                 </div>
                                 <div class="dropdown-list">
-                                    <div class="category-header">Sportok</div>
                                     ${sportokHTML}
                                 </div>
                             </div>
