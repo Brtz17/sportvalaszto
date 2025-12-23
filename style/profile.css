@@ -187,9 +187,19 @@ h2 {
   font-size: 0.9rem;
   text-align: left;
 }
+
 #new-team-btn{
   font-size: 1rem;
-  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: right;
+  padding: .35rem;
+}
+
+#new-team-btn svg{
+  height: 2rem;
+  width: 2rem;
 }
 
 #site-btn-container{
@@ -215,6 +225,8 @@ h2 {
 }
 
 #profile-form{
+  display: flex;
+  flex-direction: column;
   margin-bottom: 2rem;
 }
 
@@ -244,6 +256,10 @@ h2 {
   height: auto;
   width: 140px;
   margin: 0;
+}
+
+.no-image{
+  text-align: right;
 }
 
 #kep-feltoltes{
@@ -333,7 +349,7 @@ h2 {
 }
 
 #accordion-item.active #accordion-content {
-    max-height: 2000px;
+  height: auto;
 }
 
 #accordion-icon {
@@ -615,22 +631,10 @@ h2 {
     color: #e74c3c;
 }
 
-.password-submit-btn {
-    padding: 1rem;
-    background: #e5b899;
-    color: #4a3227;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
 .password-submit-btn:hover:not(:disabled) {
     background: #d4a788;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .password-submit-btn:disabled {
@@ -736,7 +740,8 @@ input[type="password"]::-ms-clear {
 }
 
 .profile-save-btn{
-  width: 100%;
+  margin-left: auto;
+  width: auto;
   padding: 1rem;
   border-radius: .5rem;
   cursor: pointer;
@@ -752,11 +757,16 @@ input[type="password"]::-ms-clear {
 .profile-save-btn:hover {
   background: #d4a788;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .profile-save-btn:focus{
   transform: translateY(0px);
+}
+
+#form-wrapper{
+  display: flex;
+  flex-direction: column;
 }
 
 /* Új csapat form stílusok */
@@ -803,8 +813,9 @@ input[type="password"]::-ms-clear {
 }
 
 #submit-btn {
-  grid-column: 1 / -1;
+  width: auto;
   padding: 1rem;
+  margin-left: auto;
   background: #e5b899;
   color: #4a3227;
   border: none;
@@ -838,6 +849,7 @@ input[type="password"]::-ms-clear {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 input[name="cimkek[]"]{
@@ -902,11 +914,11 @@ input[name="tagdij"]{
 }
 
 .search-dropdown-btn {
-    background: white;
+    background: #fffdf9;
     color: #333;
     padding: 14px 20px;
     font-size: 16px;
-    border: 2px solid #ddd;
+    border: 1px solid #ddd;
     border-radius: 10px;
     cursor: pointer;
     width: 100%;
@@ -929,6 +941,7 @@ input[name="tagdij"]{
 
 .search-dropdown-content {
     width: 100%;
+    overflow: hidden;
     display: none;
     position: absolute;
     top: 100%;
@@ -950,6 +963,7 @@ input[name="tagdij"]{
     padding: 15px;
     border-bottom: 1px solid #eee;
     background: #f8f9fa;
+    border-radius: 10px 10px 0 0;
 }
 
 .search-input {
@@ -1221,6 +1235,18 @@ input[name="tagdij"]{
       padding: 16px;
       grid-template-columns: 1fr;
   }
+
+  #profile-form{
+    margin-bottom: 1rem;
+  }
+
+  .button-group{
+    margin-top: .75rem;
+    gap: .5rem;
+  }
+  .button-group button{
+    padding: .85rem;
+  }
 }
 
 
@@ -1253,39 +1279,29 @@ input[name="tagdij"]{
   }
 }
 
-/* DESIGN-OS SCROLLBAR */
-.search-dropdown-content {
-    overflow-y: auto;
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #72675f #f0f0f0; /* Firefox */
-    
-    &::-webkit-scrollbar {
-        width: 10px;
-    }
-    
-    &::-webkit-scrollbar-track {
-        background: linear-gradient(to bottom, 
-            #f8f9fa 0%, 
-            #e9ecef 50%, 
-            #f8f9fa 100%);
-        border-radius: 10px;
-        border-left: 1px solid #dee2e6;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-        background: linear-gradient(to bottom, 
-            #6c757d 0%, 
-            #495057 50%, 
-            #6c757d 100%);
-        border-radius: 10px;
-        border: 2px solid #f8f9fa;
-        box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
-    }
-    
-    &::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(to bottom, 
-            #495057 0%, 
-            #343a40 50%, 
-            #495057 100%);
-    }
+/*SCROLLBAR */
+.dropdown-list {
+  overflow-y: auto;            /* függőleges scroll */
+  border-radius: 10px;         /* lekerekítés */
+  position: relative;
+  scroll-behavior: smooth;
+}
+
+.dropdown-list::-webkit-scrollbar {
+  width: 10px;                 /* scrollbar vastagság */
+  border-radius: 0 0 10px 0;         /* lekerekített sarkak */
+}
+
+.dropdown-list::-webkit-scrollbar-track {
+  background: linear-gradient(#f8f9fa, #d4d4d4);
+  border-radius: 0 0 10px 0;         /* lekerekített sarkak */
+}
+
+.dropdown-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.dropdown-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

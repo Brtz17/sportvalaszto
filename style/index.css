@@ -181,6 +181,11 @@ input[type="search"]:not(:focus):hover {
 /* -- EGY KÁRTYA -- */
 .card {
   background-color: #f1e9df;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  flex-direction: column;
   border-radius: 1rem;
   padding: 1rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);

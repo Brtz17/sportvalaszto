@@ -117,6 +117,7 @@ window.addEventListener('load', () => {
 });
 
 // Hamburger menü változók
+const menuContainer = document.querySelector('.menu-container');
 const hamburger = document.getElementById("hamburger");
 const bal = document.getElementById("bal-oldal");
 const jobb = document.getElementById("jobb-oldal");
@@ -141,6 +142,7 @@ function alapAllapotBeallitasa() {
         bal.style.display = 'none';
         hamburgerIcon.style.display = 'block';
         xIcon.style.display = 'none';
+        menuContainer
         overlay.style.display = 'none';
         jobb.style.gridColumn = '1 / -1';
         csukva = true;
@@ -148,7 +150,8 @@ function alapAllapotBeallitasa() {
         // DESKTOP: alapból nyitva
         bal.style.display = 'hidden';
         hamburgerIcon.style.display = 'none';
-        xIcon.style.display = 'block';
+        menuContainer.style.display = 'none';
+        xIcon.style.display = 'none';
         overlay.style.display = 'none';
         jobb.style.gridColumn = '2';
         csukva = false;
@@ -165,13 +168,12 @@ hamburger.addEventListener("click", () => {
             bal.style.display = 'grid';
             overlay.style.display = 'block';
             setTimeout(() => {overlay.classList.add('lathato'); bal.style.left = '0%';}, 10);
+            hamburgerIcon.style.display = 'none';
+            xIcon.style.display = 'block';
         } else {
             bal.style.display = 'grid';
             jobb.style.gridColumn = '2';
         }
-        
-        hamburgerIcon.style.display = 'none';
-        xIcon.style.display = 'block';
         csukva = false;
         
     } else {
@@ -183,14 +185,10 @@ hamburger.addEventListener("click", () => {
                 bal.style.display = 'none';
                 overlay.style.display = 'none';
             }, 10);
-        } else {
-            bal.style.display = 'none';
-            jobb.style.gridColumn = '1 / -1';
+            hamburgerIcon.style.display = 'block';
+            xIcon.style.display = 'none';
+            csukva = true;
         }
-        
-        hamburgerIcon.style.display = 'block';
-        xIcon.style.display = 'none';
-        csukva = true;
     }
 });
 
@@ -434,7 +432,7 @@ function showProfileView() {
                             <button type="submit" id="password-submit-btn" class="profile-save-btn" disabled>
                                 Jelszó megváltoztatása
                             </button>
-                            <div id="password-message-container" style="margin-top: 1rem;"></div>
+                            <div id="password-message-container"></div>
                         </form>
                 </div>
             </div>
@@ -546,7 +544,10 @@ function updatePasswordSubmitButton() {
     const newPassword = document.getElementById('new-password')?.value || '';
     const confirmPassword = document.getElementById('confirm-password')?.value || '';
     
-    if (!submitBtn) return;
+    if (!submitBtn) {
+        console.log("submitBtn nem található")
+        return
+    };
     
     const passwordsMatch = newPassword === confirmPassword && newPassword !== '';
     submitBtn.disabled = !passwordsMatch;
@@ -809,7 +810,7 @@ async function showTeamEditView(teamId) {
             <div class="fullwidth" id="szerkeszto-container-edit">
                 ${szerkesztoHTML}
             </div>
-            <button type="button" id="add-szerkeszto-btn" class="secondary-btn">+ Új szerkesztő hozzáadása</button>
+            <button type="button" id="add-szerkeszto-btn" class="secondary-btn">+ Új szerkesztő</button>
         </div>
 
         <div class="button-group">
@@ -893,9 +894,7 @@ function generateSportDropdowns(selectedSports, sportokHTML) {
 }
 
 // ÖSSZES dropdown inicializálása már kiválasztott sportokkal
-function initializeAllDropdowns(sportokHTML, preSelectedSports = []) {
-    console.log("✅ initializeAllDropdowns függvény elindult");
-    
+function initializeAllDropdowns(sportokHTML, preSelectedSports = []) {    
     const dropdowns = document.querySelectorAll('.search-dropdown');
     console.log(`Talált dropdown-ok: ${dropdowns.length}`);
     
@@ -906,9 +905,7 @@ function initializeAllDropdowns(sportokHTML, preSelectedSports = []) {
 }
 
 // EGY dropdown inicializálása már kiválasztott sporttal - JAVÍTOTT
-function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null) {
-    console.log(`✅ Dropdown inicializálása: ${dropdown.id}, preSelected: ${preSelectedSport}`);
-    
+function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null) {    
     const dropdownBtn = dropdown.querySelector('.search-dropdown-btn');
     const dropdownContent = dropdown.querySelector('.search-dropdown-content');
     
@@ -919,7 +916,6 @@ function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null
     
     const searchInput = dropdownContent.querySelector('.search-input');
     const items = dropdownContent.querySelectorAll('.dropdown-item');
-    const categories = dropdownContent.querySelectorAll('.category-header');
 
     if (!searchInput) {
         console.error('Search input nem található');
@@ -932,7 +928,12 @@ function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null
         clearBtn = document.createElement('button');
         clearBtn.className = 'clear-selection-btn';
         clearBtn.type = 'button';
-        clearBtn.innerHTML = '✕';
+        clearBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="4" x2="20" y2="20"/>
+                    <line x1="20" y1="4" x2="4" y2="20"/>
+                </svg>`;
         clearBtn.title = 'Kiválasztás törlése';
         dropdownBtn.appendChild(clearBtn);
     }
@@ -949,8 +950,6 @@ function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null
     const currentBtnText = dropdownBtn.childNodes[0]?.nodeType === 3 ? dropdownBtn.childNodes[0].nodeValue : dropdownBtn.textContent;
     const cleanText = currentBtnText ? currentBtnText.trim() : 'Válassz sportot';
     
-    console.log(`Dropdown szöveg: "${cleanText}"`);
-
     // Ha van előre kiválasztott sport, beállítjuk
     if (preSelectedSport && (cleanText === 'Válassz sportot' || cleanText === '')) {
         console.log(`Előre kiválasztott sport beállítva: ${preSelectedSport}`);
@@ -970,28 +969,16 @@ function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null
         // Ellenőrizzük a jelenlegi állapotot
         if (cleanText !== 'Válassz sportot' && cleanText !== '') {
             dropdownBtn.classList.add('has-selection');
-            console.log(`Dropdown már van kiválasztva: "${cleanText}"`);
         } else {
             dropdownBtn.classList.remove('has-selection');
-            console.log(`Dropdown üres: "${cleanText}"`);
         }
     }
-
-    // DEBUG: Ellenőrizzük az elemeket
-    console.log('ClearBtn állapota:', {
-        exists: !!clearBtn,
-        parent: clearBtn.parentElement === dropdownBtn,
-        style: clearBtn.style.cssText,
-        computedStyle: window.getComputedStyle(clearBtn).display
-    });
 
     // TÖRLÉS GOMB ESEMÉNYE - ÚJ MÓDSZER
     clearBtn.onclick = function(e) {
         e.stopPropagation();
         e.preventDefault();
-        
-        console.log('Törlés gomb megnyomva');
-        
+                
         // Text node frissítése
         if (dropdownBtn.childNodes[0]?.nodeType === 3) {
             dropdownBtn.childNodes[0].nodeValue = 'Válassz sportot';
@@ -1007,6 +994,10 @@ function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null
         // Frissítjük a dropdown-okat
         setTimeout(() => {
             handleDynamicTags(sportokHTML);
+            const accordion = document.querySelector('#accordion') || false
+            if (accordion) {
+                initializeAccordions().updateHeight();
+            }
         }, 50);
         
         return false;
@@ -1090,13 +1081,13 @@ function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null
                 
                 dropdownBtn.classList.add('has-selection');
                 dropdown.classList.remove('active');
-                
-                console.log(`Sport kiválasztva: ${selectedText} (${dropdown.id})`);
-                
+                                
                 // Új dropdown hozzáadása kiválasztás után
-                setTimeout(() => {
-                    handleDynamicTags(sportokHTML);
-                }, 0);
+                handleDynamicTags(sportokHTML);
+                const accordion = document.querySelector('#accordion') || false
+                if (accordion) {
+                    initializeAccordions().updateHeight();
+                }
             }
         });
     });
@@ -1107,45 +1098,84 @@ function initializeSingleDropdown(dropdown, sportokHTML, preSelectedSport = null
             dropdown.classList.remove('active');
         }
     });
-
-    console.log(`✅ ${dropdown.id} dropdown sikeresen inicializálva`);
 }
 
 function adjustDropdownToForm(dropdown) {
     const content = dropdown.querySelector('.search-dropdown-content');
-    const searchContainer = dropdown.querySelector('.search-container')
-    const dropdownList = dropdown.querySelector('.dropdown-list')
+    const searchContainer = dropdown.querySelector('.search-container');
+    const dropdownList = dropdown.querySelector('.dropdown-list');
+    const accordion = document.querySelector('#accordion') || false
     const form = dropdown.closest('.form, #form, form');
     
     if (!content || !form) return;
+    if (!accordion) {
+        content.style.maxHeight = '200px';
+        dropdownList.style.maxHeight = 200 - searchContainer.offsetHeight + 'px';
+        return
+    }
     
-    // 1. Számold ki a maximális elérhető magasságot
+    // 1. Számold ki a pozíciókat
     const dropdownRect = dropdown.getBoundingClientRect();
     const formRect = form.getBoundingClientRect();
     
-    // 2. Mennyi hely van alul?
+    // 2. Mennyi hely van alul? (dropdown már 16px-rel lejjebb van)
     const spaceBelow = formRect.bottom - dropdownRect.bottom;
     
-    // 3. Mennyi hely van felül? (ha nem fér el alul)
+    // 3. Mennyi hely van felül?
     const spaceAbove = dropdownRect.top - formRect.top;
     
-    // 4. Válaszd ki a nagyobbat, de ne lépd túl a form határait
+    // 4. Válaszd ki a nagyobbat
     let maxHeight;
-    if (spaceBelow > 100) { // Minimum 100px alul
-        maxHeight = Math.min(spaceBelow - 10, 400); // 10px margó, max 400px
-        content.style.top = '100%';
-        content.style.bottom = 'auto';
-    } else {
+    let position = 'below';
+    
+    if (spaceBelow > 100) {
+        maxHeight = Math.min(spaceBelow - 10, 400);
+        position = 'below';
+    } else if (spaceAbove > 100) {
         maxHeight = Math.min(spaceAbove - 10, 400);
-        content.style.top = 'auto';
-        content.style.bottom = '100%';
+        position = 'above';
+    } else {
+        maxHeight = Math.min(Math.max(spaceBelow, spaceAbove) - 10, 400);
+        position = spaceBelow >= spaceAbove ? 'below' : 'above';
     }
     
-    // 5. Alkalmazd a számolt magasságot
-    content.style.maxHeight = maxHeight + 'px';
-    dropdownList.style.maxHeight = maxHeight - searchContainer.offsetHeight + 'px';
+    // 5. Alkalmazd a pozíciót
+    if (position === 'below') {
+        content.style.top = '100%'; // Pontosan az input alá
+        content.style.bottom = 'auto';
+    } else {
+        content.style.top = 'auto';
+        content.style.bottom = '100%'; // Pontosan az input fölé
+    }
     
-    // 6. Korlátozd a szélességet is
+    // 6. Alkalmazd a számolt magasságot
+    content.style.maxHeight = maxHeight + 'px';
+    
+    // 7. Dropdown list magasság
+    if (searchContainer && dropdownList) {
+        const contentStyles = window.getComputedStyle(content);
+        const searchHeight = searchContainer.offsetHeight;
+        const contentPaddingTop = parseInt(contentStyles.paddingTop) || 0;
+        const contentPaddingBottom = parseInt(contentStyles.paddingBottom) || 0;
+        
+        const availableHeight = maxHeight - 
+                               contentPaddingTop - 
+                               contentPaddingBottom - 
+                               searchHeight;
+        
+        dropdownList.style.maxHeight = Math.max(availableHeight, 0) + 'px';
+        
+        const listItemsHeight = Array.from(dropdownList.children)
+            .reduce((total, child) => total + child.offsetHeight, 0);
+        
+        if (listItemsHeight <= availableHeight) {
+            dropdownList.style.overflowY = 'hidden';
+        } else {
+            dropdownList.style.overflowY = 'auto';
+        }
+    }
+    
+    // 8. Szélesség korlátozása
     content.style.maxWidth = (formRect.width - dropdownRect.left + formRect.left) + 'px';
     content.style.left = '0';
     content.style.right = 'auto';
@@ -1346,8 +1376,7 @@ async function saveTeam(e, teamId, sportokHTML) {
     
     const selectedSports = Array.from(document.querySelectorAll('.search-dropdown-btn'))
         .map(btn => btn.textContent)
-        .filter(text => text !== 'Válassz sportot' && text.trim() !== '');
-    
+        .filter(text => !text.includes('Válassz sportot') && text.trim() !== '');    
     const uniqueSports = [...new Set(selectedSports)];
     
     const szerkesztok = [];
@@ -1464,7 +1493,6 @@ function addNewDropdown(sportokHTML) {
                     <input type="text" class="search-input" placeholder="Keresés...">
                 </div>
                 <div class="dropdown-list">
-                    <div class="category-header">Sportok</div>
                     ${sportokHTML}
                 </div>
             </div>
@@ -1562,8 +1590,8 @@ function showNewTeamView() {
                     </div>
 
                     <small>* A mező kitöltése kötelező</small>
-                    <button type="submit" id="submit-btn">Hozzáadás</button>
                 </form>
+                <button type="submit" id="submit-btn">Hozzáadás</button>
             </div>
         `;
 
@@ -1579,6 +1607,8 @@ function showNewTeamView() {
 // FORM INICIALIZÁLÁS
 async function initializeTeamForm() {
     const form = document.querySelector("form");
+    const submitBtn = document.querySelector('#submit-btn');
+    const saveBtn = document.querySelector('.save-btn')
     const kepInput = document.getElementById("kepInput");
     const kepPreview = document.getElementById("kepPreview");
     const messageContainer = document.getElementById("message-container");
@@ -1621,11 +1651,12 @@ async function initializeTeamForm() {
         });
     }
 
-    form.addEventListener("submit", function(e) {
-        e.preventDefault();
-        handleFormSubmit(e, form, messageContainer);
-    });
-
+    if (submitBtn) {
+        submitBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            handleFormSubmit(e, form, messageContainer);
+        });
+    }
     console.log("✅ Team form inicializálva");
 }
 
@@ -1644,26 +1675,57 @@ function handleImagePreview(event, kepPreview) {
 
 // Form elküldése
 async function handleFormSubmit(event, form, messageContainer) {
+      console.log("✅ handleFormSubmit ELINDULT");  // Ezt írd be az elejére!
     event.preventDefault();
     
-    const submitBtn = form.querySelector('#submit-btn');
+    const submitBtn = document.querySelector('#submit-btn');
     const originalText = submitBtn.textContent;
+    const nevInput = form.querySelector('input[name="nev"]');
+    const emailInput = form.querySelector('input[name="email"]');
+    const telefonInput = form.querySelector('input[name="telefon"]');
+    const iranyitoszamInput = form.querySelector('input[name="iranyitoszam"]');
+    const varosInput = form.querySelector('input[name="varos"]');
+    const utcaInput = form.querySelector('input[name="utca"]');
+    const hazszamInput = form.querySelector('input[name="hazszam"]');
     
+    if (!submitBtn) {
+        console.log("submitBtn és saveBtn nem található")
+        return
+    };
+        
+    if (!nevInput.value.trim() || 
+            !emailInput.value.trim() || 
+            !telefonInput.value.trim() || 
+            !iranyitoszamInput.value.trim() || 
+            !varosInput.value.trim() || 
+            !utcaInput.value.trim() || 
+            !hazszamInput.value.trim()) {
+            showMessage(messageContainer, 'Minden kötelező mezőt tölts ki!', 'error');
+            return;
+        }
+
     try {
-        submitBtn.textContent = 'Feldolgozás...';
-        submitBtn.disabled = true;
+        if (submitBtn) {
+            submitBtn.textContent = 'Feldolgozás...';
+            submitBtn.disabled = true;
+        } else {
+            saveBtn.textContent = 'Feldolgozás...';
+            saveBtn.disabled = true;            
+        }
 
         const selectedSports = Array.from(document.querySelectorAll('.search-dropdown-btn'))
             .map(btn => btn.textContent)
-            .filter(text => text !== 'Válassz sportot' && text.trim() !== '');
+            .filter(text => !text.includes('Válassz sportot') && text.trim() !== '');
         
         const uniqueSports = [...new Set(selectedSports)];
         
         console.log('Összes sport:', selectedSports);
         console.log('Egyedi sportok:', uniqueSports);
-        
+
         if (uniqueSports.length === 0) {
             showMessage(messageContainer, 'Legalább egy sportot válassz ki!', 'error');
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
             return;
         }
         
@@ -1737,7 +1799,6 @@ async function handleFormSubmit(event, form, messageContainer) {
                             <input type="text" class="search-input" placeholder="Keresés...">
                         </div>
                         <div class="dropdown-list">
-                            <div class="category-header">Sportok</div>
                         </div>
                     </div>
                 </div>
@@ -1747,7 +1808,8 @@ async function handleFormSubmit(event, form, messageContainer) {
 
     } catch (error) {
         console.error('Hiba:', error);
-        showMessage(messageContainer, `Hiba: ${error.message}`, 'error');
+        const translatedMessage = await translateErrorMessage(error);
+        showMessage(messageContainer, `❌ ${translatedMessage}`, 'error');
     } finally {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
@@ -1826,6 +1888,13 @@ function initializeAccordions() {
         return;
     }
     
+    // Frissítő függvény
+    function updateAccordionHeight() {
+        if (accordionItem.classList.contains('active')) {
+            accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+        }
+    }
+    
     accordionHeader.addEventListener('click', () => {
         const isActive = accordionItem.classList.contains('active');
         
@@ -1838,7 +1907,10 @@ function initializeAccordions() {
         } else {
             accordionItem.classList.add('active');
             accordionHeader.classList.add('active');
-            accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+            // Állítsd vissza maxHeight-t auto-ra, hogy megkapjuk a valódi magasságot
+            accordionContent.style.maxHeight = 'none';
+            const scrollHeight = accordionContent.scrollHeight;
+            accordionContent.style.maxHeight = scrollHeight + 'px';
             rotation += 180;
             accordionIcon.style.transform = `rotate(${rotation}deg)`;
         }
@@ -1852,6 +1924,11 @@ function initializeAccordions() {
             adjustDropdownToForm(dropdown);
         }
     });
+
+    // Visszaadjuk a frissítő függvényt, hogy más kódrészekből is meghívhassák
+    return {
+        updateHeight: updateAccordionHeight
+    };
 }
 
 // CSAK FORM SUBMIT TILTÁS ENTERREL

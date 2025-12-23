@@ -103,11 +103,11 @@ async function loadUsers() {
 
       // Kép kezelése
       if (doc.kep) {
+        image.style.display = 'block';
         image.src = doc.kep;
         image.alt = `${doc.nev} logója`;
       } else {
-        image.src = "#";
-        image.alt = "#";
+        image.style.display = 'none';
       }
 
       // Kattintható kártya (opcionális)
