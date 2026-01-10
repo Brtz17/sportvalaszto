@@ -2,11 +2,16 @@ import { databases, ID } from "./lib/appwrite.js";
 
 async function getIdFromUrl() {
     try {
-        const currentUrl = window.location.href;
-        const teamId = currentUrl.split('?')[1];
-        console.log('Team ID:', teamId);
+        const urlParams = new URLSearchParams(window.location.search);
+        const teamId = urlParams.get('id') || window.location.href.split('?')[1];
+        
+        console.log('Team ID from URL:', teamId);
         
         if (teamId) {
+            // 1. Pageview rögzítése (közvetlen Appwrite)
+            await trackPageView(teamId);
+            
+            // 2. Csapat adatainak betöltése
             await showTeamView(teamId);
         } else {
             console.error('Nincs teamId az URL-ben');
@@ -17,8 +22,59 @@ async function getIdFromUrl() {
     }
 }
 
+// Pageview rögzítése KÖZVETLENÜL Appwrite-ba
+async function trackPageView(teamId) {
+    try {
+        console.log('📊 Tracking pageview for team:', teamId);
+        
+        // IP cím lekérése külső API-ról (opcionális)
+        let ip = 'unknown';
+        try {
+            const ipResponse = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipResponse.json();
+            ip = ipData.ip;
+        } catch (ipError) {
+            console.log('IP cím lekérése sikertelen, használom a default értéket');
+        }
+        
+        // IP anonimizálás
+        let anonymizedIp = ip;
+        if (ip.includes('.') && ip !== 'unknown') {
+            const parts = ip.split('.');
+            if (parts.length === 4) {
+                anonymizedIp = `${parts[0]}.${parts[1]}.${parts[2]}.0`;
+            }
+        }
+        
+        // Dokumentum létrehozása Appwrite-ban
+        const document = await databases.createDocument(
+            '68fe32ea0008ab84b709',
+            'pageviews',
+            ID.unique(),
+            {
+                teamId: teamId,
+                date: new Date().toISOString().split('T')[0],
+                timestamp: new Date().toISOString(),
+                ipAddress: anonymizedIp,
+                userAgent: navigator.userAgent || 'unknown',
+                source: window.location.search.includes('ref=') ? 'link' : 'direct'
+            }
+        );
+        
+        console.log('✅ Pageview tracked:', document.$id);
+        return document;
+        
+    } catch (error) {
+        console.error('⚠️ Failed to track pageview:', error);
+        // Nem kritikus hiba - nem blokkoljuk a csapat megjelenítését
+        return null;
+    }
+}
+
+// Csapat adatainak betöltése és megjelenítése
 async function showTeamView(teamId) {
     try {
+        // Csapat adatainak lekérése Appwrite-ból
         const team = await databases.getDocument(
             '68fe32ea0008ab84b709', 
             'csapatok', 
@@ -31,19 +87,22 @@ async function showTeamView(teamId) {
             return;
         }
         
+        // Oldal címének beállítása
         document.title = `${team.nev} - SportVálasztó`;
 
         const content = document.getElementById('content');
         
+        // Címkék (sportok) generálása
         const cimkekHTML = team.cimkek && team.cimkek.length > 0 
             ? team.cimkek.map(cimke => `
                 <div class="cimke-display">${cimke}</div>
             `).join('')
             : '<div class="no-data">Nincsenek sportok megadva</div>';
         
-        // Leírás HTML tartalom - üres esetén placeholder
+        // Leírás - üres esetén üres string
         let leirasHTML = team.leiras || '';
-  
+        
+        // HTML tartalom generálása
         content.innerHTML = `
     <div id="fejlec">
         <h2 style="margin-bottom: 1rem">${team.nev}</h2>
@@ -66,7 +125,7 @@ async function showTeamView(teamId) {
             </div>
             <div class="info-item" id="info-web">
                 <label>Weboldal</label>
-                <span>${team.weboldal ? `<a href="${team.weboldal}" target="_blank">${team.weboldal}</a>` : '-'}</span>
+                <span>${team.weboldal ? `<a href="${team.weboldal}" target="_blank" rel="noopener noreferrer">${team.weboldal}</a>` : '-'}</span>
             </div>
 
             <div class="info-item" id="info-cim">
@@ -90,18 +149,36 @@ async function showTeamView(teamId) {
             </div>
     </div>
 `;
-    
-    // VÁRJUNK EGY KICSIT, HOGY A HTML BETELEPÜLJÖN
-    setTimeout(() => {
-        hideEmptyFields(team);
-    }, 10);
+        
+        // Rövid várakozás, majd üres mezők elrejtése
+        setTimeout(() => {
+            hideEmptyFields(team);
+        }, 10);
+        
+        // Kép hibakezelés
+        const logoImg = document.querySelector('.csapat-logo');
+        if (logoImg) {
+            logoImg.onerror = function() {
+                this.style.display = 'none';
+                console.log('Logo image failed to load');
+            };
+        }
 
     } catch (error) {
-        console.error('Hiba a csapat betöltésekor:', error);
-        content.innerHTML = '<p class="error">Hiba történt a csapat betöltésekor</p>';
+        console.error('❌ Hiba a csapat betöltésekor:', error);
+        const content = document.getElementById('content');
+        if (content) {
+            content.innerHTML = `
+                <div class="error">
+                    <p>Hiba történt a csapat betöltésekor</p>
+                    <p><small>${error.message}</small></p>
+                </div>
+            `;
+        }
     }
 }
 
+// Üres mezők elrejtése
 function hideEmptyFields(team) {
     const fields = [
         { key: 'weboldal', id: 'info-web' },
@@ -110,98 +187,33 @@ function hideEmptyFields(team) {
         { key: 'leiras', id: 'info-leiras' }
     ];
     
-    console.log('Team data for hiding:', team); // DEBUG
+    console.log('Team data for hiding:', team);
     
     fields.forEach(field => {
         const value = team[field.key];
         const isEmpty = !value || 
                        (typeof value === 'string' && value.trim() === "") || 
                        value === "0" || 
-                       value === 0 ;
+                       value === 0;
         
-        console.log(`Field: ${field.key}, Value: "${value}", isEmpty: ${isEmpty}`); // DEBUG
+        console.log(`Field: ${field.key}, Value: "${value}", isEmpty: ${isEmpty}`);
         
         if (isEmpty) {
             const element = document.getElementById(field.id);
-            console.log(`Element found for ${field.id}:`, element); // DEBUG
             if (element) {
                 element.style.display = 'none';
-                console.log(`Hiding element: ${field.id}`); // DEBUG
+                console.log(`Hiding element: ${field.id}`);
             }
         }
     });
+    
+    // Email cím ellenőrzése
+    const emailElement = document.getElementById('info-email');
+    if (emailElement && (!team.email || team.email.trim() === "")) {
+        emailElement.style.display = 'none';
+        console.log('Hiding email (empty)');
+    }
 }
 
+// Oldal betöltésekor futtatjuk
 document.addEventListener('DOMContentLoaded', getIdFromUrl);
-
-export default async function handler(req, res) {
-    console.log("beléptünk a függvénybe")
-  try {
-    console.log("Létrehozás el lett kezdve");
-    
-    // Ellenőrizd a metódust
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-    
-    // Ellenőrizd, hogy van-e body
-    if (!req.body) {
-      return res.status(400).json({ error: 'Missing request body' });
-    }
-    
-    const { teamId, userId = null, source = 'direct' } = req.body;
-    
-    // Kötelező mező ellenőrzése
-    if (!teamId) {
-      return res.status(400).json({ error: 'teamId is required' });
-    }
-    
-    // IP anonimizálás
-    let ip = 'unknown';
-    if (req.headers['x-forwarded-for']) {
-      ip = req.headers['x-forwarded-for'].split(',')[0].trim();
-    } else if (req.socket && req.socket.remoteAddress) {
-      ip = req.socket.remoteAddress;
-    }
-    
-    // IPv4 cím anonimizálása (IPv6-ot kezelj külön)
-    let anonymizedIp = 'unknown';
-    if (ip.includes('.')) {
-      const parts = ip.split('.');
-      if (parts.length === 4) {
-        anonymizedIp = parts.slice(0, 3).join('.') + '.0';
-      }
-    }
-    
-    console.log(`Creating pageview for team: ${teamId}, IP: ${anonymizedIp}`);
-    
-    // Dokumentum létrehozása
-    const document = await databases.createDocument(
-      '68fe32ea0008ab84b709', // Database ID
-      'pageviews', // Collection ID
-      ID.unique(),
-      {
-        teamId,
-        userId,
-        date: new Date().toISOString().split('T')[0],
-        timestamp: new Date().toISOString(),
-        ipAddress: anonymizedIp,
-        userAgent: req.headers['user-agent'] || 'unknown',
-        source
-      }
-    );
-    
-    console.log("Dokumentum sikeresen létrehozva:", document.$id);
-    res.status(200).json({ success: true, documentId: document.$id });
-    
-  } catch (error) {
-    console.error('Error tracking pageview:', error);
-    
-    // Részletes hiba információk
-    res.status(500).json({ 
-      error: 'Tracking failed',
-      message: error.message,
-      code: error.code || 'unknown'
-    });
-  }
-}

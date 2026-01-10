@@ -1,4 +1,4 @@
-import { client, databases } from "../js/lib/appwrite.js";
+import { databases } from "../js/lib/appwrite.js";
 
 export default async ({ req, res, log, error }) => {
   const yesterday = new Date();
