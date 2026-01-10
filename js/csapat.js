@@ -1,4 +1,4 @@
-import { databases, client, functions } from "./lib/appwrite.js";
+import { databases, ID } from "./lib/appwrite.js";
 
 async function getIdFromUrl() {
     try {
@@ -134,49 +134,74 @@ function hideEmptyFields(team) {
 
 document.addEventListener('DOMContentLoaded', getIdFromUrl);
 
-async function trackPageView(teamId) {
-    try {
-        // Az Appwrite Function végpontja
-        const functionUrl = 'https://cloud.appwrite.io/v1/functions/YOUR_FUNCTION_ID/executions';
-        
-        // Ellenőrizzük, hogy már trackeltük-e ma
-        const today = new Date().toISOString().split('T')[0];
-        const storageKey = `viewed_${teamId}_${today}`;
-        
-        if (localStorage.getItem(storageKey)) {
-            console.log('Already tracked today from this browser');
-            return;
-        }
-        
-        // Küldés a Function-nek
-        const response = await fetch(functionUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                teamId: teamId,
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent,
-                screenSize: `${window.screen.width}x${window.screen.height}`
-            })
-        });
-        
-        if (response.ok) {
-            localStorage.setItem(storageKey, 'true');
-            console.log('Pageview tracked successfully');
-        }
-        
-    } catch (error) {
-        console.error('Tracking error:', error);
-    }
-}
-
-// Hívás az oldal betöltésekor
-document.addEventListener('DOMContentLoaded', () => {
-    // Használd a meglévő getIdFromUrl függvényed
-    const teamId = getIdFromUrl(); // Ez már létezik a kódodban
+export default async function handler(req, res) {
+    console.log("beléptünk a függvénybe")
+  try {
+    console.log("Létrehozás el lett kezdve");
     
-    if (teamId) {
-        // Kis késleltetés
-        setTimeout(() => trackPageView(teamId), 1000);
+    // Ellenőrizd a metódust
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
     }
-});
+    
+    // Ellenőrizd, hogy van-e body
+    if (!req.body) {
+      return res.status(400).json({ error: 'Missing request body' });
+    }
+    
+    const { teamId, userId = null, source = 'direct' } = req.body;
+    
+    // Kötelező mező ellenőrzése
+    if (!teamId) {
+      return res.status(400).json({ error: 'teamId is required' });
+    }
+    
+    // IP anonimizálás
+    let ip = 'unknown';
+    if (req.headers['x-forwarded-for']) {
+      ip = req.headers['x-forwarded-for'].split(',')[0].trim();
+    } else if (req.socket && req.socket.remoteAddress) {
+      ip = req.socket.remoteAddress;
+    }
+    
+    // IPv4 cím anonimizálása (IPv6-ot kezelj külön)
+    let anonymizedIp = 'unknown';
+    if (ip.includes('.')) {
+      const parts = ip.split('.');
+      if (parts.length === 4) {
+        anonymizedIp = parts.slice(0, 3).join('.') + '.0';
+      }
+    }
+    
+    console.log(`Creating pageview for team: ${teamId}, IP: ${anonymizedIp}`);
+    
+    // Dokumentum létrehozása
+    const document = await databases.createDocument(
+      '68fe32ea0008ab84b709', // Database ID
+      'pageviews', // Collection ID
+      ID.unique(),
+      {
+        teamId,
+        userId,
+        date: new Date().toISOString().split('T')[0],
+        timestamp: new Date().toISOString(),
+        ipAddress: anonymizedIp,
+        userAgent: req.headers['user-agent'] || 'unknown',
+        source
+      }
+    );
+    
+    console.log("Dokumentum sikeresen létrehozva:", document.$id);
+    res.status(200).json({ success: true, documentId: document.$id });
+    
+  } catch (error) {
+    console.error('Error tracking pageview:', error);
+    
+    // Részletes hiba információk
+    res.status(500).json({ 
+      error: 'Tracking failed',
+      message: error.message,
+      code: error.code || 'unknown'
+    });
+  }
+}
