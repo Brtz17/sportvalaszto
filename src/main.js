@@ -1,12 +1,6 @@
-import { Client, Databases, Functions } from "../js/lib/appwrite.js";
+import { client, databases } from "../js/lib/appwrite.js";
 
 export default async ({ req, res, log, error }) => {
-  const client = new Client()
-    .setEndpoint(process.env.APPWRITE_ENDPOINT)
-    .setProject(process.env.APPWRITE_PROJECT_ID)
-    .setKey(process.env.APPWRITE_API_KEY);
-
-  const databases = new Databases(client);
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split('T')[0];
