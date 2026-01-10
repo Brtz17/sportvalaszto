@@ -1668,7 +1668,62 @@ function handleImagePreview(event, kepPreview) {
         reader.onload = function(e) {
             kepPreview.src = e.target.result;
             kepPreview.style.display = 'block';
+            
+            // MOST, miután a kép betöltött, tudjuk a méreteit!
+            
+            const kepInputContainer = document.getElementById('kep-feltoltes');
+            
+            // Biztosítsuk, hogy a container relative legyen
+            kepInputContainer.style.position = 'relative';
+            
+            // Régi ikon törlése (ha van)
+            const oldIcon = document.getElementById('kep-delete-icon');
+            if (oldIcon) oldIcon.remove();
+            
+            // Új ikon
+            const deleteIcon = document.createElement('div');
+            deleteIcon.id = 'kep-delete-icon';
+            deleteIcon.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" fill="none" stroke="white" 
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="4" x2="20" y2="20"/>
+                    <line x1="20" y1="4" x2="4" y2="20"/>
+                </svg>
+            `;
+            
+            // Stílusok - NE használj cssText +=, mert felülír!
+            deleteIcon.style.cssText = `
+                position: absolute;
+                top: 24px;
+                background: #dc3545;
+                border-radius: 50%;
+                padding: 4px;
+                cursor: pointer;
+                z-index: 100;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            `;
+            deleteIcon.style.left = kepPreview.clientWidth + 'px';
+            
+            deleteIcon.onclick = function() {
+                // Kép törlése
+                kepPreview.src = '';
+                kepPreview.style.display = 'none';
+                
+                // Fájl input reset
+                event.target.value = '';
+                
+                // Ikon törlése
+                deleteIcon.remove();
+            };
+            
+            kepInputContainer.appendChild(deleteIcon);
         };
+        
         reader.readAsDataURL(file);
     }
 }

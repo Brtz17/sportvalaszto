@@ -1,4 +1,4 @@
-import { databases } from "./lib/appwrite.js";
+import { databases, client, functions } from "./lib/appwrite.js";
 
 async function getIdFromUrl() {
     try {
@@ -133,3 +133,50 @@ function hideEmptyFields(team) {
 }
 
 document.addEventListener('DOMContentLoaded', getIdFromUrl);
+
+async function trackPageView(teamId) {
+    try {
+        // Az Appwrite Function végpontja
+        const functionUrl = 'https://cloud.appwrite.io/v1/functions/YOUR_FUNCTION_ID/executions';
+        
+        // Ellenőrizzük, hogy már trackeltük-e ma
+        const today = new Date().toISOString().split('T')[0];
+        const storageKey = `viewed_${teamId}_${today}`;
+        
+        if (localStorage.getItem(storageKey)) {
+            console.log('Already tracked today from this browser');
+            return;
+        }
+        
+        // Küldés a Function-nek
+        const response = await fetch(functionUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                teamId: teamId,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                screenSize: `${window.screen.width}x${window.screen.height}`
+            })
+        });
+        
+        if (response.ok) {
+            localStorage.setItem(storageKey, 'true');
+            console.log('Pageview tracked successfully');
+        }
+        
+    } catch (error) {
+        console.error('Tracking error:', error);
+    }
+}
+
+// Hívás az oldal betöltésekor
+document.addEventListener('DOMContentLoaded', () => {
+    // Használd a meglévő getIdFromUrl függvényed
+    const teamId = getIdFromUrl(); // Ez már létezik a kódodban
+    
+    if (teamId) {
+        // Kis késleltetés
+        setTimeout(() => trackPageView(teamId), 1000);
+    }
+});

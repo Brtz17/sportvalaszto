@@ -9,7 +9,7 @@ body {
   background-size: 850px auto;
   color: #3a2e2e;
   margin: 0;
-  padding: 0.5rem 2rem 2rem 2rem;
+  padding: 0.5rem 2rem .5rem 2rem;
   display: grid;
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr 3.5fr;
@@ -281,6 +281,7 @@ h2 {
   padding: 0 !important;
   border-radius: 0 !important;
 }
+
 
 #logo-edit-container{
   height: 100%;
@@ -910,7 +911,6 @@ input[name="tagdij"]{
 .search-dropdown {
     position: relative;
     width: 100%;
-    max-width: 400px;
 }
 
 .search-dropdown-btn {
@@ -1217,11 +1217,6 @@ input[name="tagdij"]{
     gap: 6px;
   }
 
-  input[name="cimkek[]"]{
-  margin-bottom: .5rem;
-  grid-column: 1 / -1;
-  }
-
   #password-form {
       padding: 0.75rem;
   }
@@ -1251,7 +1246,7 @@ input[name="tagdij"]{
 
 
 /* ===== DESKTOP STÍLUSOK (min-width: 601px) ===== */
-@media (min-width: 601px) {
+@media (min-width: 801px) {
   #bal-oldal {
     /* NE használj !important itt, hagyd, hogy a JavaScript irányítsa */
     position: static;
@@ -1268,7 +1263,12 @@ input[name="tagdij"]{
   #jobb-oldal {
     grid-column: 2;
   }
-  
+  #accordion-content #osszecsuko, #form {
+      grid-template-columns: 1fr 1fr 1fr;
+  }
+  #cimkek-container{
+    grid-template-columns: 1fr 1fr 1fr;
+  }
   /* Desktopon a hamburger ikonok kezelése */
   #hamburger-icon {
     display: none;
