@@ -359,17 +359,17 @@ function showProfileView() {
     
     jobbOldal.innerHTML = `
         <h2>Szia, ${currentUser.name}!</h2>
-        <form id="profile-form">
-            <div class="form-group">
-                <label>Név:</label>
-                <input type="text" id="profile-name" value="${currentUser.name}" required>
+        <div class="container">
+            <!-- Itt jelenik meg a dashboard -->
+            <div id="dashboard-container">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Dashboard betöltése...</p>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Email:</label>
-                <div id="profile-email">${currentUser.email}</div>
-            </div>
-            <button type="submit" class="profile-save-btn">Profil mentése</button>
-        </form>
+        </div>
+
+
 
         <!-- JELSZÓ VÁLTOZTATÁS SZAKASZ -->
         <div class="fullwidth" id="accordion">
@@ -438,12 +438,283 @@ function showProfileView() {
             </div>
         </div>
     `;
-    const profileForm = document.getElementById('profile-form');
-    profileForm.addEventListener('submit', saveProfile);
     setupPasswordChangeHandlers();
     disableEnterSubmission();
     initializeAccordions();
+    initDashboard();
 }
+// profile.js - JAVÍTOTT VERZIÓ
+const teamCharts = {};
+
+// ==================== 1. SEGÉDFÜGGVÉNYEK ====================
+function formatChartDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('hu-HU', {
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+// ==================== 2. STATISZTIKA FÜGGVÉNYEK ====================
+async function getTeamStats(teamId, days = 30) {
+    try {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+        const startDateStr = startDate.toISOString().split('T')[0];
+        
+        const pageviews = await databases.listDocuments(
+            '68fe32ea0008ab84b709',
+            'pageviews',
+            [
+                Query.equal('teamId', teamId),
+                Query.greaterThanEqual('date', startDateStr),
+                Query.orderAsc('date')
+            ]
+        );
+        
+        // Napi adatok előkészítése
+        const dailyStats = {};
+        
+        // Utolsó X nap dátumainak generálása
+        for (let i = days - 1; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+            dailyStats[dateStr] = 0;
+        }
+        
+        // Megszámolás
+        pageviews.documents.forEach(doc => {
+            if (dailyStats[doc.date] !== undefined) {
+                dailyStats[doc.date]++;
+            }
+        });
+        
+        // Átalakítás tömbbé
+        const dailyData = Object.keys(dailyStats).map(date => ({
+            date: date,
+            count: dailyStats[date],
+            formattedDate: formatChartDate(date)
+        }));
+        
+        return {
+            dailyData: dailyData
+        };
+    } catch (error) {
+        console.error(`Hiba a ${teamId} statisztikáinál:`, error);
+        return {
+            dailyData: []
+        };
+    }
+}
+
+// ==================== 3. ADATBETÖLTÉS ====================
+async function loadUserTeamsWithStats() {
+    try {
+        if (!currentUser || !currentUser.email) {
+            console.error('Nincs bejelentkezett felhasználó!');
+            return [];
+        }
+        
+        // Csapatok betöltése
+        const response = await databases.listDocuments(
+            '68fe32ea0008ab84b709',
+            'csapatok',
+            [Query.contains('szerkeszto', currentUser.email)]
+        );
+        
+        userTeams = response.documents;
+        console.log(`${userTeams.length} csapat betöltve`);
+        
+        // Statisztikák összegyűjtése
+        const teamsWithStats = await Promise.all(
+            userTeams.map(async (csapat) => {
+                const stats = await getTeamStats(csapat.$id, 30);
+                return {
+                    ...csapat,
+                    stats: stats
+                };
+            })
+        );
+        
+        return teamsWithStats;
+        
+    } catch (error) {
+        console.error('Hiba a csapatok betöltésekor:', error);
+        return [];
+    }
+}
+
+// ==================== 4. GRAFIKON FÜGGVÉNYEK ====================
+function renderTeamChart(teamId, dailyData, teamName) {
+    const canvasId = `chart-${teamId.replace(/[^a-zA-Z0-9]/g, '-')}`;
+    const canvas = document.getElementById(canvasId);
+    
+    if (!canvas) {
+        console.error(`Canvas nem található: ${canvasId}`);
+        return;
+    }
+    
+    // Régi grafikon törlése
+    if (teamCharts[teamId]) {
+        teamCharts[teamId].destroy();
+    }
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Adatok előkészítése
+    const labels = dailyData.map(d => d.formattedDate);
+    const data = dailyData.map(d => d.count);
+    
+    // Grafikon létrehozása - SZÍNMAGYARÁZÓ NÉLKÜL
+    teamCharts[teamId] = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '', // Üres címke - NEM jelenik meg a színmagyarázóban
+                data: data,
+                borderColor: 'rgb(229, 184, 153)', // A Te színed
+                backgroundColor: 'rgba(229, 183, 153, 0.34)',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true,
+                pointRadius: 2,
+                pointHoverRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false // KIKAPCSOLVA A SZÍNMAGYARÁZÓ
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            return dailyData[tooltipItems[0].dataIndex].date;
+                        },
+                        label: function(context) {
+                            return `${context.parsed.y} megtekintés`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    display: true,
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        maxRotation: 0,
+                        maxTicksLimit: 10,
+                        font: {
+                            size: 10
+                        },
+                        color: '#666'
+                    }
+                },
+                y: {
+                    display: true,
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0,
+                        font: {
+                            size: 10
+                        },
+                        color: '#666'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// ==================== 5. MEGJELENÍTÉS (NEM TELJES SZÉLESSÉG) ====================
+function renderDashboard(teamsData) {
+    const container = document.getElementById('dashboard-container');
+    if (!container) {
+        console.error('Nincs dashboard-container elem!');
+        return;
+    }
+    
+    if (teamsData.length === 0) {
+        container.innerHTML = '<p class="no-teams-message">Nincsenek csapataid.</p>';
+        return;
+    }
+    
+    // Csapatok grafikonjaival - MAX 600px SZÉLES
+    container.innerHTML = teamsData.map(team => {
+        const canvasId = `chart-${team.$id.replace(/[^a-zA-Z0-9]/g, '-')}`;
+        return `
+            <div class="team-chart-container">
+                <h3 class="team-chart-title">${team.nev}</h3>
+                <div class="chart-wrapper">
+                    <canvas id="${canvasId}"></canvas>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    // Grafikonok renderelése
+    teamsData.forEach(team => {
+        if (team.stats && team.stats.dailyData) {
+            setTimeout(() => {
+                renderTeamChart(team.$id, team.stats.dailyData, team.nev);
+            }, 100);
+        }
+    });
+}
+
+// ==================== 6. INICIALIZÁLÁS ====================
+async function initDashboard() {
+    console.log('Dashboard inicializálása...');
+    
+    try {
+        if (typeof databases === 'undefined') {
+            console.error('Appwrite databases nincs definiálva!');
+            return;
+        }
+        
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js nincs betöltve!');
+            return;
+        }
+        
+        // Felhasználó (már be van állítva a currentUser)
+        if (!currentUser || !currentUser.email) {
+            try {
+                currentUser = await account.get();
+                console.log('Felhasználó:', currentUser.email);
+            } catch (error) {
+                currentUser = { email: 'teszt@example.com' };
+            }
+        }
+        
+        // Adatok betöltése
+        const teamsData = await loadUserTeamsWithStats();
+        
+        // Megjelenítés
+        renderDashboard(teamsData);
+        
+    } catch (error) {
+        console.error('Hiba:', error);
+        const container = document.getElementById('dashboard-container');
+        if (container) {
+            container.innerHTML = '<p class="error-message">Hiba történt az adatok betöltésekor.</p>';
+        }
+    }
+}
+
+// Globális hozzáférés
+window.initDashboard = initDashboard;
 
 // Üzenet megjelenítése
 function showPasswordMessage(text, type = 'success') {
@@ -2003,22 +2274,6 @@ function disableEnterSubmission() {
             }
         }
     });
-}
-
-// PROFIL MENTÉSE
-async function saveProfile(e) {
-    e.preventDefault();
-    
-    const name = document.getElementById('profile-name').value;
-    
-    try {
-        await account.updateName(name);
-        currentUser.name = name;
-        alert('Profil sikeresen frissítve!');
-    } catch (error) {
-        console.error('Hiba a profil mentésekor:', error);
-        alert('Hiba történt a profil mentésekor');
-    }
 }
 
 // CSAPAT TÖRLÉSE

@@ -308,7 +308,7 @@ h2 {
 /* Accordion stílusok */
 #accordion {
     border-radius: 16px;
-    margin-bottom: 1.5rem;
+    margin: 1.5rem 0;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     background: none;
@@ -1065,6 +1065,42 @@ input[name="tagdij"]{
 
 .search-dropdown.active .dropdown-arrow {
     transform: translateY(-50%) rotate(180deg);
+}
+
+/* ==================== GRAFIKON GRID ==================== */
+
+#dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+    max-width: 100%;
+}
+
+.team-chart-container {
+    border-radius: 8px;
+    padding: 15px;
+  }
+
+.team-chart-title {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    text-align: center;
+}
+
+.chart-wrapper {
+    height: 150px;
+    max-width: 100%;
+}
+canvas{
+  max-width: 100%;
+}
+
+/* Reszponzív: mobilon 1 oszlop */
+@media (max-width: 768px) {
+    #dashboard-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ===== MOBIL STÍLUSOK (max-width: 600px) ===== */
