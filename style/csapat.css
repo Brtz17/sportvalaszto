@@ -225,6 +225,24 @@ label {
     width: 100%;
 }
 
+#map-container{
+    grid-column: 1 / -1;
+    max-width: 700px;
+    width: 100%;
+    justify-self: center;
+}
+
+#map{
+  height: 200px;
+  width: 100%;
+}
+
+#map span{
+  margin: 0;
+  color: #000000;
+  font-style: normal;
+}
+
 @media (max-width: 600px) {
   body{
     padding: 0.5rem 1rem 1rem 1rem;
@@ -309,7 +327,7 @@ label {
     padding: 1rem;
   }
   .info-item{
-    grid-column: -1 / 1;
+    grid-column: 1 / -1;
   }
   .info-item label, .info-item span, .info-container a{
     text-align: left;

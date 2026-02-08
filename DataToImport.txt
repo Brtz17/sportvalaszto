@@ -1,0 +1,1 @@
+https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=1

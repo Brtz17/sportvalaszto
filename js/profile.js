@@ -524,7 +524,6 @@ async function loadUserTeamsWithStats() {
         );
         
         userTeams = response.documents;
-        console.log(`${userTeams.length} csapat betöltve`);
         
         // Statisztikák összegyűjtése
         const teamsWithStats = await Promise.all(
@@ -674,9 +673,7 @@ function renderDashboard(teamsData) {
 }
 
 // ==================== 6. INICIALIZÁLÁS ====================
-async function initDashboard() {
-    console.log('Dashboard inicializálása...');
-    
+async function initDashboard() {    
     try {
         if (typeof databases === 'undefined') {
             console.error('Appwrite databases nincs definiálva!');

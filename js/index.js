@@ -13,19 +13,15 @@ function handleLayout() {
     const style1 = window.getComputedStyle(searchWrapper1);
     const style2 = window.getComputedStyle(searchWrapper2);
     
-    console.log('Display values:', style1.display, style2.display);
     
     if (style1.display !== 'none') {
       searchInput = searchWrapper1.querySelector('input[type="search"]');
-      console.log('Using wrapper1');
     } else if (style2.display !== 'none') {
       searchInput = searchWrapper2.querySelector('input[type="search"]');
-      console.log('Using wrapper2');
     }
   }
   
   if (searchInput) {
-    console.log('Search input found:', searchInput);
     searchInput.removeEventListener("input", handleSearch);
     searchInput.addEventListener("input", handleSearch);
   } else {
@@ -68,18 +64,12 @@ const debouncedHandleLayout = debounce(handleLayout, 100);
 // Appwrite adatbetöltés (a te kódod marad)
 async function loadUsers() {
   try {
-    console.log("⏳ Adatok betöltése...");
     
-    // Ellenőrizd a konfigurációt
-    console.log("Database ID:", "68fe32ea0008ab84b709");
-    console.log("Collection ID:", "csapatok");
-    
+    // Ellenőrizd a konfigurációt    
     const response = await databases.listDocuments(
       "68fe32ea0008ab84b709",
       "csapatok"
     );
-
-    console.log("✅ Sikeres válasz:", response);
     
     if (!response.documents || response.documents.length === 0) {
       console.log("ℹ️ Nincsenek dokumentumok a gyűjteményben");
@@ -99,8 +89,6 @@ async function loadUsers() {
       header.textContent = doc.nev || "Név nélkül";
       body.textContent = `${doc.email || "Email nélkül"} | ${doc.cimkek?.join(", ") || "Nincsenek címkék"}`;
       
-      console.log(doc.kep)
-
       // Kép kezelése
       if (doc.kep) {
         image.style.display = 'block';
