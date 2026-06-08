@@ -1,4 +1,4 @@
-import { databases, ID } from "./lib/appwrite.js";
+import { databases, ID, account } from "./lib/appwrite.js";
 
 // Globális változók a térképhez
 let teamData = null; // A csapat adatait itt tároljuk
@@ -8,7 +8,7 @@ let marker = null;   // A marker a térképen
 async function getIdFromUrl() {
     try {
         const urlParams = new URLSearchParams(window.location.search);
-        const teamId = urlParams.get('id') || window.location.href.split('?')[1];
+        const teamId = urlParams.get('id') || window.location.href.split('?id=')[1];
                 
         if (teamId) {
             // 1. Pageview rögzítése (közvetlen Appwrite)
@@ -170,6 +170,16 @@ async function showTeamView(teamId) {
                         <div id="leiras">${leirasHTML}</div>
                     </div>
             </div>
+
+            <div class="button-group">
+                <button id="report-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                        <line x1="4" y1="22" x2="4" y2="15"/>
+                    </svg>
+                    Jelentés
+                </button>
+            </div>
         `;
         
         // Üres mezők elrejtése
@@ -195,6 +205,60 @@ async function showTeamView(teamId) {
                 mapItem.style.display = 'none';
             }
         }
+
+        // Report button event listener
+        document.getElementById('report-btn').addEventListener('click', () => {
+            document.getElementById('report-modal').style.display = 'block';
+        });
+
+        // Modal close
+        document.querySelector('.close').addEventListener('click', () => {
+            document.getElementById('report-modal').style.display = 'none';
+        });
+
+        // Close modal on outside click
+        window.addEventListener('click', (event) => {
+            if (event.target == document.getElementById('report-modal')) {
+                document.getElementById('report-modal').style.display = 'none';
+            }
+        });
+
+        // Report form submit
+        document.getElementById('report-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const reason = document.getElementById('report-reason').value;
+            const description = document.getElementById('report-description').value;
+            if (!reason) {
+                alert('Kérjük, válassz egy okot!');
+                return;
+            }
+            try {
+                let userId = null;
+                try {
+                    const user = await account.get();
+                    userId = user.$id;
+                } catch {
+                    // User not logged in
+                }
+                await databases.createDocument(
+                    '68fe32ea0008ab84b709',
+                    'reports', // Collection name for reports
+                    ID.unique(),
+                    {
+                        teamId: teamId,
+                        userId: userId,
+                        reason: reason,
+                        description: description,
+                    }
+                );
+                alert('Jelentés elküldve!');
+                document.getElementById('report-modal').style.display = 'none';
+                document.getElementById('report-form').reset();
+            } catch (error) {
+                console.error('Hiba a jelentés küldésekor:', error);
+                alert('Hiba történt a jelentés küldésekor.');
+            }
+        });
 
     } catch (error) {
         console.error('❌ Hiba a csapat betöltésekor:', error);
@@ -224,7 +288,8 @@ function hideEmptyFields(team) {
         const isEmpty = !value || 
                        (typeof value === 'string' && value.trim() === "") || 
                        value === "0" || 
-                       value === 0;
+                       value === 0 ||
+                       value == "<br>";
         
         if (isEmpty) {
             const element = document.getElementById(field.id);

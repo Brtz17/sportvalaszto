@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil - Sportválasztó</title>
-    <link rel="stylesheet" href="style/profile.css">
-    <script type="module" src="js/profile.js"></script>
+    <link rel="stylesheet" href="style/profile2.css">
+    <script type="module" src="js/profile2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -47,20 +47,30 @@
         <div id="site-btn-container">
 
         </div>
-        <button id="new-team-btn">
+        <button id="my-teams-btn" class="menu-buttons">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+                <!-- második személy (hátrébb) -->
+                <circle cx="42" cy="22" r="10" stroke="currentColor" stroke-width="4" opacity="0.5"/>
+                <path d="M26 50 C26 41.2 33.2 34 42 34 C50.8 34 58 41.2 58 50" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+                <!-- első személy -->
+                <circle cx="24" cy="22" r="10" stroke="currentColor" stroke-width="4"/>
+                <path d="M8 50 C8 41.2 15.2 34 24 34 C32.8 34 40 41.2 40 50" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+            Csapataim</button>
+        <button id="new-team-btn" class="menu-buttons">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <line x1="12" y1="5" x2="12" y2="19" stroke="#4a3227" stroke-width="2" stroke-linecap="round"/>
-            <line x1="5" y1="12" x2="19" y2="12" stroke="#4a3227" stroke-width="2" stroke-linecap="round"/>
+                <line x1="12" y1="5" x2="12" y2="19" stroke="#4a3227" stroke-width="2" stroke-linecap="round"/>
+                <line x1="5" y1="12" x2="19" y2="12" stroke="#4a3227" stroke-width="2" stroke-linecap="round"/>
             </svg>
             Új csapat</button>
-        <div id="profile-btn-container">
+        <div id="profile-btn-container" class="menu-buttons">
             <button id="profile-btn">
                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="32" cy="22" r="10" stroke="#4a3227" stroke-width="4"/>
                     <path d="M16 50c0-8.8 7.2-16 16-16s16 7.2 16 16" stroke="#4a3227" stroke-width="4" stroke-linecap="round"/>
                 </svg>
                 Profilom</button>
-            <button id="logout-btn" style="color: #dc3545;">
+            <button id="logout-btn" class="menu-buttons" style="color: #dc3545;">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M28 8H10v32h18" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="stroke: #dc3545;"/>
                     <path d="M20 24h18" stroke="black" stroke-width="3" stroke-linecap="round" style="stroke: #dc3545;"/>

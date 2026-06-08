@@ -26,5 +26,27 @@
 
     <div id="content">
     </div>
+
+    <!-- Report Modal -->
+    <div id="report-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Jelentés küldése</h2>
+            <form id="report-form">
+                <label for="report-reason">Jelentés oka:</label>
+                <select id="report-reason" required>
+                    <option value="">Válassz okot...</option>
+                    <option value="spam">Spam vagy reklám</option>
+                    <option value="inappropriate">Nem megfelelő tartalom</option>
+                    <option value="false-info">Hamis információ</option>
+                    <option value="already-exists">Már létező csapat</option>
+                    <option value="other">Egyéb</option>
+                </select>
+                <label for="report-description">Leírás (opcionális):</label>
+                <input id="report-description" placeholder="További részletek..."></input>
+                <button type="submit">Jelentés küldése</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

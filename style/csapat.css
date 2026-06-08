@@ -10,7 +10,7 @@ html {
 
 body {
   font-family: "Poppins", "Segoe UI", sans-serif;
-  background: url('../hatter.png') repeat left top;
+  background: url('../public/hatter.png') repeat left top;
   background-size: 850px auto;
   color: #3a2e2e;
   margin: 0;
@@ -208,7 +208,7 @@ label {
 .button-group {
     margin-top: 2rem;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
 }
 
 #leiras{
@@ -238,9 +238,7 @@ label {
 }
 
 #map span{
-  margin: 0;
   color: #000000;
-  font-style: normal;
 }
 
 @media (max-width: 600px) {
@@ -332,4 +330,94 @@ label {
   .info-item label, .info-item span, .info-container a{
     text-align: left;
   }
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #f1e9df;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+}
+
+#report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#report-form label {
+  font-weight: bold;
+}
+
+#report-form select,
+#report-form input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px
+}
+
+#report-form button {
+  background: #e5b899;
+  color: #4a3227;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#report-form button:hover {
+  background: #d4a788;
+}
+
+/* Report button styles */
+#report-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+#report-btn:hover {
+    background: #c82333;
+}
+
+#report-btn svg {
+    color: white;
 }

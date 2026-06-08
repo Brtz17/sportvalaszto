@@ -366,7 +366,6 @@ h2 {
 #password-form {
   padding: 24px;
   gap: 0;
-  background: #f1e9df;
 }
 
 #osszecsuko{
@@ -1388,4 +1387,439 @@ canvas{
     font-size: 0.85rem;
     color: #7d6558;
     margin: 0 0 1rem 0;
+}
+
+/* ---- Közös kártya szekció ---- */
+.szekció {
+    background: #fffdf9 !important;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(74, 50, 39, 0.08);
+    border: 1px solid rgba(229, 184, 153, 0.3);
+}
+
+.szekció-fejléc {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(229, 184, 153, 0.4);
+}
+
+.szekció-fejléc svg {
+    width: 18px;
+    height: 18px;
+    color: #e5b899;
+    flex-shrink: 0;
+}
+
+.szekció-fejléc h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #4a3227;
+    letter-spacing: 0.01em;
+}
+
+/* ---- Kompakt input ---- */
+.input-kompakt {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e0d5cc;
+    border-radius: 8px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #3a2e2e;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-kompakt:focus {
+    outline: none;
+    border-color: #e5b899;
+    box-shadow: 0 0 0 3px rgba(229, 184, 153, 0.2);
+}
+
+.input-kompakt:disabled {
+    background: #f5f0eb;
+    color: #9e8a7e;
+    cursor: not-allowed;
+}
+
+.label-kompakt {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #7d6558;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.form-group-kompakt {
+    margin-bottom: 0.85rem;
+}
+
+/* ---- Profil nézet ---- */
+#profil-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    max-width: 860px;
+}
+
+#profil-container .fullwidth {
+    grid-column: 1 / -1;
+}
+
+/* ---- Profil avatar ---- */
+.profil-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #e5b899;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #4a3227;
+    flex-shrink: 0;
+}
+
+.profil-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: #fffdf9;
+    border-radius: 12px;
+    border: 1px solid rgba(229, 184, 153, 0.3);
+    box-shadow: 0 2px 8px rgba(74, 50, 39, 0.08);
+}
+
+.profil-meta-info h3 {
+    margin: 0 0 0.15rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3a2e2e;
+}
+
+.profil-meta-info p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #7d6558;
+}
+
+/* ---- Danger zone ---- */
+.danger-zone {
+    border: 1px solid rgba(220, 53, 69, 0.25) !important;
+    background: #fff9f9 !important;
+}
+
+.danger-zone .szekció-fejléc {
+    border-bottom-color: rgba(220, 53, 69, 0.2);
+}
+
+.danger-zone .szekció-fejléc svg {
+    color: #dc3545;
+}
+
+.danger-zone .szekció-fejléc h3 {
+    color: #dc3545;
+}
+
+.danger-zone p {
+    font-size: 0.85rem;
+    color: #7d6558;
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+}
+
+/* ---- Dashboard ---- */
+.dashboard-fejléc {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+}
+
+.dashboard-fejléc h2 {
+    margin: 0;
+    text-align: left;
+}
+
+.dashboard-fejléc span {
+    font-size: 0.82rem;
+    color: #7d6558;
+}
+
+#dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+    max-width: 100%;
+}
+
+.team-chart-container {
+    background: #fffdf9;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgba(229, 184, 153, 0.3);
+    box-shadow: 0 2px 8px rgba(74, 50, 39, 0.06);
+    transition: box-shadow 0.2s, transform 0.15s;
+    cursor: pointer;
+}
+
+.team-chart-container:hover {
+    box-shadow: 0 6px 18px rgba(74, 50, 39, 0.14);
+    transform: translateY(-2px);
+}
+
+.team-chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.team-chart-title {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a3227;
+    text-align: left;
+}
+
+.team-chart-badge {
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    background: rgba(229, 184, 153, 0.25);
+    color: #7d6558;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.chart-wrapper {
+    height: 130px;
+}
+
+/* ---- Csapat szerkesztő ---- */
+.csapat-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.csapat-header-info p {
+    margin: 0;
+    font-size: 0.78rem;
+    color: #7d6558;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.csapat-header-info h2 {
+    margin: 0.15rem 0 0 0;
+    text-align: left;
+    font-size: 1.3rem;
+}
+
+#csapat-logo-container {
+    width: 260px;
+    left: 50%;
+    transform: translateX(-50%);
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0 0 1.5rem 0;
+    min-height: 80px;
+}
+
+/* ---- Új csapat form ---- */
+.új-csapat-wrapper {
+    max-width: 780px;
+}
+
+.új-csapat-wrapper h2 {
+    text-align: left;
+    margin-bottom: 1.25rem;
+}
+
+/* ---- Szekció grid ---- */
+.szekció-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.szekció-grid-2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.szekció-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* ---- Kis mentés gomb ---- */
+.btn-mentés {
+    padding: 0.5rem 1.25rem;
+    background: #e5b899;
+    color: #4a3227;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.btn-mentés:hover {
+    background: #d4a788;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(229, 184, 153, 0.4);
+}
+
+.btn-mentés:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-törlés {
+    padding: 0.5rem 1.25rem;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.btn-törlés:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* ---- Nézet fejléc ---- */
+.nézet-fejléc {
+    margin-bottom: 1.5rem;
+}
+
+.nézet-fejléc h2 {
+    margin: 0;
+    text-align: left;
+    font-size: 1.3rem;
+}
+
+.nézet-fejléc p {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.82rem;
+    color: #7d6558;
+}
+
+/* ---- Üdvözlő sáv ---- */
+.üdvözlő-sáv {
+    background: linear-gradient(135deg, #e5b899 0%, #d4a788 100%);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.üdvözlő-sáv h2 {
+    margin: 0;
+    color: #4a3227;
+    text-align: left;
+    font-size: 1.2rem;
+}
+
+.üdvözlő-sáv p {
+    margin: 0.2rem 0 0 0;
+    font-size: 0.82rem;
+    color: rgba(74, 50, 39, 0.7);
+}
+
+.üdvözlő-ikon {
+    font-size: 2rem;
+    opacity: 0.6;
+}
+
+/* ---- Accordion override ---- */
+#accordion {
+    border-radius: 12px;
+    margin: 0 0 1rem 0;
+    box-shadow: 0 2px 8px rgba(74,50,39,0.08);
+    border: 1px solid rgba(229, 184, 153, 0.3);
+}
+
+/* ---- Button group override ---- */
+.button-group {
+    margin-top: 1.25rem;
+    gap: 0.75rem;
+}
+
+.button-group button {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+}
+
+/* ---- Szerkesztő section ---- */
+#szerkeszto-section {
+    background: #fffdf9;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid rgba(229, 184, 153, 0.3);
+    box-shadow: 0 2px 8px rgba(74, 50, 39, 0.06);
+    margin-bottom: 0;
+}
+
+#szerkeszto-section > label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #7d6558;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.75rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 800px) {
+    #profil-container {
+        grid-template-columns: 1fr;
+    }
+
+    #profil-container .fullwidth {
+        grid-column: 1;
+    }
+
+    .szekció-grid-2,
+    .szekció-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .üdvözlő-sáv {
+        padding: 1rem;
+    }
+
+    .szekció {
+        padding: 1rem;
+    }
+
+    #dashboard-container {
+        grid-template-columns: 1fr;
+    }
 }
