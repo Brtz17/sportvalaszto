@@ -235,3 +235,15 @@ function setupPasswordChangeHandlers() {
       });
   });
 }
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+            .register("/sw.js")
+            .then(() => {
+                console.log("Service Worker regisztrálva");
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+}
