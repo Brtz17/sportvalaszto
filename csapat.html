@@ -4,49 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
-  <link rel="stylesheet" href="style/csapat.css">
-  <script type="module" src="js/csapat.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/csapat.css">
+    <script type="module" src="js/csapat.js"></script>
 </head>
 <body>
+
     <header class="header1">
         <a class="logo-container" href="/">
             <h1 class="site-name">Sportválasztó</h1>
         </a>
-        <div class="login-container">
-            <a class="login-btn" id="loginButton" href="/profile.html">
-                <svg class="login-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                </a>
-        </div>
+        <a class="login-btn" id="loginButton" href="/profile.html" aria-label="Profil">
+            <svg class="login-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
     </header>
 
-    <div id="content">
-    </div>
+    <div id="content"></div>
 
     <!-- Report Modal -->
-    <div id="report-modal" class="modal">
+    <div id="report-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-backdrop"></div>
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Jelentés küldése</h2>
+            <button class="modal-close close" aria-label="Bezárás">&times;</button>
+            <div class="modal-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                    <line x1="4" y1="22" x2="4" y2="15"/>
+                </svg>
+                <h3 id="modal-title">Jelentés küldése</h3>
+            </div>
             <form id="report-form">
-                <label for="report-reason">Jelentés oka:</label>
-                <select id="report-reason" required>
-                    <option value="">Válassz okot...</option>
-                    <option value="spam">Spam vagy reklám</option>
-                    <option value="inappropriate">Nem megfelelő tartalom</option>
-                    <option value="false-info">Hamis információ</option>
-                    <option value="already-exists">Már létező csapat</option>
-                    <option value="other">Egyéb</option>
-                </select>
-                <label for="report-description">Leírás (opcionális):</label>
-                <input id="report-description" placeholder="További részletek..."></input>
-                <button type="submit">Jelentés küldése</button>
+                <div class="form-group-kompakt">
+                    <label class="label-kompakt" for="report-reason">Jelentés oka</label>
+                    <select class="input-kompakt" id="report-reason" required>
+                        <option value="">Válassz okot...</option>
+                        <option value="spam">Spam vagy reklám</option>
+                        <option value="inappropriate">Nem megfelelő tartalom</option>
+                        <option value="false-info">Hamis információ</option>
+                        <option value="already-exists">Már létező csapat</option>
+                        <option value="other">Egyéb</option>
+                    </select>
+                </div>
+                <div class="form-group-kompakt">
+                    <label class="label-kompakt" for="report-description">Leírás (opcionális)</label>
+                    <input class="input-kompakt" id="report-description" placeholder="További részletek...">
+                </div>
+                <button type="submit" class="btn-primary">Jelentés küldése</button>
             </form>
         </div>
     </div>
+
 </body>
 </html>

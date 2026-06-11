@@ -4,45 +4,76 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Regisztráció - Sportválasztó</title>
-  <link rel="stylesheet" href="style/signup.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="style/login.css">
   <script type="module" src="js/signup.js"></script>
 </head>
 <body>
-  <div id="form-wrapper">
-    <h2>Regisztráció</h2>
-    <div id="message-container"></div>
-    
-    <form id="signup-form">
-      <input type="text" name="name" placeholder="Teljes név" required>
-      <input type="email" name="email" placeholder="Email cím" required>
-      <div class="password-input-group">
-        <input type="password" name="password" id="new-password" placeholder="Jelszó" required minlength="8">
-        <button type="button" class="password-toggle-btn" data-target="new-password">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Mutasd a jelszót">
-                <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
-                    d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
-                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
-            </svg>
-        </button>      
+  <div id="login-wrapper">
+
+    <div id="login-card">
+
+      <div id="login-brand">
+        <div id="login-logo">S</div>
+        <div>
+          <h1>Sportválasztó</h1>
+          <p>Hozd létre a fiókodat!</p>
+        </div>
       </div>
-      <div class="password-input-group">
-        <input type="password" name="password" id="new-password-again" placeholder="Jelszó megerősítése" required minlength="8">
-        <button type="button" class="password-toggle-btn" data-target="new-password-again">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Mutasd a jelszót">
+
+      <div id="message-container"></div>
+
+      <form id="signup-form">
+
+        <div class="form-group-kompakt">
+          <label class="label-kompakt">Teljes név</label>
+          <input class="input-kompakt" type="text" name="name" placeholder="Kovács János" required>
+        </div>
+
+        <div class="form-group-kompakt">
+          <label class="label-kompakt">Email cím</label>
+          <input class="input-kompakt" type="email" name="email" placeholder="pelda@email.hu" required>
+        </div>
+
+        <div class="form-group-kompakt">
+          <label class="label-kompakt">Jelszó</label>
+          <div class="password-input-group">
+            <input class="input-kompakt" type="password" name="password" id="new-password" placeholder="••••••••" required minlength="8" style="padding-right:2.75rem">
+            <button type="button" class="password-toggle-btn" data-target="new-password">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" role="img" aria-label="Mutasd a jelszót">
                 <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
-                    d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+                  d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
                 <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
-            </svg>
-        </button>      
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group-kompakt">
+          <label class="label-kompakt">Jelszó megerősítése</label>
+          <div class="password-input-group">
+            <input class="input-kompakt" type="password" name="password" id="new-password-again" placeholder="••••••••" required minlength="8" style="padding-right:2.75rem">
+            <button type="button" class="password-toggle-btn" data-target="new-password-again">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" role="img" aria-label="Mutasd a jelszót">
+                <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+                  d="M1.5 12s4.5-7.5 10.5-7.5S22.5 12 22.5 12s-4.5 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="button" class="btn-primary">Regisztráció</button>
+
+      </form>
+
+      <div class="auth-links">
+        <p>Már van fiókod? <a href="/login.html">Jelentkezz be</a></p>
+        <a href="/index.html">← Vissza a főoldalra</a>
       </div>
-      
-      <button type="submit" id="button">Regisztráció</button>
-    </form>
-    
-    <div class="auth-links">
-      <p>Már van fiókod? <a href="/login.html">Jelentkezz be</a></p>
-      <a href="/index.html">Vissza a főoldalra</a>
+
     </div>
+
   </div>
 </body>
 </html>

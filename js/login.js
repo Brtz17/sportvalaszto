@@ -137,11 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
   googleBtn.addEventListener('click', async function() {
     console.log('🚀 Google OAuth indítása...');
     
-    // Loading state a Google gombhoz
-    const originalText = googleBtn.textContent;
-    googleBtn.disabled = true;
-    googleBtn.textContent = 'Csatlakozás...';
-    
     try {
         // Jelenlegi domain meghatározása
         const currentDomain = window.location.origin;

@@ -1,423 +1,517 @@
-/* -- ALAP STÍLUSOK -- */
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html {
-  height: 100%;       /* fontos, hogy a body 100%-os legyen */
-  margin: 0;
+    height: 100%;
+    margin: 0;
 }
 
 body {
-  font-family: "Poppins", "Segoe UI", sans-serif;
-  background: url('../public/hatter.png') repeat left top;
-  background-size: 850px auto;
-  color: #3a2e2e;
-  margin: 0;
-  min-height: 100%;
-  padding: .5rem 2rem .5rem 2rem;
-  display: flex;
-  flex-direction: column;
-}
-
-
-/* Header konténer */
-.header1 {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f1e9df;
-  padding: 12px 24px;
-  border-bottom: 1px solid #ddd;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
-  border-radius: 1rem;
-  margin: 1rem 0;
-}
-
-.logo-container{
-  text-decoration: none;
-  color: inherit;
-}
-
-/* Logo rész */
-.logo-container .site-name {
-  font-family: "Poppins", "Segoe UI", sans-serif;
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #2a2a2a;
-}
-
-/* Login gomb */
-.login-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #e5b899;
-  color: #4a3227;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-}
-
-.login-btn:hover {
-  background: #d4a788;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
-}
-
-.login-btn:active {
-  transform: translateY(0px);
-}
-
-/* SVG ikon */
-.login-icon {
-  width: 20px;
-  height: 20px;
-}
-
-#content{
-    flex: 1;
-    color: #4a3227;
-    background: #f1e9df;
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.4);
-
-}
-
-#fejlec{
-    margin: 0 0 2rem 0;
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    background: url('../public/hatter.png') repeat left top;
+    background-size: 850px auto;
+    color: #3a2e2e;
+    margin: 0;
+    min-height: 100%;
+    padding: 0.5rem 2rem 2rem 2rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.csapat-logo{
-  height: auto;
-  width: 140px;
-  margin: 0 auto;
-}
-
-.info-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  row-gap: 1rem;
-  padding: 1.5rem;
-  background: #f1e9df;
-}
-
-.info-section {
-    background: #f8f4f0;
-    padding: 1.5rem;
-    border-radius: 12px;
-    border: 1px solid #e5b899;
-}
-
-.info-section h3 {
-    margin: 0 0 1rem 0;
-    color: #4a3227;
-    font-size: 1.2rem;
-    border-bottom: 2px solid #e5b899;
-    padding-bottom: 0.5rem;
-}
-
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
 }
 
-.info-item {
+/* ---- Header ---- */
+
+.header1 {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    align-items: center;
+    justify-content: space-between;
+    background: #f1e9df;
+    padding: 12px 24px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    border-radius: 1rem;
+    margin-top: 0.5rem;
 }
 
-label {
+.logo-container {
+    text-decoration: none;
+    color: inherit;
+}
+
+.site-name {
+    font-size: 1.4rem;
     font-weight: 600;
-    color: #7d6558;
-    font-size: 0.9rem;
+    color: #2a2a2a;
+    margin: 0;
 }
 
-.info-item span {
-    color: #4a3227;
-    font-size: 1rem;
-    margin-left: 4px;
-}
-
-.info-item a{
-    color: #2e1d16;
-    font-weight: 600;
-    font-style: italic;
-    font-size: 1rem;
-}
-
-.info-item label, .info-item span{
-  text-align: center;
-}
-
-.cimkek-container{
+.login-btn {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    grid-column: -1 / 1;
-}
-
-.cimkek-container label{
-    flex-basis: 100%;
-}
-
-.cimke-display{
+    align-items: center;
+    justify-content: center;
     background: #e5b899;
     color: #4a3227;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
 }
 
-.leiras-content {
+.login-btn:hover {
+    background: #d4a788;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(229, 184, 153, 0.4);
+}
+
+.login-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* ---- Content wrapper ---- */
+
+#content {
+    flex: 1;
+    color: #4a3227;
+    background: #f1e9df;
+    padding: 1.75rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+}
+
+/* ---- Hero fejléc ---- */
+
+#fejlec {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(229, 184, 153, 0.45);
+    margin-bottom: 1.1rem;
+}
+
+.csapat-logo-wrap {
+    width: 62px;
+    height: 62px;
+    border-radius: 10px;
+    background: #fffdf9;
+    border: 1px solid rgba(229, 184, 153, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.csapat-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.fejlec-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.fejlec-eyebrow {
+    font-size: 0.63rem;
+    font-weight: 600;
+    color: #b08060;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.15rem 0;
+}
+
+#fejlec h2 {
+    margin: 0 0 0.4rem 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #2f2018;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fejlec-cimkek {
     display: flex;
     flex-wrap: wrap;
-    line-height: 1.6;
-    color: #4a3227;
-    grid-column: -1 / 1;
+    gap: 0.3rem;
 }
 
-.leiras-content label{
-    flex-basis: 100%;
+.cimke-display {
+    background: rgba(229, 184, 153, 0.22);
+    color: #6b4535;
+    padding: 0.18rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border: 1px solid rgba(229, 184, 153, 0.4);
 }
+
+/* ---- Info blokk (összefüggő lista) ---- */
+
+.info-block {
+    background: #fffdf9;
+    border-radius: 10px;
+    border: 1px solid rgba(229, 184, 153, 0.3);
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid rgba(229, 184, 153, 0.18);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: rgba(229, 184, 153, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.info-row-icon svg {
+    width: 13px;
+    height: 13px;
+    stroke: #c08050;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.info-row-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #9e7d6a;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 0.1rem;
+}
+
+.info-row-val {
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: #3a2e2e;
+}
+
+.info-row-val a {
+    color: #4a3227;
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.info-row-val a:hover {
+    color: #c08050;
+    text-decoration: underline;
+}
+
+.tagdij {
+    font-weight: 700;
+    color: #2f2018;
+}
+
+/* ---- Térkép ---- */
+
+#map-container {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(229, 184, 153, 0.35);
+    margin: 0 auto 0.75rem auto;
+    max-width: 700px;
+    width: 100%;
+}
+
+#map {
+    height: 180px;
+    width: 100%;
+}
+
+/* ---- Leírás ---- */
+
+.leiras-block {
+    background: #fffdf9;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(229, 184, 153, 0.3);
+    margin-bottom: 0.75rem;
+}
+
+.leiras-block label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #9e7d6a;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+#leiras {
+    line-height: 1.65;
+    color: #3a2e2e;
+    font-size: 0.86rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* ---- Gombok ---- */
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+}
+
+#report-btn {
+    background: #dc3545;
+    color: white;
+    border: 1px solid rgb(220, 53, 69);
+    padding: 0.4rem 0.85rem;
+    border-radius: 7px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+#report-btn:hover {
+    background: #7a0c17;
+    color: white;
+    border-color: #7a0c17;
+}
+
+#report-btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+}
+
+/* ---- Segéd ---- */
 
 .no-data {
-    color: #7d6558;
+    color: #9e7d6a;
     font-style: italic;
+    font-size: 0.82rem;
 }
 
 .error {
     color: #dc3545;
     text-align: center;
     padding: 2rem;
+    font-size: 0.9rem;
 }
 
-.button-group {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: flex-end;
-}
+/* ---- Modal ---- */
 
-#leiras{
-    line-height: 1.6;
-    color: #4a3227;
-    font-size: 1rem;
-    min-height: calc(1rem*1.6);
-    padding: .5rem 1rem;
-    background: white;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    width: 100%;
-}
-
-#map-container{
-    grid-column: 1 / -1;
-    max-width: 700px;
-    width: 100%;
-    justify-self: center;
-}
-
-#map{
-  height: 200px;
-  width: 100%;
-}
-
-#map span{
-  color: #000000;
-}
-
-@media (max-width: 600px) {
-  body{
-    padding: 0.5rem 1rem 1rem 1rem;
-  }
-
-  .header1 {
-    padding: 8px 12px;
-    margin: 0.5rem 0;
-    border-radius: 0.5rem;
-  }
-  .logo-container .site-name {
-    font-size: 1rem;
-  }
-  #loginButton {
-    padding: 8px 14px;
-    font-size: 0.95rem;
-  }
-  #login-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  #content {
-    padding: 15px;
-  }
-  #fejlec{
-    margin: 0 0 1rem 0;
-  }
-  h2 {
-    font-size: 1.3rem;
-    margin-bottom: 1.5rem;
-  }
-  .csapat-logo{
-    width: 120px;
-  }
-  .info-container{
-    padding: 1rem;
-  }
-  .info-item label, .cimke-display{
-  font-size: .8rem;
-  }
-  .info-item span, .info-container a{
-    font-size: .9rem;
-  }
-}
-
-@media (max-width: 400px) {
-  body{
-    padding: 0.25rem 0.5rem 0.5rem 0.5rem;
-  }
-
-  .header1 {
-    padding: 8px 12px;
-  }
-  .logo-container .site-name {
-    font-size: 1rem;
-  }
-  #loginButton {
-    font-size: .95rem;
-    padding: 8px 14px;
-    min-height: 40px;
-  }
-  #login-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  #content {
-    padding: 10px;
-  }
-  #fejlec{
-    margin: 0 0 1rem 0;
-  }
-  h2 {
-    font-size: 1.3rem;
-    margin-bottom: 1.5rem;
-  }
-  .csapat-logo{
-    width: 120px;
-  }
-  .info-container{
-    padding: 1rem;
-  }
-  .info-item{
-    grid-column: 1 / -1;
-  }
-  .info-item label, .info-item span, .info-container a{
-    text-align: left;
-  }
-}
-
-/* Modal styles */
 .modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(42, 28, 18, 0.45);
+    backdrop-filter: blur(2px);
 }
 
 .modal-content {
-  background-color: #f1e9df;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 500px;
-  border-radius: 8px;
+    position: relative;
+    background: #f1e9df;
+    margin: 8% auto;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 440px;
+    border-radius: 14px;
+    box-shadow: 0 12px 36px rgba(74, 50, 39, 0.22);
+    border: 1px solid rgba(229, 184, 153, 0.35);
+    z-index: 1;
 }
 
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
+.modal-close {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    background: rgba(229, 184, 153, 0.2);
+    border: none;
+    font-size: 1.1rem;
+    color: #7d6558;
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
 }
 
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
+.modal-close:hover {
+    background: rgba(220, 53, 69, 0.12);
+    color: #dc3545;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(229, 184, 153, 0.4);
+}
+
+.modal-header svg {
+    width: 18px;
+    height: 18px;
+    color: #c08050;
+    flex-shrink: 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #4a3227;
 }
 
 #report-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
 }
 
-#report-form label {
-  font-weight: bold;
+.form-group-kompakt {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
 }
 
-#report-form select,
-#report-form input {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px
+.label-kompakt {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #9e7d6a;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-#report-form button {
-  background: #e5b899;
-  color: #4a3227;
-  border: none;
-  padding: 0.75rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
+.input-kompakt {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e0d5cc;
+    border-radius: 8px;
+    background: #fffdf9;
+    font-family: inherit;
+    font-size: 0.88rem;
+    color: #3a2e2e;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
-#report-form button:hover {
-  background: #d4a788;
+.input-kompakt:focus {
+    outline: none;
+    border-color: #e5b899;
+    box-shadow: 0 0 0 3px rgba(229, 184, 153, 0.22);
 }
 
-/* Report button styles */
-#report-btn {
-    background: #dc3545;
-    color: white;
+.btn-primary {
+    width: 100%;
+    padding: 0.6rem;
+    background: #e5b899;
+    color: #4a3227;
     border: none;
-    padding: 0.75rem 1.5rem;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: background-color 0.2s;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 0.25rem;
 }
 
-#report-btn:hover {
-    background: #c82333;
+.btn-primary:hover {
+    background: #d4a788;
+    transform: translateY(-1px);
 }
 
-#report-btn svg {
-    color: white;
+/* ---- Responsive ---- */
+
+@media (max-width: 600px) {
+    body {
+        padding: 0.5rem 1rem 1.25rem 1rem;
+    }
+
+    .header1 {
+        padding: 10px 16px;
+        margin-top: 0.25rem;
+        border-radius: 0.5rem;
+    }
+
+    .site-name {
+        font-size: 1.1rem;
+    }
+
+    #content {
+        padding: 1.1rem;
+    }
+
+    #fejlec h2 {
+        font-size: 1.15rem;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 400px) {
+    body {
+        padding: 0.25rem 0.5rem 0.75rem 0.5rem;
+    }
+
+    .header1 {
+        padding: 8px 12px;
+    }
+
+    .site-name {
+        font-size: 1rem;
+    }
+
+    #content {
+        padding: 0.85rem;
+    }
+
+    #fejlec {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    #fejlec h2 {
+        font-size: 1.1rem;
+    }
+
+    .modal-content {
+        margin: 4% auto;
+        padding: 1.1rem;
+    }
 }
