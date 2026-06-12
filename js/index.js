@@ -1,3 +1,4 @@
+console.log("JS betöltve");
 import { databases } from './lib/appwrite.js';
 
 const userCardTemplate = document.querySelector("[data-user-template]");
@@ -196,7 +197,6 @@ filterApplyBtn.addEventListener("click", () => {
 
     applyFilters();
     renderActiveBar();
-    updateBadge();
     closePanel();
 });
 
@@ -215,12 +215,12 @@ function renderActiveBar() {
 
     activeSports.forEach(s => addChip(s, () => {
         activeSports.delete(s);
-        applyFilters(); renderActiveBar(); updateBadge();
+        applyFilters(); renderActiveBar();
     }));
 
     activeVaros.forEach(v => addChip(v, () => {
         activeVaros.delete(v);
-        applyFilters(); renderActiveBar(); updateBadge();
+        applyFilters(); renderActiveBar();
     }));
 
     if (activeTagdijMin !== null || activeTagdijMax !== null) {
@@ -229,7 +229,7 @@ function renderActiveBar() {
         addChip(`${minLabel} – ${maxLabel}`, () => {
             activeTagdijMin = null;
             activeTagdijMax = null;
-            applyFilters(); renderActiveBar(); updateBadge();
+            applyFilters(); renderActiveBar();
         });
     }
 
@@ -246,16 +246,7 @@ filterResetBtn.addEventListener("click", () => {
     searchInput.value = "";
     applyFilters();
     renderActiveBar();
-    updateBadge();
 });
-
-function updateBadge() {
-    let count = activeSports.size + activeVaros.size;
-    if (activeTagdijMin !== null || activeTagdijMax !== null) count++;
-    if (searchInput.value.trim()) count++;
-    filterBadge.textContent = count;
-    filterBadge.classList.toggle("hide", count === 0);
-}
 
 // ==================== SZŰRÉS ====================
 
@@ -300,11 +291,22 @@ function applyFilters() {
     } else {
         existing?.remove();
     }
+
+    const params = new URLSearchParams();
+    if (searchInput.value) params.set('q', searchInput.value);
+    activeSports.forEach(s => params.append('sport', s));
+    activeVaros.forEach(v => params.append('varos', v));
+    if (activeTagdijMin !== null) params.set('tmin', activeTagdijMin);
+    if (activeTagdijMax !== null) params.set('tmax', activeTagdijMax);
+
+    const newUrl = params.size > 0 ? `?${params}` : window.location.pathname;
+    history.replaceState({}, '', newUrl);
 }
 
 // ==================== CHIP-EK FELÉPÍTÉSE ====================
 
 function buildChips(containerId, values, clickHandler) {
+    console.log(containerId, [...values]);
     const container = document.getElementById(containerId);
     container.innerHTML = "";
     const sorted = [...values].sort((a, b) => a.localeCompare(b, "hu"));
@@ -346,7 +348,6 @@ async function loadUsers() {
 
             header.textContent = doc.nev || "Név nélkül";
 
-            // Tagdíj megjelenítés
             const tagdijText = doc.tagdij
                 ? `${Number(doc.tagdij).toLocaleString("hu")} Ft/hó`
                 : "Tagdíj: nincs adat";
@@ -368,15 +369,15 @@ async function loadUsers() {
 
             userCardContainer.append(card);
 
-            (doc.cimkek || []).forEach(t => sportSet.add(t));
-            if (doc.varos) varosSet.add(doc.varos);
+            (doc.cimkek || []).forEach(t => sportSet.add(t.replace(/\s+/g, ' ').trim()));
+            if (doc.varos) varosSet.add(doc.varos.trim());
 
             return {
                 nev: doc.nev,
                 email: doc.email,
                 varos: doc.varos || null,
                 tagdij: doc.tagdij != null ? Number(doc.tagdij) : null,
-                cimkek: doc.cimkek || [],
+                cimkek: (doc.cimkek || []).map(t => t.replace(/\s+/g, ' ').trim()),
                 element: card
             };
         });
@@ -390,14 +391,30 @@ async function loadUsers() {
     }
 }
 
+
 // ==================== INICIALIZÁLÁS ====================
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadUsers();
-    searchInput?.addEventListener("input", () => {
-        applyFilters();
-        updateBadge();
+    loadUsers().then(() => {
+        const params = new URLSearchParams(window.location.search);
+        
+        if (params.get('q')) searchInput.value = params.get('q');
+        params.getAll('sport').filter(Boolean).forEach(s => activeSports.add(s));
+        params.getAll('varos').filter(Boolean).forEach(v => activeVaros.add(v));
+        activeTagdijMin = params.get('tmin') ? Number(params.get('tmin')) : null;
+        activeTagdijMax = params.get('tmax') ? Number(params.get('tmax')) : null;
+
+        if (window.location.search) {
+            applyFilters();
+            renderActiveBar();
+            syncChipsToPending();
+        }
+    })
+    .catch(err => {
+        console.log("loadUsers hiba:", err);
     });
+
+    searchInput?.addEventListener("input", () => applyFilters());
 });
 
 

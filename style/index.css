@@ -125,17 +125,6 @@ input[type="search"]:not(:focus):hover {
 .filter-toggle-btn:active { transform: translateY(0); }
 .filter-toggle-btn.active { background: #e5b899; border-color: #d4a788; }
 
-.filter-badge {
-  background: #4a3227;
-  color: #f1e9df;
-  border-radius: 999px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 1px 6px;
-  line-height: 1.4;
-  min-width: 18px;
-  text-align: center;
-}
 
 /* -- AKTÍV SZŰRŐK SÁV -- */
 .active-filter-bar {
@@ -523,6 +512,7 @@ input[type="search"]:not(:focus):hover {
 
   .filter-panel { width: 100%; max-width: 100%; border-radius: 1rem 1rem 0 0; top: auto; bottom: 0; height: 85vh; transform: translateY(100%); }
   .filter-panel.visible { transform: translateY(0); }
+  .header-right {  gap: 0.25rem; }
 }
 
 @media (max-width: 400px) {

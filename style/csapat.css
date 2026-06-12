@@ -338,9 +338,11 @@ body {
 }
 
 .modal-content {
-    position: relative;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     background: #f1e9df;
-    margin: 8% auto;
     padding: 1.5rem;
     width: 90%;
     max-width: 440px;
