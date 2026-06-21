@@ -1,6 +1,6 @@
 // ==================== IMPORTOK ====================
 
-import { account, databases, storage, Query } from "./lib/appwrite.js";
+import { account, databases, storage, Query, functions } from "./lib/appwrite.js";
 
 // ==================== KONSTANSOK ====================
 
@@ -1121,12 +1121,22 @@ function setupNameChangeHandler() {
     });
 }
 
+const DELETE_ACCOUNT_FUNCTION_ID = '6a38307d00184c94a246';
+ 
 function setupDeleteAccountHandler() {
     document.getElementById('delete-account-btn')?.addEventListener('click', async () => {
         if (!confirm('Biztosan törölni szeretnéd a fiókodat? Ez a művelet nem visszavonható!')) return;
+ 
         try {
-            await account.deleteSession('current');
-            window.location.href = '/login.html';
+            const execution = await functions.createExecution(DELETE_ACCOUNT_FUNCTION_ID);
+            const result = JSON.parse(execution.responseBody);
+ 
+            if (!result.success) {
+                throw new Error(result.error || 'Ismeretlen hiba történt a fiók törlésekor.');
+            }
+            
+            alert('✅ Profil sikeresen törölve!');
+            window.location.href = '/';
         } catch (error) {
             const msg = await translateErrorMessage(error);
             alert(`❌ ${msg}`);

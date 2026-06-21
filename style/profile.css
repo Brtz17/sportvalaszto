@@ -9,12 +9,12 @@ body {
   background-size: 850px auto;
   color: #3a2e2e;
   margin: 0;
-    padding: 0.5rem 2rem 2rem 2rem;
+    padding: 0.5rem;
   display: grid;
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr 3.5fr;
   gap: 1rem;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 #loadingOverlay{
   position: fixed;
@@ -204,6 +204,7 @@ h2 {
 
 #site-btn-container{
   display: block;
+  height: auto;
 }
 
 #profile-btn-container{
@@ -1803,6 +1804,10 @@ canvas{
 @media (max-width: 600px) {
     .üdvözlő-sáv {
         padding: 1rem;
+    }
+
+    #bal-oldal{
+      height: 100dvh;
     }
 
     .szekció {
