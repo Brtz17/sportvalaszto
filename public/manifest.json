@@ -3,14 +3,15 @@
   "short_name": "Sportválasztó",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#111827",
-  "theme_color": "#111827",
+  "background_color": "#f1e9df",
+  "theme_color": "#f1e9df",
   "orientation": "portrait",
   "icons": [
     {
       "src": "/icons/favicon.png",
       "sizes": "516x516",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

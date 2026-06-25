@@ -369,3 +369,11 @@ if ("serviceWorker" in navigator) {
             });
     });
 }
+
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('.cimke-display');
+  if (target) {
+    const content = target.textContent; // vagy innerHTML, dataset stb.
+    window.location.href = `/?sport=${encodeURIComponent(content)}`;
+  }
+});
