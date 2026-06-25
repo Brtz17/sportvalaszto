@@ -248,10 +248,39 @@ function setupEventListeners() {
 
 async function loadUserTeams() {
     try {
-        const response = await databases.listDocuments(DB_ID, 'csapatok', [
-            Query.contains('szerkeszto', currentUser.email)
+        const [szerkesztoRes, jelentkezesRes] = await Promise.all([
+            databases.listDocuments(DB_ID, 'csapatok', [
+                Query.contains('szerkeszto', currentUser.email)
+            ]),
+            databases.listDocuments(DB_ID, 'jelentkezes', [
+                Query.equal('jelentkezoEmail', currentUser.email)
+            ])
         ]);
-        userTeams = response.documents;
+
+        const szerkesztoTeams = szerkesztoRes.documents.map(t => ({
+            ...t,
+            _pending: false
+        }));
+
+        // A függőben lévő csapatok ID-jai
+        const pendingTeamIds = jelentkezesRes.documents.map(j => j.csapat);
+
+        // Kizárjuk azokat, ahol már szerkesztő vagyok
+        const szerkesztoIds = new Set(szerkesztoTeams.map(t => t.$id));
+        const pendingOnlyIds = pendingTeamIds.filter(id => !szerkesztoIds.has(id));
+
+        let pendingTeams = [];
+        if (pendingOnlyIds.length > 0) {
+            const pendingRes = await databases.listDocuments(DB_ID, 'csapatok', [
+                Query.equal('$id', pendingOnlyIds)
+            ]);
+            pendingTeams = pendingRes.documents.map(t => ({
+                ...t,
+                _pending: true
+            }));
+        }
+
+        userTeams = [...szerkesztoTeams, ...pendingTeams];
         renderTeamButtons();
     } catch (error) {
         console.error('Hiba a csapatok betöltésekor:', error);
@@ -265,7 +294,11 @@ function renderTeamButtons() {
         return;
     }
     container.innerHTML = userTeams.map(team => `
-        <button class="team-btn" data-team-id="${team.$id}">${team.nev}</button>
+        <button 
+            class="team-btn ${team._pending ? 'team-btn--pending' : ''}" 
+            data-team-id="${team.$id}"
+            ${team._pending ? 'disabled title="Jelentkezésed elbírálás alatt"' : ''}
+        >${team.nev}${team._pending ? ' ⏳' : ''}</button>
     `).join('');
 }
 
@@ -653,11 +686,7 @@ async function getTeamStats(teamId, days = 30) {
 export async function loadUserTeamsWithStats(currentUser, userTeams) {
     try {
         if (!currentUser?.email) { console.error('Nincs bejelentkezett felhasználó!'); return []; }
-        const response = await databases.listDocuments(DB_ID, 'csapatok', [
-            Query.contains('szerkeszto', currentUser.email)
-        ]);
-        userTeams.length = 0;
-        userTeams.push(...response.documents);
+        // Nem kérdezzük le újra — a loadUserTeams már felépítette userTeams-t _pending-gel
         return await Promise.all(
             userTeams.map(async (csapat) => ({ ...csapat, stats: await getTeamStats(csapat.$id, 30) }))
         );
@@ -725,6 +754,21 @@ function renderDashboard(teamsData) {
     container.innerHTML = teamsData.map(team => {
         const canvasId = `chart-${team.$id.replace(/[^a-zA-Z0-9]/g, '-')}`;
         const total = team.stats?.dailyData?.reduce((s, d) => s + d.count, 0) ?? 0;
+
+        if (team._pending) {
+            return `
+                <div class="team-chart-container team-chart-container--pending" data-team-id="${team.$id}" title="Jelentkezésed elbírálás alatt">
+                    <div class="team-chart-header">
+                        <h3 class="team-chart-title">${team.nev}</h3>
+                        <span class="team-chart-badge team-chart-badge--pending">⏳ Függőben</span>
+                    </div>
+                    <div class="pending-overlay">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <p>Jelentkezésed elbírálás alatt</p>
+                    </div>
+                </div>`;
+        }
+
         return `
             <div class="team-chart-container" data-team-id="${team.$id}">
                 <div class="team-chart-header">
@@ -738,7 +782,8 @@ function renderDashboard(teamsData) {
     }).join('');
 
     teamsData.forEach(team => {
-        if (team.stats?.dailyData) setTimeout(() => renderTeamChart(team.$id, team.stats.dailyData), 100);
+        if (!team._pending && team.stats?.dailyData) 
+            setTimeout(() => renderTeamChart(team.$id, team.stats.dailyData), 100);
     });
 }
 
@@ -809,7 +854,9 @@ function showMyTeamsView() {
 
     document.getElementById('dashboard-container').addEventListener('click', (e) => {
         const card = e.target.closest('.team-chart-container');
-        if (card) showTeamEditView(card.dataset.teamId);
+        if (card && !card.classList.contains('team-chart-container--pending')) {
+            showTeamEditView(card.dataset.teamId);
+        }
     });
 }
 
@@ -944,8 +991,10 @@ async function showTeamEditView(teamId) {
 
             <div class="fullwidth" id="szerkeszto-section">
                 <label>Szerkesztők</label>
-                <div class="fullwidth" id="szerkeszto-container-edit">${szerkesztoHTML}</div>
-                <button type="button" id="add-szerkeszto-btn" class="secondary-btn">+ Új szerkesztő</button>
+                <div class="fullwidth" id="szerkeszto-container-edit"></div>
+
+                <label class="jelentkezok-label">Jelentkezők</label>
+                <div class="fullwidth" id="jelentkezok-lista"></div>
             </div>
 
             <div class="button-group">
@@ -1157,8 +1206,6 @@ async function saveTeam(e, team, teamId, sportokHTML) {
         .map(btn => btn.textContent.trim())
         .filter(t => t && !t.includes('Válassz sportot'));
     const uniqueSports = [...new Set(selectedSports)];
-    const szerkesztok = Array.from(document.querySelectorAll('input[name="szerkeszto[]"]'))
-        .map(i => i.value.trim()).filter(Boolean);
 
     const updatedData = {
         nev: form.querySelector('input[name="nev"]').value,
@@ -1172,7 +1219,7 @@ async function saveTeam(e, team, teamId, sportokHTML) {
         tagdij: form.querySelector('input[name="tagdij"]').value,
         cimkek: uniqueSports,
         leiras: document.getElementById('leiras').innerHTML,
-        szerkeszto: szerkesztok
+        szerkeszto: team.szerkeszto
     };
 
     try {
@@ -1296,38 +1343,135 @@ function updateTeamImageUI(imageUrl) {
 
 // ==================== SZERKESZTŐK ====================
 
-function initializeSzerkesztoHandlers(team, teamId) {
-    const container = document.getElementById('szerkeszto-container-edit');
-    const addBtn = document.getElementById('add-szerkeszto-btn');
-    if (!container || !addBtn) return;
+async function initializeSzerkesztoHandlers(team, teamId) {
+    renderSzerkesztok(team, teamId);
+    await renderJelentkezok(team, teamId);
+}
 
-    addBtn.addEventListener('click', () => {
-        const item = document.createElement('div');
-        item.className = 'szerkeszto-item';
-        item.innerHTML = `
-            <input type="email" name="szerkeszto[]" placeholder="Új szerkesztő email" required>
-            <button type="button" class="remove-szerkeszto-btn">✕</button>`;
-        container.appendChild(item);
-        item.querySelector('.remove-szerkeszto-btn').addEventListener('click', () => {
-            if (container.children.length > 1) container.removeChild(item);
-            showTeamEditView(teamId);
+
+function renderSzerkesztok(team, teamId) {
+    const container = document.getElementById('szerkeszto-container-edit');
+    if (!container) return;
+
+    const szerkesztok = team.szerkeszto?.length > 0 ? team.szerkeszto : [team.userEmail];
+
+    container.innerHTML = szerkesztok.map(email => {
+        const isCreator = email === team.userEmail;
+        return `
+            <div class="szerkeszto-row" data-email="${email}">
+                <span class="szerkeszto-email" title="${email}">${email}</span>
+                ${isCreator
+                    ? `<span class="szerkeszto-tag">létrehozó</span>`
+                    : `<button type="button" class="remove-szerkeszto-btn" title="Eltávolítás" data-email="${email}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>`}
+            </div>`;
+    }).join('') + `
+        <div class="szerkeszto-add-row">
+            <input type="email" id="new-szerkeszto-input" placeholder="Új szerkesztő email">
+            <button type="button" id="add-szerkeszto-btn" title="Hozzáadás">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+        </div>`;
+
+    container.querySelectorAll('.remove-szerkeszto-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const updated = szerkesztok.filter(e => e !== btn.dataset.email);
+            team.szerkeszto = updated;
+            renderSzerkesztok(team, teamId);
+            document.getElementById('save-team').click();
         });
     });
 
-    container.querySelectorAll('.remove-szerkeszto-btn').forEach(btn => {
-        const item = btn.closest('.szerkeszto-item');
-        const input = item.querySelector('input');
-        if (input.value !== team.userEmail) {
-            btn.disabled = false;
-            btn.addEventListener('click', () => {
-                if (container.children.length > 1) container.removeChild(item);
-                document.getElementById('save-team').click();
-            });
-        } else {
-            btn.disabled = true;
-            btn.title = "A létrehozót nem lehet eltávolítani";
+    const addBtn = document.getElementById('add-szerkeszto-btn');
+    const addInput = document.getElementById('new-szerkeszto-input');
+    addBtn.addEventListener('click', () => {
+        const email = addInput.value.trim();
+        if (!email) return;
+        if (szerkesztok.includes(email)) {
+            alert('Ez az email már szerkesztő.');
+            return;
         }
+        team.szerkeszto = [...szerkesztok, email];
+        document.getElementById('save-team').click();
     });
+}
+
+async function renderJelentkezok(team, teamId) {
+    const listEl = document.getElementById('jelentkezok-lista');
+    if (!listEl) return;
+
+    listEl.innerHTML = `<p class="jelentkezok-loading">Jelentkezők betöltése...</p>`;
+
+    let jelentkezok = [];
+    try {
+        const res = await databases.listDocuments(DB_ID, 'jelentkezes', [
+            Query.equal('csapat', teamId)
+        ]);
+        jelentkezok = res.documents;
+    } catch (error) {
+        console.error('Hiba a jelentkezők betöltésekor:', error);
+        listEl.innerHTML = `<p class="jelentkezok-empty">Hiba történt a jelentkezők betöltésekor.</p>`;
+        return;
+    }
+
+    if (jelentkezok.length === 0) {
+        document.querySelector("#szerkeszto-section > label.jelentkezok-label").style.display = 'none';
+        listEl.style.display = 'none';
+        return;
+    }
+
+    listEl.innerHTML = jelentkezok.map(j => `
+        <div class="jelentkezo-card" data-id="${j.$id}">
+            <div class="jelentkezo-top">
+                <span class="jelentkezo-email" title="${j.jelentkezoEmail}">${j.jelentkezoEmail}</span>
+                <button type="button" class="accept-jelentkezo-btn" title="Elfogadás" data-id="${j.$id}" data-email="${j.jelentkezoEmail}">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+                <button type="button" class="reject-jelentkezo-btn" title="Elutasítás" data-id="${j.$id}">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            ${j.description ? `<p class="jelentkezo-description">${j.description}</p>` : ''}
+        </div>
+    `).join('');
+
+    listEl.querySelectorAll('.accept-jelentkezo-btn').forEach(btn => {
+        btn.addEventListener('click', () => acceptJelentkezo(btn.dataset.id, btn.dataset.email, team, teamId));
+    });
+
+    listEl.querySelectorAll('.reject-jelentkezo-btn').forEach(btn => {
+        btn.addEventListener('click', () => rejectJelentkezo(btn.dataset.id, team, teamId));
+    });
+}
+
+async function acceptJelentkezo(jelentkezesId, email, team, teamId) {
+    try {
+        const currentSzerkeszto = team.szerkeszto?.length > 0 ? team.szerkeszto : [team.userEmail];
+        const updatedSzerkeszto = [...currentSzerkeszto, email];
+
+        await databases.updateDocument(DB_ID, 'csapatok', teamId, {
+            szerkeszto: updatedSzerkeszto
+        });
+        await databases.deleteDocument(DB_ID, 'jelentkezes', jelentkezesId);
+
+        team.szerkeszto = updatedSzerkeszto;
+        renderSzerkesztok(team, teamId);
+        await renderJelentkezok(team, teamId);
+    } catch (error) {
+        console.error('Hiba a jelentkező elfogadásakor:', error);
+        alert('Hiba történt az elfogadás közben.');
+    }
+}
+
+async function rejectJelentkezo(jelentkezesId, team, teamId) {
+    try {
+        await databases.deleteDocument(DB_ID, 'jelentkezes', jelentkezesId);
+        await renderJelentkezok(team, teamId);
+    } catch (error) {
+        console.error('Hiba a jelentkező elutasításakor:', error);
+        alert('Hiba történt az elutasítás közben.');
+    }
 }
 
 // ==================== CSAPAT FORM INICIALIZÁLÁS ====================

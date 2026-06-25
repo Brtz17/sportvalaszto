@@ -34,11 +34,9 @@ body {
   margin-bottom: 1.75rem;
 }
 
-#login-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #e5b899, #d4a788);
+img {
+  height: 2.5rem;
+  width: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,7 +44,6 @@ body {
   font-weight: 700;
   color: #4a3227;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(229, 184, 153, 0.4);
 }
 
 #login-brand h1 {

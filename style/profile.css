@@ -83,10 +83,9 @@ h2 {
   margin: 0.5rem  0 0 0;
 }
 
-.logo-container{
-  text-decoration: none;
-  color: inherit;
-}
+.logo-container { text-decoration: none; color: inherit; display: flex; align-items: center; gap: .5rem; justify-content: space-between;}
+
+.logo-container img {height: 2.5rem; width: 2.5rem;}
 
 /* Logo rész */
 .logo-container .site-name {
@@ -445,15 +444,6 @@ h2 {
 
 .szerkeszto-item input {
     flex: 1;
-}
-
-.remove-szerkeszto-btn {
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
 }
 
 .remove-szerkeszto-btn:disabled {
@@ -1632,6 +1622,184 @@ canvas{
     min-height: 80px;
 }
 
+.szerkeszto-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 4px;
+    border-bottom: 1px solid rgba(229, 184, 153, 0.3);
+}
+
+.szerkeszto-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #e5b899;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #4a3227;
+    flex-shrink: 0;
+}
+
+.szerkeszto-email {
+    font-size: 0.85rem;
+    color: #4a3227;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.szerkeszto-tag {
+    font-size: 0.68rem;
+    color: #9e8a7e;
+    flex-shrink: 0;
+}
+
+.remove-szerkeszto-btn {
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 5px;
+    background: #f8d7da;
+    color: #721c24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.remove-szerkeszto-btn:hover {
+    background: #f1b6bb;
+    transform: translateY(-1px);
+}
+
+.szerkeszto-add-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 4px 4px 4px;
+}
+
+.szerkeszto-add-row input {
+    flex: 1;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    border: 1px solid #e0d5cc;
+    border-radius: 6px;
+    background: #fff;
+    font-family: inherit;
+}
+
+.szerkeszto-add-row input:focus {
+    outline: none;
+    border-color: #e5b899;
+    box-shadow: 0 0 6px rgba(229, 184, 153, 0.4);
+}
+
+#add-szerkeszto-btn {
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 5px;
+    background: #e5b899;
+    color: #4a3227;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+#add-szerkeszto-btn:hover {
+    background: #d4a788;
+    transform: translateY(-1px);
+}
+
+.jelentkezok-label {
+    display: block;
+    margin: 1.1rem 0 0.6rem 0;
+    font-weight: 500;
+    color: #4a3227;
+}
+
+.jelentkezok-empty,
+.jelentkezok-loading {
+    font-size: 0.85rem;
+    color: #7d6558;
+    margin: 0.25rem 0;
+}
+
+.jelentkezo-card {
+    background: #fff7f0;
+    border: 1px solid rgba(229, 184, 153, 0.4);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+}
+
+.jelentkezo-card:last-child {
+    margin-bottom: 0;
+}
+
+.jelentkezo-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.jelentkezo-top .jelentkezo-email {
+    font-weight: 600;
+}
+
+.jelentkezo-description {
+    font-size: 0.78rem;
+    color: #7d6558;
+    margin: 4px 0 0 0;
+    line-height: 1.4;
+}
+
+.accept-jelentkezo-btn,
+.reject-jelentkezo-btn {
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.accept-jelentkezo-btn {
+    background: #d4edda;
+    color: #155724;
+}
+
+.accept-jelentkezo-btn:hover {
+    background: #b9e3c2;
+    transform: translateY(-1px);
+}
+
+.reject-jelentkezo-btn {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.reject-jelentkezo-btn:hover {
+    background: #f1b6bb;
+    transform: translateY(-1px);
+}
+
 /* ---- Új csapat form ---- */
 .új-csapat-wrapper {
     max-width: 780px;
@@ -1783,6 +1951,41 @@ canvas{
     text-transform: uppercase;
     letter-spacing: 0.04em;
     margin-bottom: 0.75rem;
+}
+
+/* Bal menü gomb — függőben */
+.team-btn--pending {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Dashboard kártya — függőben */
+.team-chart-container--pending {
+    opacity: 0.6;
+    cursor: default;
+    pointer-events: none;
+    position: relative;
+}
+
+.pending-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 2rem 1rem;
+    color: #7d6558;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.pending-overlay svg {
+    opacity: 0.5;
+}
+
+.team-chart-badge--pending {
+    background: #f1e9df;
+    color: #7d6558;
 }
 
 /* ---- Responsive ---- */

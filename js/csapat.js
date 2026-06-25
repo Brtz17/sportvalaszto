@@ -1,4 +1,4 @@
-import { databases, ID, account } from "./lib/appwrite.js";
+import { client, databases, Query, ID, account } from "./lib/appwrite.js";
 
 let teamData = null;
 let map = null;
@@ -150,6 +150,13 @@ async function showTeamView(teamId) {
             ${leirasHTML}
 
             <div class="button-group">
+                <button class="btn-primary" id="edit-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>
+                        <line x1="15" y1="5" x2="19" y2="9"/>
+                    </svg>
+                    Jelentkezés szerkesztőnek
+                </button>
                 <button id="report-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
@@ -163,31 +170,115 @@ async function showTeamView(teamId) {
         if (teljesCim) initLeaflet();
 
         // Modal kezelők
-        const modal = document.getElementById('report-modal');
+        const modal = document.getElementById('modal');
         const closeModal = () => { modal.style.display = 'none'; };
+        const reportForm = document.getElementById('report-form');
+        const editForm = document.getElementById('edit-form');
+        const modalTitle = document.getElementById('modal-title');
 
-        document.getElementById('report-btn').addEventListener('click', () => { modal.style.display = 'block'; });
+        document.getElementById('report-btn').addEventListener('click', () => { 
+            modal.style.display = 'block'; 
+            reportForm.style.display = 'flex'; 
+            editForm.style.display = 'none'; 
+            modalTitle.innerHTML = `Jelentés beküldése`;
+        });
+        
+        document.getElementById('edit-btn').addEventListener('click', () => {
+            modal.style.display = 'block'; 
+            reportForm.style.display = 'none'; 
+            editForm.style.display = 'flex';
+            modalTitle.innerHTML = `Jelentkezés szerkesztőnek`; 
+        });
+        
         document.querySelector('.close').addEventListener('click', closeModal);
         document.querySelector('.modal-backdrop').addEventListener('click', closeModal);
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+        document.addEventListener('keydown', (e) => { 
+            if (e.key === 'Escape') closeModal(); 
+        });
 
+        // Jelentés beküldése
         document.getElementById('report-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const reason = document.getElementById('report-reason').value;
             const description = document.getElementById('report-description').value;
-            if (!reason) { alert('Kérjük, válassz egy okot!'); return; }
+            if (!reason) { 
+                alert('Kérjük, válassz egy okot!'); 
+                return; 
+            }
             try {
                 let userId = null;
-                try { const user = await account.get(); userId = user.$id; } catch {}
-                await databases.createDocument('68fe32ea0008ab84b709', 'reports', ID.unique(), {
-                    teamId, userId, reason, description
-                });
+                try { 
+                    const user = await account.get(); 
+                    userId = user.$id; 
+                } catch {}
+                
+                await databases.createDocument(
+                    '68fe32ea0008ab84b709', 
+                    'reports', 
+                    ID.unique(), 
+                    {
+                        teamId, 
+                        userId, 
+                        reason, 
+                        description
+                    }
+                );
                 alert('Jelentés elküldve!');
                 closeModal();
                 document.getElementById('report-form').reset();
             } catch (error) {
                 console.error('Hiba a jelentés küldésekor:', error);
                 alert('Hiba történt a jelentés küldésekor.');
+            }
+        });
+
+        // Szerkesztői jelentkezés
+        document.getElementById('edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('editor-email').value.trim().toLowerCase();
+            const description = document.getElementById('edit-description').value.trim();
+            
+            if (!email) { 
+                alert('Kérjük, adja meg email címét!'); 
+                return; 
+            }
+            
+            // Ellenőrizzük, létezik-e már az email
+            try {
+                const response = await databases.listDocuments(
+                    '68fe32ea0008ab84b709',
+                    'jelentkezes',
+                    [
+                        Query.equal('jelentkezoEmail', email),
+                        Query.equal('csapat', teamId)
+                    ]
+                );
+
+                if (response.total > 0) {
+                    alert('Ezzel az email címmel már létezik jelentkezés!');
+                    return;
+                }
+                
+                // Ha nem létezik, létrehozzuk az új dokumentumot
+                await databases.createDocument(
+                    '68fe32ea0008ab84b709',
+                    'jelentkezes',
+                    ID.unique(),
+                    {
+                        csapat: teamId,
+                        jelentkezoEmail: email,
+                        description: description
+                    }
+                );
+                
+                alert('Jelentkezés elküldve! Jelentkezzen be a csapat szerkesztéséhez!');
+                closeModal();
+                document.getElementById('edit-form').reset();
+                
+            } catch (error) {
+                console.error('Hiba történt:', error);
+                alert('Hiba történt a jelentkezés küldésekor: ' + error.message);
             }
         });
 
@@ -265,6 +356,7 @@ async function showAddressOnMap(address) {
 }
 
 document.addEventListener('DOMContentLoaded', getIdFromUrl);
+
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker

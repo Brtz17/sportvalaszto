@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
+  <link rel="icon" type="image/png" href="/public/icons/favicon.png">
+  <link rel="apple-touch-icon" href="/public/icons/favicon.png">
     <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#1f2937">
+    <meta name="theme-color" content="#f1e9df">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
@@ -15,6 +17,7 @@
 
     <header class="header1">
         <a class="logo-container" href="/">
+            <img src="public/icons/icon-512.png" alt="icon-512">
             <h1 class="site-name">Sportválasztó</h1>
         </a>
         <a class="login-btn" id="loginButton" href="/profile.html" aria-label="Profil">
@@ -27,8 +30,8 @@
 
     <div id="content"></div>
 
-    <!-- Report Modal -->
-    <div id="report-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <!-- Modal -->
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal-backdrop"></div>
         <div class="modal-content">
             <button class="modal-close close" aria-label="Bezárás">&times;</button>
@@ -37,7 +40,7 @@
                     <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
                     <line x1="4" y1="22" x2="4" y2="15"/>
                 </svg>
-                <h3 id="modal-title">Jelentés küldése</h3>
+                <h3 id="modal-title"></h3>
             </div>
             <form id="report-form">
                 <div class="form-group-kompakt">
@@ -56,6 +59,17 @@
                     <input class="input-kompakt" id="report-description" placeholder="További részletek...">
                 </div>
                 <button type="submit" class="btn-primary">Jelentés küldése</button>
+            </form>
+            <form id="edit-form">
+                <div class="form-group-kompakt">
+                    <label class="label-kompakt" for="editor-email">Jelentkező email címe</label>
+                    <input type="text" class="input-kompakt" id="editor-email" placeholder="szerkeszto1@gmail.com"></input>
+                </div>
+                <div class="form-group-kompakt">
+                    <label class="label-kompakt" for="edit-description">Jelentkezés indoklása</label>
+                    <input class="input-kompakt" id="edit-description" placeholder="További részletek...">
+                </div>
+                <button type="submit" class="btn-primary">Jelentkezés küldése</button>
             </form>
         </div>
     </div>
