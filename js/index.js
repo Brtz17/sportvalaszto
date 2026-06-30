@@ -1,5 +1,5 @@
 console.log("JS betöltve");
-import { databases } from './lib/appwrite.js';
+import { databases, Query } from './lib/appwrite.js';
 
 const userCardTemplate = document.querySelector("[data-user-template]");
 const userCardContainer = document.querySelector("[data-user-cards-container]");
@@ -325,12 +325,34 @@ function buildChips(containerId, values, clickHandler) {
 
 async function loadUsers() {
     try {
-        const response = await databases.listDocuments(
-            "68fe32ea0008ab84b709",
-            "csapatok"
-        );
+        const PAGE_SIZE = 100;
+        let allDocuments = [];
+        let lastId = null;
+        let hasMore = true;
 
-        if (!response.documents || response.documents.length === 0) {
+        // Összes dokumentum lekérése lapozással
+        while (hasMore) {
+            const queries = [Query.limit(PAGE_SIZE)];
+            if (lastId) {
+                queries.push(Query.cursorAfter(lastId));
+            }
+
+            const response = await databases.listDocuments(
+                "68fe32ea0008ab84b709",
+                "csapatok",
+                queries
+            );
+
+            allDocuments = allDocuments.concat(response.documents);
+
+            if (response.documents.length < PAGE_SIZE) {
+                hasMore = false;
+            } else {
+                lastId = response.documents[response.documents.length - 1].$id;
+            }
+        }
+
+        if (allDocuments.length === 0) {
             userCardContainer.innerHTML = '<div class="no-results-msg">Nincsenek csapatok</div>';
             return;
         }
@@ -340,7 +362,7 @@ async function loadUsers() {
         const sportSet = new Set();
         const varosSet = new Set();
 
-        users = response.documents.map(doc => {
+        users = allDocuments.map(doc => {
             const card = userCardTemplate.content.cloneNode(true).children[0];
             const header = card.querySelector("[data-header]");
             const body = card.querySelector("[data-body]");
@@ -350,7 +372,7 @@ async function loadUsers() {
 
             const tagdijText = doc.tagdij
                 ? `${Number(doc.tagdij).toLocaleString("hu")} Ft/hó`
-                : "Tagdíj: nincs adat";
+                : "";
             const varosText = doc.varos || "";
             body.textContent = [varosText, tagdijText, (doc.cimkek || []).join(", ")]
                 .filter(Boolean).join(" · ");
