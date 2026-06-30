@@ -268,7 +268,7 @@ function applyFilters() {
 
         const matchesVaros =
             activeVaros.size === 0 ||
-            activeVaros.has(user.varos);
+            activeVaros.has(user.varos || ("Budapest " + user.iranyitoszam.slice(1, -1) + ". kerület").trim());
 
         const tagdij = user.tagdij;
         const matchesTagdijMin = activeTagdijMin === null || tagdij === null || tagdij >= activeTagdijMin;
@@ -373,7 +373,7 @@ async function loadUsers() {
             const tagdijText = doc.tagdij
                 ? `${Number(doc.tagdij).toLocaleString("hu")} Ft/hó`
                 : "";
-            const varosText = doc.varos || "";
+            const varosText = (doc.varos === "Budapest") ? "Budapest " + doc.iranyitoszam.slice(1, -1) + ". kerület" : doc.varos || "";
             body.textContent = [varosText, tagdijText, (doc.cimkek || []).join(", ")]
                 .filter(Boolean).join(" · ");
 
@@ -392,12 +392,12 @@ async function loadUsers() {
             userCardContainer.append(card);
 
             (doc.cimkek || []).forEach(t => sportSet.add(t.replace(/\s+/g, ' ').trim()));
-            if (doc.varos) varosSet.add(doc.varos.trim());
+            if (doc.varos) (doc.varos === "Budapest") ? varosSet.add("Budapest " + doc.iranyitoszam.slice(1, -1) + ". kerület".trim()) : varosSet.add(doc.varos.trim());
 
             return {
                 nev: doc.nev,
                 email: doc.email,
-                varos: doc.varos || null,
+                varos: (doc.varos === "Budapest") ? "Budapest " + doc.iranyitoszam.slice(1, -1) + ". kerület" : doc.varos || null,
                 tagdij: doc.tagdij != null ? Number(doc.tagdij) : null,
                 cimkek: (doc.cimkek || []).map(t => t.replace(/\s+/g, ' ').trim()),
                 element: card
