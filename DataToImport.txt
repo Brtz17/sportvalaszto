@@ -1,1 +1,10 @@
 https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=1
+https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=2
+https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=3
+https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=4
+https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=5
+https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=6
+https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=7
+https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=8
+https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=9
+https://sportolonemzet.hu/wp-json/wp/v2/egyesuletek?per_page=100&page=10

@@ -10,7 +10,23 @@
   <title>Bejelentkezés - Sportválasztó</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="style/login.css">
+  
   <script type="module" src="js/login.js"></script>
+    <div id="google_translate_element"></div>
+    <script>
+    // Automatikusan angolra fordítja betöltéskor
+    document.cookie = "googtrans=/hu/en; path=/";
+    </script>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+        {pageLanguage: 'hu', includedLanguages: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+        'google_translate_element'
+    );
+    }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
 </head>
 <body>
   <div id="login-card">

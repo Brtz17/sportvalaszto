@@ -318,8 +318,6 @@ body {
     flex-shrink: 0;
 }
 
-/* ---- Segéd ---- */
-
 .no-data {
     color: #9e7d6a;
     font-style: italic;
